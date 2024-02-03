@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">i2106595</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="login">Login</string>
+    <string name="enter_your_password">Enter your password</string>
+    <string name="password">Password</string>
+    <string name="enter_your_email">Enter Your Email</string>
+    <string name="email">Email</string>
+    <string name="forgot_your_password">Forgot your Password?</string>
+    <string name="imageofcircle">ImageOfCircle</string>
 </resources>
