@@ -9,4 +9,5 @@
     <string name="email">Email</string>
     <string name="forgot_your_password">Forgot your Password?</string>
     <string name="imageofcircle">ImageOfCircle</string>
+    <string name="textview">TextView</string>
 </resources>

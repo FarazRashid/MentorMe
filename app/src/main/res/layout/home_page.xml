@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="#DEF8F8"
+    android:layout_height="match_parent">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <!-- Your main content layout -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Your main content goes here -->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/educationMentorsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/RecentMentorsText"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recentMentorsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/educationMentorsText"
+            app:layout_constraintHeight_default="wrap"
+            tools:layout_editor_absoluteX="0dp"
+             />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/educationMentorsRecycler"
+            />
+
+        <ImageView
+            android:id="@+id/bellIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="208dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/nontransparentcircle"
+            android:backgroundTint="#1D767C"
+            android:clipToOutline="true"
+            android:elevation="155dp"
+            android:padding="5dp"
+            android:translationZ="155dp"
+            app:layout_constraintBottom_toTopOf="@+id/readyForMentorshipText"
+            app:layout_constraintEnd_toEndOf="@+id/topMentorsViewAllText"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/nameText"
+            app:srcCompat="@drawable/notification" />
+
+        <TextView
+            android:id="@+id/recentMentorsViewAllText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="5dp"
+            android:text="View All"
+            android:textColor="#1D767C"
+            app:layout_constraintEnd_toEndOf="@+id/educationMentorsViewAllText"
+            app:layout_constraintTop_toBottomOf="@+id/recentMentorsRecycler"
+            tools:text="View All" />
+
+        <TextView
+            android:id="@+id/educationMentorsViewAllText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="5dp"
+            android:text="View All"
+            android:textColor="#1D767C"
+            app:layout_constraintEnd_toEndOf="@+id/topMentorsViewAllText"
+            app:layout_constraintTop_toBottomOf="@+id/topMentorsRecycler"
+            tools:text="View All" />
+
+        <TextView
+            android:id="@+id/topMentorsViewAllText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="15dp"
+            android:text="View All"
+            android:textColor="#1D767C"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/badgesRecycler"
+            tools:text="View All" />
+
+        <TextView
+            android:id="@+id/RecentMentorsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Recent Mentors"
+            android:textColor="#1D767C"
+            android:textSize="20dp"
+            app:layout_constraintStart_toStartOf="@+id/educationMentorsText"
+            app:layout_constraintTop_toBottomOf="@+id/recentMentorsRecycler"
+            tools:text="Recent Mentors" />
+
+        <TextView
+            android:id="@+id/educationMentorsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Education Mentors"
+            android:textColor="#1D767C"
+            android:textSize="20dp"
+            app:layout_constraintStart_toStartOf="@+id/topMentorsText"
+            app:layout_constraintTop_toBottomOf="@+id/topMentorsRecycler"
+            tools:text="Education Mentors" />
+
+        <TextView
+            android:id="@+id/readyForMentorshipText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ready for mentorship? Let's begin the journey"
+            android:textColor="#1D767C"
+            android:textSize="16dp"
+            app:layout_constraintStart_toStartOf="@+id/helloText"
+            app:layout_constraintTop_toBottomOf="@+id/nameText"
+            tools:text="Ready for mentorship? Let's begin the journey" />
+
+
+        <TextView
+            android:id="@+id/nameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="72dp"
+            android:text="Ali"
+            android:textColor="#157177"
+            android:textSize="30dp"
+            app:layout_constraintStart_toEndOf="@+id/helloText"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text=" Ali" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="113dp"
+            android:layout_height="119dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginEnd="340dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/circle" />
+
+        <ImageView
+            android:id="@+id/topCircle1"
+            android:layout_width="135dp"
+            android:layout_height="106dp"
+            android:layout_marginEnd="284dp"
+            android:layout_marginBottom="60dp"
+            android:contentDescription="@string/imageofcircle"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/circle" />
+
+
+        <TextView
+            android:id="@+id/helloText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="72dp"
+            android:text="Hello, "
+            android:textColor="@color/black"
+            android:textSize="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Hello," />
+
+
+
+
+
+        <TextView
+            android:id="@+id/topMentorsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Top Mentors For You"
+            android:textColor="#1D767C"
+            android:textSize="20dp"
+            app:layout_constraintStart_toStartOf="@+id/readyForMentorshipText"
+            app:layout_constraintTop_toBottomOf="@+id/badgesRecycler"
+            tools:text="Top Mentors For You" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/topMentorsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/topMentorsText"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/badgesRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="59dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/readyForMentorshipText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#1D767C"
+        android:backgroundTint="@android:color/transparent"
+        android:elevation="0dp"
+        android:translationZ="0dp"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_menu"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="675dp"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/nontransparentcircle"
+        android:backgroundTint="#1D767C"
+        android:clipToOutline="true"
+        android:elevation="155dp"
+        android:padding="5dp"
+        android:translationZ="155dp"
+        app:layout_anchor="@+id/bottom_navigation"
+        app:layout_anchorGravity="center"
+        app:srcCompat="@drawable/plussvg" />
+
+    <!-- Plus Icon -->
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

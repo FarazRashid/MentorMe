@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="15dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="15dp"
+    app:cardElevation="5dp">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/card"
+        android:layout_width="160dp"
+        android:layout_height="180dp"
+        android:background="@drawable/rounded_details"
+        android:backgroundTint="#D9D9D9"
+        app:srcCompat="@android:drawable/screen_background_light_transparent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/imageView5"
+        android:layout_width="155dp"
+        android:layout_height="85dp"
+        android:background="@drawable/rounded_details"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/card"
+        app:layout_constraintStart_toStartOf="@+id/card">
+
+
+        <TextView
+            android:id="@+id/cardAvailability"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text=" 🟢 Availabile"
+            android:textColor="#359400"
+            android:textSize="11dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/cardPosition"
+            app:layout_constraintTop_toBottomOf="@+id/cardPosition"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/cardSalary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="4dp"
+            android:text="salary"
+            android:textColor="#EBB800"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/cardName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
+            android:text="Name"
+            android:textColor="@color/black"
+            android:textSize="15dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/cardPosition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="position"
+            android:textColor="@color/black"
+            android:textSize="13dp"
+            app:layout_constraintStart_toStartOf="@+id/cardName"
+            app:layout_constraintTop_toBottomOf="@+id/cardName" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="26dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="@+id/cardSalary"
+            app:layout_constraintTop_toBottomOf="@+id/cardSalary"
+            app:srcCompat="@drawable/heart" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
