@@ -22,4 +22,5 @@
     </string-array>
 
     <string name="loginUnderline"> <b><u>Login</u></b></string>
+    <string name="signUpUnderline"> <b><u>Sign Up</u></b></string>
     </resources>
