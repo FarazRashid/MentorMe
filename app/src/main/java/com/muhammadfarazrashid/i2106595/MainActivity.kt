@@ -84,7 +84,7 @@
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
-            setContentView(R.layout.forgotpasswordpage)
+            setContentView(R.layout.resetpassword)
 
 //            // Initialize the Spinner using findViewById
 //            userCountrySpinner = findViewById(R.id.userCountryTextBos)
