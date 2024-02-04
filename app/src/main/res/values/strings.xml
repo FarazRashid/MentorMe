@@ -20,4 +20,6 @@
         <item>City Option 1</item>
         <item>City Option 2</item>
     </string-array>
-</resources>
+
+    <string name="loginUnderline"> <b><u>Login</u></b></string>
+    </resources>
