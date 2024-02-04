@@ -1,0 +1,10 @@
+<!-- res/drawable/circle_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <!-- Set the color of the circle (transparent for an empty circle) -->
+    <solid android:color="@android:color/transparent" />
+    <!-- Set the color and width of the circle outline -->
+    <stroke
+        android:color="#277D83"
+    android:width="2dp" />
+</shape>
