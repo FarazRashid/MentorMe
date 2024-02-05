@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="#DEF8F8"
+    android:layout_height="match_parent">
+
+    <!-- Your main content layout -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <!-- Your main content goes here -->
+
+
+    <TextView
+        android:id="@+id/letsFindText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="84dp"
+        android:textColor="#157177"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:elevation="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Search Results" />
+
+    <ImageView
+        android:id="@+id/topCircle1"
+        android:layout_width="134dp"
+        android:layout_height="116dp"
+        android:layout_marginEnd="292dp"
+        android:layout_marginBottom="60dp"
+        android:contentDescription="@string/imageofcircle"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/circle" />
+
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="113dp"
+        android:layout_height="119dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="344dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/circle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#1D767C"
+        android:backgroundTint="@android:color/transparent"
+        android:elevation="0dp"
+        android:translationZ="0dp"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_menu"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="675dp"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/nontransparentcircle"
+        android:backgroundTint="#1D767C"
+        android:clipToOutline="true"
+        android:elevation="155dp"
+        android:padding="5dp"
+        android:translationZ="155dp"
+        app:layout_anchor="@+id/bottom_navigation"
+        app:layout_anchorGravity="center"
+        app:srcCompat="@drawable/plussvg" />
+
+    <!-- Plus Icon -->
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
