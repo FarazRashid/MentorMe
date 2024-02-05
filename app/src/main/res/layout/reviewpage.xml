@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DEF8F8"
+    tools:context=".MainActivity">
+
+
+    <ImageView
+        android:id="@+id/star5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/star4"
+        app:srcCompat="@drawable/emptystar" />
+
+    <ImageView
+        android:id="@+id/star4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/star5"
+        app:layout_constraintTop_toTopOf="@+id/star3"
+        app:srcCompat="@drawable/emptystar" />
+
+    <ImageView
+        android:id="@+id/star1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="3dp"
+        app:layout_constraintEnd_toStartOf="@+id/star2"
+        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/reviewScrollView"
+        app:srcCompat="@drawable/emptystar" />
+
+    <ImageView
+        android:id="@+id/star3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/star4"
+        app:layout_constraintTop_toTopOf="@+id/star2"
+        app:srcCompat="@drawable/emptystar" />
+
+    <ImageView
+        android:id="@+id/star2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintEnd_toStartOf="@+id/star3"
+        app:layout_constraintTop_toTopOf="@+id/star1"
+        app:srcCompat="@drawable/emptystar" />
+
+
+    <Button
+        android:id="@+id/signupButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="52dp"
+        android:background="@drawable/rounded_details"
+        android:backgroundTint="#157177"
+        android:backgroundTintMode="src_over"
+        android:text="Submit Feedback"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/star3"
+        app:layout_constraintVertical_bias="0.902"
+        app:layout_constraintWidth_percent="0.75" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/upsidedownrectangle"
+        android:paddingBottom="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            android:id="@+id/position"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="18dp"
+            android:drawableEnd="@drawable/emojiplus"
+            android:drawablePadding="5dp"
+            android:text="Drop me a review"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            app:layout_constraintStart_toStartOf="@+id/mentorName"
+            app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="4dp"
+            android:background="#7FD9D3"
+            app:layout_constraintTop_toBottomOf="@id/mentorName"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <TextView
+            android:id="@+id/mentorName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="John Cooper"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/hiText"
+            app:layout_constraintTop_toBottomOf="@+id/hiText" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="43dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/leftarrow" />
+
+        <TextView
+            android:id="@+id/hiText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+
+            android:layout_marginTop="8dp"
+            android:text="Hi, I'm"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/imageView4"
+            app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageView9"
+            android:layout_width="86dp"
+            android:layout_height="86dp"
+            android:layout_marginStart="168dp"
+            android:background="@drawable/circle"
+            android:src="@mipmap/johnmayer_round"
+            app:civ_border_color="#7FD9D3"
+            app:civ_border_width="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/hiText"
+            app:layout_constraintTop_toTopOf="@+id/hiText" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:id="@+id/reviewScrollView"
+        android:layout_width="0dp"
+        android:layout_height="133dp"
+        android:layout_marginTop="76dp"
+        android:background="@drawable/experiencebox"
+        android:elevation="5dp"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        app:layout_constraintWidth_percent="0.8">
+
+        <EditText
+            android:id="@+id/reviewText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:gravity="top|start"
+            android:inputType="textMultiLine"
+            android:padding="15dp"
+            android:backgroundTint="@android:color/transparent"
+            android:background="@android:color/transparent"
+            android:hint="Type your experience..."
+            android:textColor="#80000000" />
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

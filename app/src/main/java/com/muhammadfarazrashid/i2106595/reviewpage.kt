@@ -2,31 +2,22 @@ package com.muhammadfarazrashid.i2106595
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 
-class aboutMentorPage: AppCompatActivity() {
+class reviewpage: AppCompatActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.aboutmentorpage)
+        setContentView(R.layout.reviewpage)
 
-        //click on image view 4 go back to searchresults page
 
         val imageView4 = findViewById<ImageView>(R.id.imageView4)
         imageView4.setOnClickListener {
             val intent = Intent(this, homePageActivity::class.java)
             startActivity(intent)
         }
-
-        //onclick review button go to review page
-
-        val reviewButton = findViewById<Button>(R.id.reviewButton)
-        reviewButton.setOnClickListener {
-            val intent = Intent(this, reviewpage::class.java)
-            startActivity(intent)
-        }
-
     }
+
+
 }
