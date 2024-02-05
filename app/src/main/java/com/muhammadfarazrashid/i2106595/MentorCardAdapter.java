@@ -15,16 +15,18 @@ public class MentorCardAdapter extends RecyclerView.Adapter<MentorCardAdapter.Vi
 
     private final LayoutInflater inflater;
     private final List<Mentor> data;
+    private final int layoutResourceId; // Resource ID of the layout
 
-    public MentorCardAdapter(Context context, List<Mentor> data) {
+    public MentorCardAdapter(Context context, List<Mentor> data, int layoutResourceId) {
         this.inflater = LayoutInflater.from(context);
         this.data = data;
+        this.layoutResourceId = layoutResourceId;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.mentorcard, parent, false);
+        View view = inflater.inflate(layoutResourceId, parent, false);
         return new ViewHolder(view);
     }
 

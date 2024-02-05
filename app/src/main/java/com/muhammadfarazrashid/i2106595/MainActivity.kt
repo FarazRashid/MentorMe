@@ -11,14 +11,20 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.entrancepage)
 
-        // Delay for 2000 milliseconds (2 seconds)
+//        // Delay for 2000 milliseconds (2 seconds)
 //        Handler().postDelayed({
 //            val intent = Intent(this, loginActivity::class.java)
 //            startActivity(intent)
 //            finish()
 //        }, 2000)
+//    }
 
-        val intent = Intent(this, searchPageActivity::class.java)
-        startActivity(intent)
+        //move to searchresults page
+
+        Handler().postDelayed({
+            val intent = Intent(this, searchResultsActivity::class.java)
+            startActivity(intent)
+            finish()
+        }, 2000)
     }
 }

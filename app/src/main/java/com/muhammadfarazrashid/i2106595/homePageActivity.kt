@@ -1,7 +1,9 @@
 package com.muhammadfarazrashid.i2106595
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +32,12 @@ class homePageActivity : AppCompatActivity(){
             topMentors.add(Mentor("Jane Doe", "UI Designer", "available", "$6000/hr"))
             topMentors.add(Mentor("John Smith", "Web Developer", "unavailable", "$8000/hr"))
             topMentors.add(Mentor("Jane Smith", "Web Developer", "available", "$9000/hr"))
-            val topMentorsAdapter = MentorCardAdapter(this, topMentors)
+
+            // Choose the layout resource ID based on the card type (horizontal or vertical)
+            val horizontalLayoutResourceId = R.layout.mentorcard
+            val verticalLayoutResourceId = R.layout.verticalmentorcards
+
+            val topMentorsAdapter = MentorCardAdapter(this, topMentors,horizontalLayoutResourceId)
             topMentorsRecycler.adapter = topMentorsAdapter
 
             // Initialize recent mentors
@@ -39,7 +46,7 @@ class homePageActivity : AppCompatActivity(){
             recentMentors = ArrayList()
             recentMentors.add(Mentor("Mentor 1", "Job 1", "available", "$6000/hr"))
             recentMentors.add(Mentor("Mentor 2", "Job 2", "unavailable", "$7000/hr"))
-            val recentMentorsAdapter = MentorCardAdapter(this, recentMentors)
+            val recentMentorsAdapter = MentorCardAdapter(this, recentMentors,horizontalLayoutResourceId)
             recentMentorsRecycler.adapter = recentMentorsAdapter
 
             // Initialize education mentors
@@ -48,7 +55,7 @@ class homePageActivity : AppCompatActivity(){
             educationMentors = ArrayList()
             educationMentors.add(Mentor("Mentor 1", "Title 3", "available", "$8000/hr"))
             educationMentors.add(Mentor("2", "Title 4", "unavailable", "$9000/hr"))
-            val educationMentorsAdapter = MentorCardAdapter(this, educationMentors)
+            val educationMentorsAdapter = MentorCardAdapter(this, educationMentors,horizontalLayoutResourceId)
             educationMentorsRecycler.adapter = educationMentorsAdapter
 
             badges = ArrayList()
@@ -72,5 +79,12 @@ class homePageActivity : AppCompatActivity(){
                     Log.d("MainActivity", "Badge clicked at position: $position")
                 }
             })
+
+//            //click search icon in bottom navigation and go to search page
+//                val searchIcon = findViewById<ImageView>(R.id.menu_search)
+//                searchIcon.setOnClickListener {
+//                    val intent = Intent(this, searchPageActivity::class.java)
+//                    startActivity(intent)
+//                }
         }
 }
