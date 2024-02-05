@@ -14,6 +14,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <ImageView
+                android:elevation="5dp"
+                android:id="@+id/imageView8"
+                android:layout_width="43dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/leftarrow" />
+
+            <TextView
+                android:id="@+id/letsFindText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="60dp"
+                android:elevation="5dp"
+                android:text="Let's Find..."
+                android:textColor="#1D767C"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout3"
                 android:layout_width="match_parent"
@@ -66,8 +91,8 @@
                 android:id="@+id/recentSearchesText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="17dp"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="8dp"
                 android:text="Recent Searches"
                 android:textColor="#1D767C"
                 android:textSize="18sp"
@@ -96,25 +121,11 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/circle" />
 
-            <TextView
-                android:id="@+id/letsFindText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="84dp"
-                android:elevation="5dp"
-                android:textColor="#157177"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Let's Find..." />
-
             <android.widget.SearchView
                 android:id="@+id/searchView"
                 android:layout_width="0dp"
                 android:layout_height="44dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/searchviewbackground"
                 android:iconifiedByDefault="false"
                 android:queryBackground="@android:color/transparent"
@@ -128,11 +139,15 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recentSearchesRecycler"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="5dp"
                 app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/recentSearchesText"
                 app:layout_constraintTop_toBottomOf="@+id/recentSearchesText"
-                tools:layout_editor_absoluteX="18dp" />
+                app:layout_constraintVertical_bias="0.423" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Your main content goes here -->

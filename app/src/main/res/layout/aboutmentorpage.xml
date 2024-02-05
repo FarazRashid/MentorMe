@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DEF8F8"
+    tools:context=".MainActivity">
+
+
+    <TextView
+        android:id="@+id/expertise4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:background="@drawable/rounded_details"
+        android:backgroundTint="#50C2C9"
+        android:gravity="center"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="5dp"
+        android:text="Prototyping"
+        android:textColor="@android:color/white"
+        android:textColorHint="#2B7F85"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/expertise3"
+        app:layout_constraintTop_toTopOf="@+id/expertise3" />
+
+    <TextView
+        android:id="@+id/expertise3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/rounded_details"
+        android:backgroundTint="#50C2C9"
+        android:gravity="center"
+        android:paddingHorizontal="25dp"
+        android:paddingVertical="5dp"
+        android:text="Leadership"
+        android:textColor="@android:color/white"
+        android:textColorHint="#2B7F85"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/expertise1"
+        app:layout_constraintTop_toBottomOf="@+id/expertise1" />
+
+    <TextView
+        android:id="@+id/expertise2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:background="@drawable/rounded_details"
+        android:backgroundTint="#50C2C9"
+        android:gravity="center"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="5dp"
+        android:text="User Experience Design"
+        android:textColor="@android:color/white"
+        android:textColorHint="#2B7F85"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/expertise1"
+        app:layout_constraintTop_toTopOf="@+id/expertise1" />
+
+    <Button
+        android:id="@+id/signupButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/rounded_details"
+        android:backgroundTint="#157177"
+        android:backgroundTintMode="src_over"
+        android:text="Book A Session"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintEnd_toEndOf="@+id/communityButton"
+        app:layout_constraintHeight_percent="0.06"
+        app:layout_constraintStart_toStartOf="@+id/reviewButton"
+        app:layout_constraintTop_toBottomOf="@+id/reviewButton" />
+
+    <TextView
+        android:id="@+id/myExpertiseText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:text="My Expertise Include"
+        android:textColor="#3C8B90"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+
+    <TextView
+        android:id="@+id/expertise1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:background="@drawable/rounded_details"
+        android:backgroundTint="#50C2C9"
+        android:gravity="center"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="5dp"
+        android:text="Career Advice"
+        android:textColor="@android:color/white"
+        android:textColorHint="#2B7F85"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/myExpertiseText"
+        app:layout_constraintTop_toBottomOf="@+id/myExpertiseText" />
+
+    <Button
+        android:id="@+id/reviewButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:background="@drawable/yellowbutton"
+        android:drawableEnd="@drawable/review"
+        android:padding="10dp"
+        android:text="Drop a review"
+        android:textColor="#157177"
+        app:layout_constraintEnd_toStartOf="@+id/communityButton"
+        app:layout_constraintHorizontal_bias="0.017"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="@+id/expertise1"
+        app:layout_constraintTop_toBottomOf="@+id/expertise3" />
+
+    <Button
+        android:id="@+id/communityButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/yellowbutton"
+        android:drawableEnd="@drawable/community"
+        android:padding="10dp"
+        android:text="join community"
+        android:textColor="#157177"
+        app:layout_constraintEnd_toEndOf="@+id/expertise2"
+        app:layout_constraintTop_toTopOf="@+id/reviewButton" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/upsidedownrectangle"
+        android:paddingBottom="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="4.8"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/imageView7"
+            app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+
+        <TextView
+            android:id="@+id/aboutMe"
+            android:layout_width="0dp"
+            android:layout_height="110dp"
+            android:layout_marginTop="10dp"
+            android:lineSpacingExtra="8dp"
+            android:text="I am a passionate UX designer at Google with a focus on\ncreating user-centric and intuitive interfaces. With 10 years of \nexperience, I have had the opportunity to work on diverse \nprojects that have shaped my understanding of design \nprinciples and user experience."
+            android:textColor="@color/white"
+            android:textSize="13.5sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/aboutText"
+            app:layout_constraintTop_toBottomOf="@+id/aboutText"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="16dp"
+            android:background="#7FD9D3"
+            app:layout_constraintTop_toBottomOf="@id/position"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <TextView
+            android:id="@+id/aboutText"
+            android:layout_width="67dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="13dp"
+            android:text="About me"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/position"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
+
+        <TextView
+            android:id="@+id/position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:text="UX Designer at \nGoogle"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="@+id/mentorName"
+            app:layout_constraintTop_toBottomOf="@+id/view2" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="4dp"
+            android:background="#7FD9D3"
+            app:layout_constraintTop_toBottomOf="@id/mentorName"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <TextView
+            android:id="@+id/mentorName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="John Cooper"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/hiText"
+            app:layout_constraintTop_toBottomOf="@+id/hiText" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="43dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/leftarrow" />
+
+        <TextView
+            android:id="@+id/hiText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+
+            android:layout_marginTop="8dp"
+            android:text="Hi, I'm"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/imageView4"
+            app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="37dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="120dp"
+            app:layout_constraintStart_toEndOf="@+id/position"
+            app:layout_constraintTop_toTopOf="@+id/rating"
+            app:srcCompat="@drawable/star" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageView9"
+            android:layout_width="86dp"
+            android:layout_height="86dp"
+            android:layout_marginStart="168dp"
+            android:src="@mipmap/johnmayer_round"
+            app:civ_border_color="#7FD9D3"
+            app:civ_border_width="5dp"
+            android:background="@drawable/circle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/hiText"
+            app:layout_constraintTop_toTopOf="@+id/hiText" />
+
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

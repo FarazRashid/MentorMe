@@ -1,9 +1,13 @@
 package com.muhammadfarazrashid.i2106595
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.muhammadfarazrashid.i2106595.RecentSearchesAdapter.OnRemoveClickListener
 
 class searchPageActivity : AppCompatActivity() {
@@ -52,6 +56,53 @@ class searchPageActivity : AppCompatActivity() {
         // Set up the RecyclerView with the adapter
         categoriesRecycler.layoutManager = LinearLayoutManager(this)
         categoriesRecycler.adapter = categoriesAdapter
+
+
+        val searchView = findViewById<SearchView>(R.id.searchView)
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Handle the search query submission
+                if (!query.isNullOrBlank()) {
+                    // Start a new activity with the search results or perform the desired action
+                    val intent = Intent(this@searchPageActivity, searchResultsActivity::class.java)
+                    intent.putExtra("search_query", query)
+                    startActivity(intent)
+                    return true
+                }
+                return false
+            }
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Handle search query text change
+                return true
+            }
+        })
+
+
+
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+        bottomNavigation.setOnNavigationItemReselectedListener { item ->
+            when (item.itemId) {
+                R.id.menu_search -> {
+                    val intent = Intent(this, searchPageActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.menu_home -> {
+                    val intent = Intent(this, homePageActivity::class.java)
+                    startActivity(intent)
+                }
+
+            }
+
+        }
+
+        val imageView4 = findViewById<ImageView>(R.id.imageView8)
+        imageView4.setOnClickListener {
+            val intent = Intent(this, homePageActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
 

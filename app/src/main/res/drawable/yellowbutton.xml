@@ -1,0 +1,11 @@
+<!-- custom_spinner_background.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Item 0: Background for the text with rounded corners -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFC90A" />
+            <corners android:radius="20dp" /> <!-- Adjust the radius as needed -->
+        </shape>
+    </item>
+
+</layer-list>

@@ -1,9 +1,11 @@
 package com.muhammadfarazrashid.i2106595;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ public class MentorCardAdapter extends RecyclerView.Adapter<MentorCardAdapter.Vi
     private final LayoutInflater inflater;
     private final List<Mentor> data;
     private final int layoutResourceId; // Resource ID of the layout
+    private OnItemClickListener listener; // Listener variable
 
     public MentorCardAdapter(Context context, List<Mentor> data, int layoutResourceId) {
         this.inflater = LayoutInflater.from(context);
@@ -44,7 +47,17 @@ public class MentorCardAdapter extends RecyclerView.Adapter<MentorCardAdapter.Vi
         return data.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    // Set item click listener
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
+    // Interface for item click events
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView mentorName, mentorPosition, mentorAvailability, mentorSalary;
 
@@ -54,6 +67,19 @@ public class MentorCardAdapter extends RecyclerView.Adapter<MentorCardAdapter.Vi
             mentorPosition = itemView.findViewById(R.id.cardPosition);
             mentorAvailability = itemView.findViewById(R.id.cardAvailability);
             mentorSalary = itemView.findViewById(R.id.cardSalary);
+
+            // Set click listener for the item view
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 }

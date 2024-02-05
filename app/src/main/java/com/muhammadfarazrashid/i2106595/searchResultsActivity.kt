@@ -1,6 +1,7 @@
 package com.muhammadfarazrashid.i2106595
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class searchResultsActivity : AppCompatActivity() {
 
@@ -58,6 +60,36 @@ class searchResultsActivity : AppCompatActivity() {
 // Set the ArrayAdapter on the Spinner
         spinner.adapter = adapter
 
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+        bottomNavigation.setOnNavigationItemReselectedListener { item ->
+            when (item.itemId) {
+                R.id.menu_search -> {
+                    val intent = Intent(this, searchPageActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.menu_home -> {
+                    val intent = Intent(this, homePageActivity::class.java)
+                    startActivity(intent)
+                }
+
+            }
+
+        }
+
+        val imageView4 = findViewById<ImageView>(R.id.imageView10)
+        imageView4.setOnClickListener {
+            val intent = Intent(this, searchPageActivity::class.java)
+            startActivity(intent)
+        }
+
+        //click on any card go to aboutmentorpage
+
+        searchResultsAdapter.setOnItemClickListener { position ->
+            // Handle item click event, e.g., open the aboutmentorpage activity
+            val intent = Intent(this, aboutMentorPage::class.java)
+            startActivity(intent)
+        }
 
 
     }
