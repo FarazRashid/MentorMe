@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/otherUserImage"
+        android:layout_width="79dp"
+        android:layout_height="73dp"
+        android:background="@drawable/circle"
+        android:backgroundTint="#00000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <TextView
+        android:id="@+id/userChatMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/rounded_details"
+        android:backgroundTint="@color/white"
+        android:padding="15dp"
+        android:text="Hello, you there?"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/otherUserImage"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/otherUserImage"
+        app:layout_constraintTop_toTopOf="@+id/otherUserImage" />
+
+    <TextView
+        android:id="@+id/userChatTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:backgroundTint="#A2E6DF"
+        android:text="10:32"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/otherUserImage"
+        app:layout_constraintTop_toBottomOf="@id/userChatMessage" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

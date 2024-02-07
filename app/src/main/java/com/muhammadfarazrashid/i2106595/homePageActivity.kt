@@ -100,6 +100,10 @@ class homePageActivity : AppCompatActivity(){
                         val intent = Intent(this, homePageActivity::class.java)
                         startActivity(intent)
                     }
+                    R.id.menu_chat -> {
+                        val intent = Intent(this, mainChatActivity::class.java)
+                        startActivity(intent)
+                    }
 
                 }
 

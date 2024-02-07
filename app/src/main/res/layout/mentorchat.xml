@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="#DEF8F8"
+    android:layout_height="match_parent">
+
+
+
+    <!-- Your main content layout -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- Your main content goes here -->
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="9dp"
+            android:background="@drawable/rounded_details"
+            android:backgroundTint="#50C2C9"
+            android:elevation="15dp"
+            android:padding="10dp"
+            app:layout_constraintBottom_toTopOf="@id/linearLayout"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintWidth_percent="0.95">
+
+            <Button
+                android:id="@+id/sendFile"
+                android:layout_width="26dp"
+                android:layout_height="27dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/clip"
+                android:backgroundTint="@color/white" />
+
+            <Button
+                android:id="@+id/sendImage"
+                android:layout_width="26dp"
+                android:layout_height="27dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/image"
+                android:backgroundTint="@color/white" />
+
+            <ScrollView
+                android:id="@+id/reviewScrollView"
+                android:layout_width="wrap_content"
+                android:layout_height="133dp"
+                android:layout_marginBottom="9dp">
+
+                <EditText
+                    android:id="@+id/reviewText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:background="@android:color/transparent"
+                    android:backgroundTint="@android:color/transparent"
+                    android:ems="10"
+                    android:gravity="top|start"
+                    android:hint="Type something ..."
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/white"
+                    android:textColorHint="#99FFFFFF" />
+
+            </ScrollView>
+
+            <Button
+                android:id="@+id/takePhoto"
+                android:layout_width="26dp"
+                android:layout_height="27dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/camera"
+                android:backgroundTint="@color/white" />
+
+            <Button
+                android:id="@+id/micButton"
+                android:layout_width="26dp"
+                android:layout_height="27dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/mic_svgrepo_com"
+                android:backgroundTint="@color/white" />
+
+            <Button
+                android:id="@+id/sendButton"
+                android:layout_width="26dp"
+                android:layout_height="27dp"
+                android:layout_gravity="end"
+                android:background="@drawable/send"
+                android:backgroundTint="@color/white" />
+
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/upsidedownrectangle"
+            android:paddingBottom="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <TextView
+                android:id="@+id/mentorName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="John Cooper"
+                android:textColor="@color/white"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.445"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/backbutton" />
+
+            <Button
+                android:id="@+id/backbutton"
+                android:layout_width="36dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="28dp"
+                android:background="@drawable/leftarrow"
+                android:backgroundTint="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/callButton"
+                android:layout_width="42dp"
+                android:layout_height="43dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/call"
+                android:backgroundTint="@color/white"
+                app:layout_constraintEnd_toStartOf="@+id/videoButton"
+                app:layout_constraintTop_toTopOf="@+id/backbutton" />
+
+            <Button
+                android:id="@+id/videoButton"
+                android:layout_width="42dp"
+                android:layout_height="43dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/video"
+                android:backgroundTint="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/callButton" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_editor_absoluteY="944dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/communityChatRecyclerView"
+            android:layout_width="411dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+            tools:layout_editor_absoluteX="0dp" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#1D767C"
+        android:backgroundTint="@android:color/transparent"
+        android:elevation="0dp"
+        android:translationZ="0dp"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_menu"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="675dp"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/nontransparentcircle"
+        android:backgroundTint="#1D767C"
+        android:clipToOutline="true"
+        android:elevation="155dp"
+        android:padding="5dp"
+        android:translationZ="155dp"
+        app:layout_anchor="@+id/bottom_navigation"
+        app:layout_anchorGravity="center"
+        app:srcCompat="@drawable/plussvg" />
+
+    <!-- Plus Icon -->
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

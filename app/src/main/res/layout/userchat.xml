@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/userChatMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="10dp"
+        android:text="Hello, you there?"
+        android:background="@drawable/rounded_details"
+        android:backgroundTint="#A2E6DF"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/userChatTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#A2E6DF"
+        android:text="10:32"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintTop_toBottomOf="@id/userChatMessage"
+        app:layout_constraintEnd_toEndOf="@+id/userChatMessage"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:layout_editor_absoluteY="63dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/otherUserImage"
+        android:layout_width="79dp"
+        android:layout_height="73dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/circle"
+        android:backgroundTint="#00000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <TextView
+        android:id="@+id/userName"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:backgroundTint="@color/white"
+
+        android:text="John Cooper"
+        android:textColor="#157177"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/otherUserImage"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/otherUserImage"
+        app:layout_constraintTop_toTopOf="@+id/otherUserImage" />
+
+    <TextView
+        android:id="@+id/unreadMessages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:backgroundTint="#A2E6DF"
+        android:text="1 new message"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@+id/otherUserImage"
+        app:layout_constraintTop_toBottomOf="@id/userName" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        android:background="#7FD9D3"
+        app:layout_constraintTop_toBottomOf="@id/otherUserImage"
+        tools:layout_editor_absoluteX="0dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

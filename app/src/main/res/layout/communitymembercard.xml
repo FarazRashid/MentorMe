@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profileImageView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@mipmap/johnmayer_round"
+        app:civ_border_color="#FFC90A"
+        app:civ_border_width="2dp" />
+
+    <RelativeLayout
+        android:id="@+id/mentorAvailabilityIndicator"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/rounded_details"
+        android:backgroundTint="@color/white"
+        android:layout_alignTop="@id/profileImageView"
+        android:layout_alignEnd="@id/profileImageView">
+
+        <View
+            android:id="@+id/availabilityIndicator"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_centerInParent="true"
+            android:background="@drawable/rounded_details"
+            android:backgroundTint="#FFC90A"
+            />
+    </RelativeLayout>
+</RelativeLayout>
