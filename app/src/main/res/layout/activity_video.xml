@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PhotoActivity">
+
+    <LinearLayout
+        android:id="@+id/topLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#DEF8F8"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/photoImageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHeight_percent="0.15"
+        />
+
+    <ImageView
+        android:id="@+id/photoImageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#CCCCCC"
+        app:layout_constraintBottom_toTopOf="@id/bottomLayout"
+        app:layout_constraintHeight_percent="0.70"
+        app:layout_constraintTop_toBottomOf="@id/topLinearLayout" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#DEF8F8"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintTop_toBottomOf="@id/photoImageView">
+
+        <ImageButton
+            android:id="@+id/takePhotoButton"
+            android:layout_width="76dp"
+            android:layout_height="66dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/circlewithgreenbackground"
+            android:backgroundTint="#157177"
+            android:padding="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/bottomVideoButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/galleryButton"
+            app:layout_constraintTop_toBottomOf="@+id/videoButton"
+            app:srcCompat="@drawable/whitecircle" />
+
+        <ImageButton
+            android:id="@+id/bottomVideoButton"
+            android:layout_width="41dp"
+            android:layout_height="35dp"
+            android:background="@drawable/nontransparentcircle"
+            android:backgroundTint="#157177"
+            android:padding="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/takePhotoButton"
+            app:layout_constraintTop_toTopOf="@+id/takePhotoButton"
+            app:srcCompat="@drawable/camera" />
+
+        <EditText
+            android:id="@+id/videoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_details"
+            android:backgroundTint="#C1EDEE"
+            android:paddingHorizontal="15dp"
+            android:paddingVertical="2dp"
+            android:text="Video"
+            android:textColor="#208187"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/photoButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/slowmoButton"
+            tools:layout_editor_absoluteY="8dp" />
+
+        <TextView
+            android:id="@+id/photoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp"
+            android:text="Photo"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/squareButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/videoButton"
+            tools:layout_editor_absoluteY="8dp" />
+
+        <TextView
+            android:id="@+id/squareButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp"
+            android:text="Square"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/photoButton"
+            tools:layout_editor_absoluteY="8dp" />
+
+        <TextView
+            android:id="@+id/slowmoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp"
+            android:text="Slo-mo"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/videoButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/portraitButton"
+            tools:layout_editor_absoluteY="8dp" />
+
+        <TextView
+            android:id="@+id/portraitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp"
+            android:text="Portrait"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/slowmoButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="8dp" />
+
+        <ImageButton
+            android:id="@+id/galleryButton"
+            android:layout_width="41dp"
+            android:layout_height="35dp"
+            android:background="@drawable/nontransparentcircle"
+            android:backgroundTint="#157177"
+            app:layout_constraintEnd_toStartOf="@+id/takePhotoButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/takePhotoButton"
+            app:srcCompat="@drawable/image" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/crossButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/photoImageView"
+        app:srcCompat="@drawable/cross" />
+
+    <ImageView
+        android:id="@+id/hdrButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="136dp"
+        app:layout_constraintStart_toEndOf="@+id/crossButton"
+        app:layout_constraintTop_toTopOf="@+id/crossButton"
+        app:srcCompat="@drawable/hdr" />
+
+    <ImageView
+        android:id="@+id/imageView16"
+        android:layout_width="36dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="88dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/hdrButton"
+        app:layout_constraintTop_toTopOf="@+id/hdrButton"
+        app:srcCompat="@drawable/brightness" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
