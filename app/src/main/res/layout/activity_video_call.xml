@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PhotoActivity">
+
+    <ImageView
+        android:id="@+id/photoImageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#CCCCCC"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHeight_percent="0.85" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#DEF8F8"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.15"
+        app:layout_constraintTop_toBottomOf="@id/photoImageView">
+
+        <ImageButton
+            android:id="@+id/turnCamera"
+            android:layout_width="51dp"
+            android:layout_height="45dp"
+            android:background="@drawable/nontransparentcircle"
+            android:backgroundTint="#157177"
+            android:padding="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/bottomVideoButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/turnOffVideoButton"
+            app:layout_constraintTop_toTopOf="@+id/turnOffVideoButton"
+            app:srcCompat="@drawable/turn" />
+
+        <ImageButton
+            android:id="@+id/turnOffVideoButton"
+            android:layout_width="51dp"
+            android:layout_height="45dp"
+            android:background="@drawable/nontransparentcircle"
+            android:backgroundTint="#157177"
+            android:padding="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/turnCamera"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/galleryButton"
+            app:layout_constraintTop_toTopOf="@+id/galleryButton"
+            app:srcCompat="@drawable/video_camera_off_svgrepo_com" />
+
+        <View
+            android:id="@+id/view3"
+            android:layout_width="0dp"
+            android:layout_height="7dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_details"
+            android:backgroundTint="#9E9F9F"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.30" />
+
+        <ImageButton
+            android:id="@+id/bottomVideoButton"
+            android:layout_width="51dp"
+            android:layout_height="45dp"
+            android:background="@drawable/nontransparentcircle"
+            android:backgroundTint="#A70606"
+            android:padding="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/turnCamera"
+            app:layout_constraintTop_toTopOf="@+id/turnCamera"
+            app:srcCompat="@drawable/cross" />
+
+        <ImageButton
+            android:id="@+id/galleryButton"
+            android:layout_width="51dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/nontransparentcircle"
+            android:backgroundTint="#157177"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/turnOffVideoButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view3"
+            app:layout_constraintVertical_bias="0.03"
+            app:srcCompat="@drawable/image" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/timeElapsedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="176dp"
+        android:layout_marginTop="52dp"
+        android:text="50:08"
+        android:textSize="20sp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/photoImageView" />
+
+    <ImageView
+        android:id="@+id/userVideo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="35dp"
+        app:layout_constraintBottom_toBottomOf="@id/photoImageView"
+        app:layout_constraintHorizontal_bias="0.944"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.995"
+        app:layout_constraintWidth_percent="0.35"
+        app:layout_constraintHeight_percent="0.25"
+        app:srcCompat="@drawable/rounded_details" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

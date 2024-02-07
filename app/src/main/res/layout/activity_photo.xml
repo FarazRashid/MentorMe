@@ -157,20 +157,21 @@
             app:srcCompat="@drawable/image" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
+    <Button
         android:id="@+id/crossButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="31dp"
+        android:layout_height="27dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="12dp"
+        android:background="@drawable/cross"
+        android:backgroundTint="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/photoImageView"
-        app:srcCompat="@drawable/cross" />
+        app:layout_constraintTop_toTopOf="@+id/photoImageView" />
 
     <ImageView
         android:id="@+id/hdrButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="31dp"
+        android:layout_height="30dp"
         android:layout_marginStart="124dp"
         app:layout_constraintStart_toEndOf="@+id/crossButton"
         app:layout_constraintTop_toTopOf="@+id/crossButton"
@@ -178,8 +179,8 @@
 
     <ImageView
         android:id="@+id/imageView16"
-        android:layout_width="36dp"
-        android:layout_height="30dp"
+        android:layout_width="37dp"
+        android:layout_height="29dp"
         android:layout_marginStart="88dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/hdrButton"
