@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PhotoActivity">
+
+
+    <ImageView
+        android:id="@+id/photoImageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#CCCCCC"
+        app:layout_constraintHeight_percent="0.80"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imageView9"
+        android:layout_width="117dp"
+        android:layout_height="119dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+
+        android:background="@drawable/circle"
+        android:src="@mipmap/johnmayer_round"
+        app:layout_constraintStart_toStartOf="@+id/userName"
+        app:layout_constraintTop_toBottomOf="@+id/timeElapsedTextView" />
+
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="132dp"
+        android:layout_marginTop="48dp"
+        android:text="John Cooper"
+        android:textColor="#000000"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/photoImageView" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#DEF8F8"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.20"
+        app:layout_constraintTop_toBottomOf="@id/photoImageView">
+
+        <ImageButton
+            android:id="@+id/pauseButton"
+            android:layout_width="51dp"
+            android:layout_height="50dp"
+            android:background="@drawable/nontransparentcircle"
+            android:backgroundTint="#157177"
+            android:padding="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/turnOffVideoButton"
+            app:layout_constraintTop_toTopOf="@+id/turnOffVideoButton"
+            app:srcCompat="@drawable/pause" />
+
+        <ImageButton
+            android:id="@+id/turnOffVideoButton"
+            android:layout_width="51dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/nontransparentcircle"
+            android:backgroundTint="#157177"
+            android:padding="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/pauseButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/muteButton"
+            app:layout_constraintTop_toBottomOf="@+id/view3"
+            app:srcCompat="@drawable/volume_max_svgrepo_com" />
+
+        <View
+            android:id="@+id/view3"
+            android:layout_width="0dp"
+            android:layout_height="7dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_details"
+            android:backgroundTint="#9E9F9F"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_percent="0.30" />
+
+        <ImageButton
+            android:id="@+id/bottomVideoButton"
+            android:layout_width="51dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/nontransparentcircle"
+            android:backgroundTint="#A70606"
+            android:padding="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/turnOffVideoButton"
+            app:layout_constraintTop_toBottomOf="@+id/turnOffVideoButton"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/cross" />
+
+        <ImageButton
+            android:id="@+id/muteButton"
+            android:layout_width="51dp"
+            android:layout_height="50dp"
+            android:background="@drawable/nontransparentcircle"
+            android:backgroundTint="#157177"
+            app:layout_constraintEnd_toStartOf="@+id/turnOffVideoButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/turnOffVideoButton"
+            app:srcCompat="@drawable/mute" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/timeElapsedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="8dp"
+        android:text="50:08"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/userName"
+        app:layout_constraintTop_toBottomOf="@+id/userName" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
