@@ -10,22 +10,41 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Objects;
 
 public class RecentSearchesAdapter extends RecyclerView.Adapter<RecentSearchesAdapter.ViewHolder> {
 
     private final List<String> recentSearchesList; // Change the type as per your data structure
     private final OnRemoveClickListener onRemoveClickListener;
 
-    public RecentSearchesAdapter(List<String> recentSearchesList, OnRemoveClickListener onRemoveClickListener) {
+    String viewType;
+
+    public RecentSearchesAdapter(List<String> recentSearchesList, OnRemoveClickListener onRemoveClickListener, String viewType) {
         this.recentSearchesList = recentSearchesList;
         this.onRemoveClickListener = onRemoveClickListener;
+        this.viewType = viewType;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recentsearchcard, parent, false);
-        return new ViewHolder(view);
+
+        if(Objects.equals(this.viewType, "recentSearches"))
+        {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recentsearchcard, parent, false);
+            return new ViewHolder(view);
+        }
+        else if(this.viewType.equals("notifications"))
+        {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notificationscard, parent, false);
+            return new ViewHolder(view);
+        }
+        else
+        {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recentsearchcard, parent, false);
+            return new ViewHolder(view);
+        }
+
     }
 
     @Override

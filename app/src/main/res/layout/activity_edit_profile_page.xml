@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DEF8F8"
+    tools:context=".EditProfilePageActivity">
+
+    <Button
+        android:id="@+id/bookAnAppointmentButton"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="28dp"
+        android:background="@drawable/rounded_details"
+        android:backgroundTint="#157177"
+        android:backgroundTintMode="src_over"
+        android:text="Update Profile"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.08"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userCityTextBox"
+        app:layout_constraintVertical_bias="1.0"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <TextView
+        android:id="@+id/nameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="108dp"
+        android:text="Name"
+        android:textColor="#157177"
+        android:textSize="18sp"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
+        tools:layout_editor_absoluteX="32dp" />
+
+    <TextView
+        android:id="@+id/userEmailText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Email"
+        android:textColor="#157177"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/userNameTextBox"
+        app:layout_constraintTop_toBottomOf="@+id/userNameTextBox" />
+
+    <EditText
+        android:id="@+id/userEmailTextBos"
+        style="@style/Widget.Material3.AutoCompleteTextView.FilledBox"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/rounded_details"
+        android:ems="10"
+        android:hint="ali@gmail.com"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/userEmailText"
+        app:layout_constraintTop_toBottomOf="@+id/userEmailText"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <TextView
+        android:id="@+id/contactNumberText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Contact Number"
+        android:textColor="#157177"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/userEmailTextBos"
+        app:layout_constraintTop_toBottomOf="@+id/userEmailTextBos" />
+
+    <EditText
+        android:id="@+id/userContactNumberTextBox"
+        style="@style/Widget.Material3.AutoCompleteTextView.FilledBox"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/rounded_details"
+        android:ems="10"
+        android:hint="+92 321 2242022"
+        android:inputType="phone"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/contactNumberText"
+        app:layout_constraintTop_toBottomOf="@+id/contactNumberText"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <TextView
+        android:id="@+id/countryText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Country"
+        android:textColor="#157177"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/userContactNumberTextBox"
+        app:layout_constraintTop_toBottomOf="@+id/userContactNumberTextBox" />
+
+    <TextView
+        android:id="@+id/cityText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="City"
+        android:textColor="#157177"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/userCountryTextBos"
+        app:layout_constraintTop_toBottomOf="@+id/userCountryTextBos" />
+
+    <Spinner
+        android:id="@+id/userCityTextBox"
+        style="@style/Widget.Material3.AutoCompleteTextView.FilledBox"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
+        android:background="@drawable/rounded_details"
+        android:ems="10"
+        android:hint="Select City"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/cityText"
+        app:layout_constraintTop_toBottomOf="@+id/cityText"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <EditText
+        android:id="@+id/userNameTextBox"
+        style="@style/Widget.Material3.AutoCompleteTextView.FilledBox"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/rounded_details"
+        android:ems="10"
+        android:hint="Ali"
+        android:inputType="textEmailAddress"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/nameText"
+        app:layout_constraintTop_toBottomOf="@+id/nameText"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <Spinner
+        android:id="@+id/userCountryTextBos"
+        style="@style/Widget.Material3.AutoCompleteTextView.FilledBox"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
+        android:background="@drawable/rounded_details"
+        android:ems="10"
+        android:hint="Select Country"
+        android:padding="10dp"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/countryText"
+        app:layout_constraintTop_toBottomOf="@+id/countryText"
+        app:layout_constraintWidth_percent="0.85" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#50C2C9"
+        android:elevation="50dp"
+        android:paddingBottom="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+
+        <TextView
+            android:id="@+id/communityText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:text="Edit Profile"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/backbutton"
+            app:layout_constraintTop_toTopOf="@+id/backbutton" />
+
+        <Button
+            android:id="@+id/backbutton"
+            android:layout_width="36dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/leftarrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/userProfilePhoto"
+        android:layout_width="107dp"
+        android:layout_height="108dp"
+        android:layout_marginStart="140dp"
+        android:layout_marginTop="108dp"
+        android:background="@drawable/circle"
+        android:clipToOutline="true"
+        android:elevation="50dp"
+        android:src="@mipmap/ghost"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/constraintLayout" />
+</androidx.constraintlayout.widget.ConstraintLayout>

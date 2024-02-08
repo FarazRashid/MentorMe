@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
 
         // Delay for 2000 milliseconds (2 seconds)
         Handler().postDelayed({
-            val intent = Intent(this, MyProfileActivity::class.java)
+            val intent = Intent(this, NotificationsActivity::class.java)
             startActivity(intent)
             finish()
         }, 2000)

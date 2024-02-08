@@ -32,7 +32,7 @@ class searchPageActivity : AppCompatActivity() {
         val onRemoveClickListener =
             OnRemoveClickListener { position -> recentSearchesAdapter.removeRecentSearch(position) }
 
-        recentSearchesAdapter = RecentSearchesAdapter(recentSearchesList, onRemoveClickListener)
+        recentSearchesAdapter = RecentSearchesAdapter(recentSearchesList, onRemoveClickListener, "recentSearches")
 
 
         // Set up the RecyclerView with the adapter
