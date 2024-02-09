@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.CalendarView
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -76,6 +77,15 @@ class calenderPage: AppCompatActivity() {
 
         bottomNavigationView.setOnClickListener {
             onBackPressed()
+        }
+
+        //click on book an appointmentbutton and go back to home
+
+        val bookAppointment = findViewById<Button>(R.id.bookAnAppointmentButton)
+
+        bookAppointment.setOnClickListener {
+            val intent = Intent(this, homePageActivity::class.java)
+            startActivity(intent)
         }
 
 
