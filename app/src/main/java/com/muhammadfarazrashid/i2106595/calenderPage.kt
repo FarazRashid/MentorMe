@@ -1,9 +1,11 @@
 package com.muhammadfarazrashid.i2106595
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.CalendarView
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,6 +42,41 @@ class calenderPage: AppCompatActivity() {
                 Log.d("MainActivity", "Badge clicked at position: $position")
             }
         })
+
+        //click on chat image button button and go to chat page
+
+        val chat = findViewById<ImageView>(R.id.chatButton)
+
+        chat.setOnClickListener {
+            val intent = Intent(this, mainChatActivity::class.java)
+            startActivity(intent)
+        }
+
+        //click on phone button and go to phone page
+
+        val phone = findViewById<ImageView>(R.id.phoneButton)
+
+        phone.setOnClickListener {
+            val intent = Intent(this, PhoneCallActivity::class.java)
+            startActivity(intent)
+        }
+
+        //click on videobutton and go to videocall page
+
+        val video = findViewById<ImageView>(R.id.cameraButton)
+
+        video.setOnClickListener {
+            val intent = Intent(this, VideoCallActivity::class.java)
+            startActivity(intent)
+        }
+
+        //click on imageview4 and go back
+
+        val bottomNavigationView = findViewById<ImageView>(R.id.imageView4)
+
+        bottomNavigationView.setOnClickListener {
+            onBackPressed()
+        }
 
 
     }

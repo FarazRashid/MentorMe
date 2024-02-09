@@ -1,10 +1,13 @@
 package com.muhammadfarazrashid.i2106595
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class MyProfileActivity : AppCompatActivity() {
@@ -42,6 +45,56 @@ class MyProfileActivity : AppCompatActivity() {
         val horizontalLayoutResourceId = R.layout.mentorcard
         val topMentorsAdapter = MentorCardAdapter(this, topMentors, horizontalLayoutResourceId)
         topMentorsRecycler.adapter = topMentorsAdapter
+
+
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+        bottomNavigation.setOnNavigationItemReselectedListener { item ->
+            when (item.itemId) {
+                R.id.menu_search -> {
+                    val intent = Intent(this, searchPageActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.menu_home -> {
+                    val intent = Intent(this, homePageActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.menu_chat -> {
+                    val intent = Intent(this, mainChatActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.menu_profile -> {
+                    val intent = Intent(this, MyProfileActivity::class.java)
+                    startActivity(intent)
+                }
+
+            }
+
+        }
+
+        //click on bookedsessions and go to bookedsessions page
+
+        val bookedSessions = findViewById<View>(R.id.bookedSessions)
+        bookedSessions.setOnClickListener {
+            val intent = Intent(this, BookedSessionsActivity::class.java)
+            startActivity(intent)
+        }
+
+        //click on edit profile image and go to editprofile page
+
+        val editProfile = findViewById<View>(R.id.editProfile)
+
+        editProfile.setOnClickListener {
+            val intent = Intent(this, EditProfilePageActivity::class.java)
+            startActivity(intent)
+        }
+
+        //click on back button and go back
+
+        val backButton = findViewById<Button>(R.id.backbutton)
+        backButton.setOnClickListener {
+            onBackPressed()
+        }
 
     }
 

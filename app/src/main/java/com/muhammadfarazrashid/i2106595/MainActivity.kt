@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
+import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
         // Delay for 2000 milliseconds (2 seconds)
         Handler().postDelayed({
-            val intent = Intent(this, BookedSessionsActivity::class.java)
+            val intent = Intent(this, loginActivity::class.java)
             startActivity(intent)
             finish()
         }, 2000)

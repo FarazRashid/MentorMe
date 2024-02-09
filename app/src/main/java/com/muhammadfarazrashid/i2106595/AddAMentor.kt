@@ -4,18 +4,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 
-class VideoCallActivity : AppCompatActivity() {
+class AddAMentor : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_video_call)
+        setContentView(R.layout.addmentorpage)
 
-        //click on bottomnavigationview and go back
+        //cllick on imageview11 and go back
 
-        val bottomNavigationView = findViewById<ImageView>(R.id.bottomVideoButton)
-
-        bottomNavigationView.setOnClickListener {
+        val imageView11 = findViewById<ImageView>(R.id.imageView11)
+        imageView11.setOnClickListener {
             onBackPressed()
         }
-
     }
 }

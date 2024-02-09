@@ -200,7 +200,7 @@
             android:padding="10dp"
             android:src="@drawable/unfilledvideo"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.058"
+            app:layout_constraintHorizontal_bias="0.107"
             app:layout_constraintStart_toEndOf="@+id/phoneButton"
             app:layout_constraintTop_toTopOf="@+id/phoneButton"
             app:tint="#157177" />

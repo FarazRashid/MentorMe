@@ -1,5 +1,6 @@
 package com.muhammadfarazrashid.i2106595
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.widget.ImageView
@@ -8,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class mainChatActivity : AppCompatActivity() {
 
@@ -20,6 +22,37 @@ class mainChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.mainchatpage)
+
+        //click on all messages recycler and go to chat activity
+
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+        bottomNavigation.setOnNavigationItemReselectedListener { item ->
+            when (item.itemId) {
+                R.id.menu_search -> {
+                    val intent = Intent(this, searchPageActivity::class.java)
+                    startActivity(intent)
+                }
+
+                R.id.menu_home -> {
+                    val intent = Intent(this, homePageActivity::class.java)
+                    startActivity(intent)
+                }
+
+                R.id.menu_chat -> {
+                    val intent = Intent(this, mainChatActivity::class.java)
+                    startActivity(intent)
+                }
+
+                R.id.menu_profile -> {
+                    val intent = Intent(this, MyProfileActivity::class.java)
+                    startActivity(intent)
+                }
+
+            }
+
+        }
+
 
         // Initialize RecyclerView
         allMessagesRecyclerView = findViewById<RecyclerView>(R.id.allMessagesRecycler)
@@ -53,7 +86,8 @@ class mainChatActivity : AppCompatActivity() {
 
         // Initialize RecyclerView for mentors
         mentorRecyclerView = findViewById<RecyclerView>(R.id.communityRecyclerView)
-        mentorRecyclerView?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        mentorRecyclerView?.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         // Create list of mentor items
         val mentorItems: MutableList<MentorItem> = ArrayList()
@@ -61,7 +95,7 @@ class mainChatActivity : AppCompatActivity() {
 
         mentorItems.add(MentorItem(otherPersonImage, true))
         mentorItems.add(MentorItem(elizabeth, false))
-        mentorItems.add(MentorItem(bob , true))
+        mentorItems.add(MentorItem(bob, true))
         mentorItems.add(MentorItem(emily, false))
         mentorItems.add(MentorItem(emilybrown, true))
 
@@ -75,11 +109,6 @@ class mainChatActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             onBackPressed()
         }
-
-        //click on all messages recycler and go to chat activity
-
-
-
 
 
     }

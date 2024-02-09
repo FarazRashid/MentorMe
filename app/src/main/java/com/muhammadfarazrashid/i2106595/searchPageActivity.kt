@@ -88,8 +88,19 @@ class searchPageActivity : AppCompatActivity() {
                     val intent = Intent(this, searchPageActivity::class.java)
                     startActivity(intent)
                 }
+
                 R.id.menu_home -> {
                     val intent = Intent(this, homePageActivity::class.java)
+                    startActivity(intent)
+                }
+
+                R.id.menu_chat -> {
+                    val intent = Intent(this, mainChatActivity::class.java)
+                    startActivity(intent)
+                }
+
+                R.id.menu_profile -> {
+                    val intent = Intent(this, MyProfileActivity::class.java)
                     startActivity(intent)
                 }
 
@@ -99,8 +110,7 @@ class searchPageActivity : AppCompatActivity() {
 
         val imageView4 = findViewById<ImageView>(R.id.imageView8)
         imageView4.setOnClickListener {
-            val intent = Intent(this, homePageActivity::class.java)
-            startActivity(intent)
+            onBackPressed()
         }
 
     }

@@ -1,7 +1,11 @@
 package com.muhammadfarazrashid.i2106595
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,7 +34,48 @@ class MentorChatActivity: AppCompatActivity() {
         addExampleMessages()
 
         recyclerView.adapter = chatAdapter
+
+        //click on phone button and go to phone page
+
+        val phone = findViewById<Button>(R.id.callButton)
+
+        phone.setOnClickListener {
+            val intent = Intent(this, PhoneCallActivity::class.java)
+            startActivity(intent)
+        }
+
+        //click on videobutton and go to videocall page
+
+        val video = findViewById<Button>(R.id.videoButton)
+
+        video.setOnClickListener {
+            val intent = Intent(this, VideoCallActivity::class.java)
+            startActivity(intent)
+        }
+
+        //click on imageview4 and go back
+
+        val bottomNavigationView = findViewById<Button>(R.id.backbutton)
+
+        bottomNavigationView.setOnClickListener {
+            onBackPressed()
+        }
+
+        //click on takephoto button inside of linear layout and go to photo page
+
+        val linearLayout: LinearLayout = findViewById(R.id.linearLayout2)
+        val takePhotoButton: Button = linearLayout.findViewById(R.id.takePhoto)
+
+        // Set click listener on the Take Photo button
+        takePhotoButton.setOnClickListener {
+            // Start PhotoActivity when the button is clicked
+            val intent = Intent(this, PhotoActivity::class.java)
+            startActivity(intent)
+        }
+
     }
+
+
 
     private fun addExampleMessages() {
         // Example messages from the other user

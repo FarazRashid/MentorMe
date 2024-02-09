@@ -104,9 +104,25 @@ class homePageActivity : AppCompatActivity(){
                         val intent = Intent(this, mainChatActivity::class.java)
                         startActivity(intent)
                     }
+                    R.id.menu_profile -> {
+                        val intent = Intent(this, MyProfileActivity::class.java)
+                        startActivity(intent)
+                    }
 
                 }
 
+
+
+            }
+
+            //click on notifications button and go to notifications page
+
+            val notifications = findViewById<ImageView>(R.id.bellIcon)
+            notifications.setOnClickListener {
+                val intent = Intent(this, NotificationsActivity::class.java)
+                startActivity(intent)
             }
         }
+
+
 }

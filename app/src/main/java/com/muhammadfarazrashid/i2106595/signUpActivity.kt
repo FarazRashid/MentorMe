@@ -68,7 +68,6 @@ class signUpActivity: AppCompatActivity(){
             signUpActivity.setOnClickListener {
                 val intent = Intent(this, phoneVerificationActivity::class.java)
                 startActivity(intent)
-                finish()
             }
 
             //click sign up go to phone verification page
@@ -77,7 +76,6 @@ class signUpActivity: AppCompatActivity(){
             loginActivity.setOnClickListener {
                 val intent = Intent(this, loginActivity::class.java)
                 startActivity(intent)
-                finish()
             }
 
         }

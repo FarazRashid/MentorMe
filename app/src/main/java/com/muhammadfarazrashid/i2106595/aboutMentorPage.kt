@@ -28,5 +28,21 @@ class aboutMentorPage: AppCompatActivity() {
             startActivity(intent)
         }
 
+        //click on join community and go to community chat
+
+        val joinCommunity = findViewById<Button>(R.id.communityButton)
+        joinCommunity.setOnClickListener {
+            val intent = Intent(this, communityChatActivity::class.java)
+            startActivity(intent)
+        }
+
+        //click on signup button and go to calender page
+
+        val signUpButton = findViewById<Button>(R.id.signupButton)
+        signUpButton.setOnClickListener {
+            val intent = Intent(this, calenderPage::class.java)
+            startActivity(intent)
+        }
+
     }
 }
