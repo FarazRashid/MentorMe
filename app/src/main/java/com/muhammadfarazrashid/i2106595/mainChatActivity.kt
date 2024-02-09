@@ -53,6 +53,13 @@ class mainChatActivity : AppCompatActivity() {
 
         }
 
+        //click on add mentor button and go to add mentor page
+        val addMentor = findViewById<ImageView>(R.id.addMentorButton)
+        addMentor.setOnClickListener {
+            val intent = Intent(this, AddAMentor::class.java)
+            startActivity(intent)
+        }
+
 
         // Initialize RecyclerView
         allMessagesRecyclerView = findViewById<RecyclerView>(R.id.allMessagesRecycler)

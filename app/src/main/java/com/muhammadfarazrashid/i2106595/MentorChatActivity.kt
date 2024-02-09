@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MentorChatActivity: AppCompatActivity() {
 
@@ -55,9 +56,9 @@ class MentorChatActivity: AppCompatActivity() {
 
         //click on imageview4 and go back
 
-        val bottomNavigationView = findViewById<Button>(R.id.backbutton)
+        val backButton = findViewById<Button>(R.id.backbutton)
 
-        bottomNavigationView.setOnClickListener {
+        backButton.setOnClickListener {
             onBackPressed()
         }
 
@@ -70,6 +71,38 @@ class MentorChatActivity: AppCompatActivity() {
         takePhotoButton.setOnClickListener {
             // Start PhotoActivity when the button is clicked
             val intent = Intent(this, PhotoActivity::class.java)
+            startActivity(intent)
+        }
+
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+
+        bottomNavigation.setOnNavigationItemReselectedListener { item ->
+            when (item.itemId) {
+                R.id.menu_search -> {
+                    val intent = Intent(this, searchPageActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.menu_home -> {
+                    val intent = Intent(this, homePageActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.menu_chat -> {
+                    val intent = Intent(this, mainChatActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.menu_profile -> {
+                    val intent = Intent(this, MyProfileActivity::class.java)
+                    startActivity(intent)
+                }
+
+            }
+
+        }
+
+        //click on add mentor button and go to add mentor page
+        val addMentor = findViewById<ImageView>(R.id.addMentorButton)
+        addMentor.setOnClickListener {
+            val intent = Intent(this, AddAMentor::class.java)
             startActivity(intent)
         }
 

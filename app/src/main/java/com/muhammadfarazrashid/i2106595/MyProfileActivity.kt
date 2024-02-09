@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -70,6 +71,13 @@ class MyProfileActivity : AppCompatActivity() {
 
             }
 
+        }
+
+        //click on add mentor button and go to add mentor page
+        val addMentor = findViewById<ImageView>(R.id.addMentorButton)
+        addMentor.setOnClickListener {
+            val intent = Intent(this, AddAMentor::class.java)
+            startActivity(intent)
         }
 
         //click on bookedsessions and go to bookedsessions page

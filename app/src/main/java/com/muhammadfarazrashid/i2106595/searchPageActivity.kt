@@ -108,6 +108,13 @@ class searchPageActivity : AppCompatActivity() {
 
         }
 
+        //click on add mentor button and go to add mentor page
+        val addMentor = findViewById<ImageView>(R.id.addMentorButton)
+        addMentor.setOnClickListener {
+            val intent = Intent(this, AddAMentor::class.java)
+            startActivity(intent)
+        }
+
         val imageView4 = findViewById<ImageView>(R.id.imageView8)
         imageView4.setOnClickListener {
             onBackPressed()
