@@ -5,6 +5,18 @@
       <entry key="app">
         <State />
       </entry>
+      <entry key="testClickingAddMentorButtonLaunchesAddAMentorActivity()">
+        <State />
+      </entry>
+      <entry key="testClickingBottomNavigationOpensSearchPage()">
+        <State />
+      </entry>
+      <entry key="testClickingNotificationsButtonLaunchesNotificationsActivity()">
+        <State />
+      </entry>
+      <entry key="testNotificationsButton()">
+        <State />
+      </entry>
     </value>
   </component>
 </project>
