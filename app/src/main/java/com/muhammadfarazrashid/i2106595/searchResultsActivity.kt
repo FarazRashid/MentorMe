@@ -97,8 +97,7 @@ class searchResultsActivity : AppCompatActivity() {
 
         val imageView4 = findViewById<ImageView>(R.id.imageView10)
         imageView4.setOnClickListener {
-            val intent = Intent(this, searchPageActivity::class.java)
-            startActivity(intent)
+            onBackPressed()
         }
 
         //click on any card go to aboutmentorpage

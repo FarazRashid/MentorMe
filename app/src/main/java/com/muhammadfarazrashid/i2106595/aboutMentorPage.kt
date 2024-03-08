@@ -16,8 +16,7 @@ class aboutMentorPage: AppCompatActivity() {
 
         val imageView4 = findViewById<ImageView>(R.id.imageView4)
         imageView4.setOnClickListener {
-            val intent = Intent(this, homePageActivity::class.java)
-            startActivity(intent)
+           onBackPressed()
         }
 
         //onclick review button go to review page

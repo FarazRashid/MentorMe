@@ -15,8 +15,7 @@ class reviewpage: AppCompatActivity(){
 
         val imageView4 = findViewById<ImageView>(R.id.imageView4)
         imageView4.setOnClickListener {
-            val intent = Intent(this, homePageActivity::class.java)
-            startActivity(intent)
+            onBackPressed()
         }
 
         //click on signup button and go back to home page
