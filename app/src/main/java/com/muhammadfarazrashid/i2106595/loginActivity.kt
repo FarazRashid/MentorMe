@@ -1,12 +1,19 @@
 package com.muhammadfarazrashid.i2106595
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 
 class loginActivity : AppCompatActivity() {
+
+    private  var mAuth : FirebaseAuth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,10 +38,49 @@ class loginActivity : AppCompatActivity() {
         val loginButton: Button = findViewById(R.id.signupButton)
 
         loginButton.setOnClickListener {
-            val intent = Intent(this, homePageActivity::class.java)
-            startActivity(intent)
-            finish()
+            login()
         }
+    }
+
+    fun verifyTextFields() : Boolean
+    {
+        if(findViewById<TextView>(R.id.userEmail).text.toString().isEmpty())
+        {
+            findViewById<TextView>(R.id.userEmail).error = "Please enter your email"
+            return false
+        }
+        if(findViewById<TextView>(R.id.userPassword).text.toString().isEmpty())
+        {
+            findViewById<TextView>(R.id.userPassword).error = "Please enter your password"
+            return false
+        }
+
+        return true
+    }
+
+    fun login() {
+        if(!verifyTextFields())
+        {
+            return
+        }
+        val email: String = findViewById<TextView>(R.id.userEmail).text.toString()
+        val password: String = findViewById<TextView>(R.id.userPassword).text.toString()
+
+        mAuth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = mAuth.currentUser
+                    val intent = Intent(this, homePageActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+
+                    Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    Toast.makeText(baseContext, "Authentication failed.",
+                    Toast.LENGTH_SHORT).show()
+
+                }
+            }
     }
 
 

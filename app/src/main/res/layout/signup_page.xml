@@ -38,12 +38,10 @@
 
         <Spinner
             android:id="@+id/userCityTextBox"
-            style="@style/Widget.Material3.AutoCompleteTextView.FilledBox"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:background="@drawable/rounded_details"
             android:ems="10"
-            android:hint="Select City"
             android:inputType="textEmailAddress"
             android:padding="10dp"
             android:textColor="@color/black"
@@ -94,13 +92,11 @@
 
         <Spinner
             android:id="@+id/userCountryTextBos"
-            style="@style/Widget.Material3.AutoCompleteTextView.FilledBox"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginTop="4dp"
             android:background="@drawable/rounded_details"
             android:ems="10"
-            android:hint="Select Country"
             android:padding="10dp"
             android:textColor="@color/black"
             android:textSize="14sp"
