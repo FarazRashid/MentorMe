@@ -56,6 +56,7 @@
             android:id="@+id/userProfilePhoto"
             android:layout_width="86dp"
             android:layout_height="86dp"
+            android:elevation="11dp"
             android:layout_marginStart="56dp"
             android:layout_marginTop="60dp"
             android:background="@drawable/circle"
@@ -68,6 +69,7 @@
             android:id="@+id/mentorAvailabilityIndicator"
             android:layout_width="25dp"
             android:layout_height="25dp"
+            android:elevation="12dp"
             android:layout_alignTop="@id/userProfilePhoto"
             android:layout_alignEnd="@id/userProfilePhoto"
             android:background="@drawable/rounded_details"
@@ -156,6 +158,7 @@
             android:outlineSpotShadowColor="@color/black"
             android:padding="5dp"
             android:translationZ="5dp"
+            android:scaleType="centerCrop"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/myProfileText"
             app:srcCompat="@drawable/profile" />
@@ -163,14 +166,13 @@
         <TextView
             android:id="@+id/nameText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="33dp"
             android:layout_marginTop="8dp"
             android:text="Ali"
             android:textColor="#1D767C"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/userProfilePhoto"
-            app:layout_constraintHorizontal_bias="0.548"
             app:layout_constraintStart_toStartOf="@+id/userProfilePhoto"
             app:layout_constraintTop_toBottomOf="@+id/userProfilePhoto" />
 
