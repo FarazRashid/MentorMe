@@ -20,6 +20,8 @@ public class Mentor implements Parcelable {
     private String description;
     private boolean isFavorite = false;
 
+    private int rating =0;
+
     public Mentor(String id, String name, String position, String availability, String salary, String description) {
         this.id = id;
         this.name = name;
@@ -102,6 +104,14 @@ public class Mentor implements Parcelable {
 
     public void setFavorite(boolean favorite) {
         isFavorite = favorite;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 
     public static void getImageUrl(String mentorId, final OnImageUrlListener listener) {

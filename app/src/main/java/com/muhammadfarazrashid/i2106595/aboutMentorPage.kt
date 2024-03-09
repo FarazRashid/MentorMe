@@ -16,6 +16,7 @@ class aboutMentorPage : AppCompatActivity() {
     private lateinit var mentorPosition: TextView
     private lateinit var aboutMe: TextView
     private lateinit var mentorImageView: ImageView
+    private lateinit var currentMentor: Mentor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +54,7 @@ class aboutMentorPage : AppCompatActivity() {
         mentorName.text = mentor.name
         mentorPosition.text = mentor.position
         aboutMe.text = mentor.description
+        currentMentor = mentor
 
         // Call getImageUrl function to get the mentor's image URL
         Mentor.getImageUrl(mentor.id, object : OnImageUrlListener {
@@ -86,10 +88,16 @@ class aboutMentorPage : AppCompatActivity() {
         Log.d("AboutMentorPage", "Mentor isFavorite: $isFavorite")
     }
 
+    private fun navigateToMentorReviewPage(mentor: Mentor) {
+        val intent = Intent(this, reviewpage::class.java)
+        intent.putExtra("mentor", mentor)
+        startActivity(intent)
+    }
+
     private fun setUpOnClickListeners() {
         findViewById<ImageView>(R.id.imageView4).setOnClickListener { onBackPressed() }
         findViewById<Button>(R.id.reviewButton).setOnClickListener {
-            startActivity(Intent(this, reviewpage::class.java))
+            navigateToMentorReviewPage(currentMentor)
         }
         findViewById<Button>(R.id.communityButton).setOnClickListener {
             startActivity(Intent(this, communityChatActivity::class.java))
