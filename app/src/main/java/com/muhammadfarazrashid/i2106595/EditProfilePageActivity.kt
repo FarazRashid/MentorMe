@@ -28,6 +28,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.muhammadfarazrashid.i2106595.dataclasses.User
 import com.muhammadfarazrashid.i2106595.dataclasses.getUserWithEmail
+import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.OkHttp3Downloader
@@ -217,24 +218,24 @@ class EditProfilePageActivity : AppCompatActivity() {
 
             // Get the download URL of the image
             imageRef.downloadUrl.addOnSuccessListener { uri ->
-                // Load the current version or timestamp from Firebase Realtime Database or Firestore
-                // Compare it with the locally stored version or timestamp
-                val localVersion = 12345L // Retrieve the locally stored version or timestamp
-                val backendVersion = 67890L // Retrieve the current version or timestamp from Firebase
+                // Log the download URL for debugging
+                Log.d("RetrieveImage", "Download URL: $uri")
 
-                if (localVersion != backendVersion) {
-                    // Versions differ, fetch the updated image from Firebase Storage and update cache
-                    Picasso.get().load(uri)
-                        .memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .networkPolicy(NetworkPolicy.NO_CACHE)
-                        .into(imageView)
-                } else {
-                    // Versions match, load the image from cache
-                    Picasso.get().load(uri)
-                        .memoryPolicy(MemoryPolicy.NO_STORE)
-                        .networkPolicy(NetworkPolicy.OFFLINE)
-                        .into(imageView)
-                }
+                // Check if the image is loaded from cache or fetched from network
+                val startTime = System.currentTimeMillis()
+                Picasso.get().load(uri)
+                    .into(imageView, object : Callback {
+                        override fun onSuccess() {
+                            val endTime = System.currentTimeMillis()
+                            val duration = endTime - startTime
+                            Log.d("RetrieveImage", "Image loaded from network in $duration ms")
+                        }
+
+                        override fun onError(e: Exception?) {
+                            // Handle any errors that occur during image loading
+                            Log.e("RetrieveImage", "Failed to load image: $e")
+                        }
+                    })
             }.addOnFailureListener { e ->
                 // Handle any errors that occur during download
                 Log.e("RetrieveImage", "Failed to retrieve image: $e")

@@ -28,6 +28,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.muhammadfarazrashid.i2106595.dataclasses.User
 import com.muhammadfarazrashid.i2106595.dataclasses.getUserWithEmail
+import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.OkHttp3Downloader
@@ -51,6 +52,7 @@ class MyProfileActivity : AppCompatActivity() {
     private lateinit var editProfileBanner: ImageView
     private var selectedImageRequestCode: Int = 0
     private val storageReference: StorageReference = FirebaseStorage.getInstance().reference
+    private var isImageSelectionInProgress = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -159,10 +161,13 @@ class MyProfileActivity : AppCompatActivity() {
     //when user comes back from editprofile page, reload the user information
     override fun onResume() {
         super.onResume()
-        UserManager.fetchAndSetCurrentUser(mAuth.currentUser?.email.toString())
-        {
-            loadUserInformation()
+        if (!isImageSelectionInProgress) {
+            val userEmail = mAuth.currentUser?.email.toString()
+            UserManager.fetchAndSetCurrentUser(userEmail) {
+                loadUserInformation()
+            }
         }
+        isImageSelectionInProgress = false // Reset the flag
     }
 
     private fun getSampleReviewData(): List<ReviewItem> {
@@ -205,24 +210,24 @@ class MyProfileActivity : AppCompatActivity() {
 
             // Get the download URL of the image
             imageRef.downloadUrl.addOnSuccessListener { uri ->
-                // Load the current version or timestamp from Firebase Realtime Database or Firestore
-                // Compare it with the locally stored version or timestamp
-                val localVersion = 12345L // Retrieve the locally stored version or timestamp
-                val backendVersion = 67890L // Retrieve the current version or timestamp from Firebase
+                // Log the download URL for debugging
+                Log.d("RetrieveImage", "Download URL: $uri")
 
-                if (localVersion != backendVersion) {
-                    // Versions differ, fetch the updated image from Firebase Storage and update cache
-                    Picasso.get().load(uri)
-                        .memoryPolicy(MemoryPolicy.NO_CACHE)
-                        .networkPolicy(NetworkPolicy.NO_CACHE)
-                        .into(imageView)
-                } else {
-                    // Versions match, load the image from cache
-                    Picasso.get().load(uri)
-                        .memoryPolicy(MemoryPolicy.NO_STORE)
-                        .networkPolicy(NetworkPolicy.OFFLINE)
-                        .into(imageView)
-                }
+                // Check if the image is loaded from cache or fetched from network
+                val startTime = System.currentTimeMillis()
+                Picasso.get().load(uri)
+                    .networkPolicy(NetworkPolicy.OFFLINE)
+                    .into(imageView, object : Callback {
+                        override fun onSuccess() {
+                            val endTime = System.currentTimeMillis()
+                            val duration = endTime - startTime
+                            Log.d("RetrieveImage", "Image loaded from network in $duration ms")
+                        }
+
+                        override fun onError(e: Exception?) {
+                            Picasso.get().load(uri).into(imageView)
+                        }
+                    })
             }.addOnFailureListener { e ->
                 // Handle any errors that occur during download
                 Log.e("RetrieveImage", "Failed to retrieve image: $e")
@@ -232,7 +237,8 @@ class MyProfileActivity : AppCompatActivity() {
 
 
 
-    private fun uploadImageToFirebaseStorage(imageUri: Uri, imageType: String) {
+
+    private fun uploadImageToFirebaseStorage(imageUri: Uri, imageType: String, selectedImageUri: Uri) {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
         if (currentUserUid != null) {
             // Define path for the image in Firebase Storage
@@ -245,7 +251,7 @@ class MyProfileActivity : AppCompatActivity() {
                     // Image uploaded successfully, get the download URL
                     filePath.downloadUrl.addOnSuccessListener { uri ->
                         // Save the download URL to Firebase Realtime Database or Firestore
-                        saveImageUrlToDatabase(uri.toString(), imageType)
+                        saveImageUrlToDatabase(uri.toString(), imageType, selectedImageUri)
                     }
                 }
                 .addOnFailureListener { e ->
@@ -260,7 +266,7 @@ class MyProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveImageUrlToDatabase(imageUrl: String, imageType: String) {
+    private fun saveImageUrlToDatabase(imageUrl: String, imageType: String, selectedImageUri: Uri) {
         // Save the image URL to Firebase Realtime Database or Firestore under the user's profile
         // For example, if you're using Realtime Database:
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
@@ -270,6 +276,18 @@ class MyProfileActivity : AppCompatActivity() {
             databaseReference.child(imageField).setValue(imageUrl)
                 .addOnSuccessListener {
                     Snackbar.make(findViewById(android.R.id.content), "Image uploaded successfully", Snackbar.LENGTH_SHORT).show()
+
+                    // Image URL saved successfully, no need to load the image from database
+                    when (imageType) {
+                        "profile_picture" -> {
+                            // Update the profile picture ImageView with the locally selected image
+                            profilePicture.setImageURI(selectedImageUri)
+                        }
+                        "banner" -> {
+                            // Update the banner ImageView with the locally selected image
+                            banner.setImageURI(selectedImageUri)
+                        }
+                    }
                 }
                 .addOnFailureListener { e ->
                     Log.e("SaveImageUrl", "Failed to save image URL to database: $e")
@@ -277,6 +295,7 @@ class MyProfileActivity : AppCompatActivity() {
                 }
         }
     }
+
 
     private val pickImageGalleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -287,12 +306,12 @@ class MyProfileActivity : AppCompatActivity() {
                     // Set the selected image to the corresponding ImageView
                     when (selectedImageRequestCode) {
                         REQUEST_CODE_PROFILE_PICTURE -> {
-                            profilePicture.setImageBitmap(bitmap)
-                            uploadImageToFirebaseStorage(uri, "profile_picture")
+
+                            uploadImageToFirebaseStorage(uri, "profile_picture", selectedImageUri)
                         }
                         REQUEST_CODE_BANNER -> {
-                            banner.setImageBitmap(bitmap)
-                            uploadImageToFirebaseStorage(uri, "banner")
+
+                            uploadImageToFirebaseStorage(uri, "banner", selectedImageUri)
                         }
                     }
                 }
@@ -305,6 +324,7 @@ class MyProfileActivity : AppCompatActivity() {
 
 
     private fun editProfilePicture() {
+        isImageSelectionInProgress = true
         selectedImageRequestCode = REQUEST_CODE_PROFILE_PICTURE
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         pickImageGalleryLauncher.launch(galleryIntent)
@@ -312,10 +332,13 @@ class MyProfileActivity : AppCompatActivity() {
     }
 
     private fun editProfileBanner() {
+        isImageSelectionInProgress = true
         selectedImageRequestCode = REQUEST_CODE_BANNER
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         pickImageGalleryLauncher.launch(galleryIntent)
     }
+
+
 
     companion object {
         private const val REQUEST_CODE_PROFILE_PICTURE = 1
