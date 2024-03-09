@@ -1,16 +1,31 @@
 package com.muhammadfarazrashid.i2106595;
 
 public class Mentor {
+
+    private String id;
     private String name;
     private String position;
     private String availability;
     private String salary;
+
+    private String description;
+
+    public Mentor(String id, String name, String position, String availability, String salary,String description) {
+        this.name = name;
+        this.position = position;
+        this.availability = availability;
+        this.salary = salary;
+        this.description = description;
+
+    }
 
     public Mentor(String name, String position, String availability, String salary) {
         this.name = name;
         this.position = position;
         this.availability = availability;
         this.salary = salary;
+        this.description = "No description available";
+
     }
 
     public String getName() {
@@ -43,6 +58,14 @@ public class Mentor {
 
     public void setSalary(String salary) {
         this.salary = salary;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

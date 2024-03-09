@@ -216,6 +216,7 @@ class MyProfileActivity : AppCompatActivity() {
                 // Check if the image is loaded from cache or fetched from network
                 val startTime = System.currentTimeMillis()
                 Picasso.get().load(uri)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
                     .networkPolicy(NetworkPolicy.OFFLINE)
                     .into(imageView, object : Callback {
                         override fun onSuccess() {

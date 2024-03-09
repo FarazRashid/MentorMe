@@ -15,10 +15,11 @@
 
     <ImageView
         android:id="@+id/card"
-        android:layout_width="160dp"
+        android:layout_width="170dp"
         android:layout_height="180dp"
         android:background="@drawable/rounded_details"
         android:backgroundTint="#D9D9D9"
+        android:scaleType="centerCrop"
         app:srcCompat="@android:drawable/screen_background_light_transparent"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
@@ -27,10 +28,12 @@
         android:id="@+id/imageView5"
         android:layout_width="155dp"
         android:layout_height="85dp"
+        android:layout_marginBottom="4dp"
         android:background="@drawable/rounded_details"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/card"
+        app:layout_constraintHorizontal_bias="0.533"
         app:layout_constraintStart_toStartOf="@+id/card">
 
 
@@ -82,7 +85,7 @@
             app:layout_constraintTop_toBottomOf="@+id/cardName" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/favouriteButton"
             android:layout_width="26dp"
             android:layout_height="20dp"
             android:layout_marginTop="4dp"
