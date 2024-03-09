@@ -95,7 +95,18 @@ class homePageActivity : AppCompatActivity() {
 
     private fun setupMentorsRecycler(recyclerView: RecyclerView, mentors: List<Mentor>) {
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.adapter = MentorCardAdapter(this, mentors, R.layout.mentorcard)
+        val mentorAdapter = MentorCardAdapter(this, mentors, R.layout.mentorcard)
+        mentorAdapter.setOnItemClickListener { mentor ->
+            // Handle click event
+            navigateToMentorAbout(mentor)
+        }
+        recyclerView.adapter = mentorAdapter
+    }
+
+    private fun navigateToMentorAbout(mentor: Mentor) {
+        val intent = Intent(this, aboutMentorPage::class.java)
+        intent.putExtra("mentor", mentor) // Pass the mentor data to the aboutMentorPage
+        startActivity(intent)
     }
 
     private fun initBadges() {

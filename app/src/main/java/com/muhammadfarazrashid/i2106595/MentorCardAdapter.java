@@ -3,17 +3,14 @@ package com.muhammadfarazrashid.i2106595;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -40,7 +37,6 @@ public class MentorCardAdapter extends RecyclerView.Adapter<MentorCardAdapter.Vi
 
     // Add a Firebase Authentication instance variable
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
-
     public MentorCardAdapter(Context context, List<Mentor> data, int layoutResourceId) {
         this.inflater = LayoutInflater.from(context);
         this.data = data;
@@ -188,7 +184,7 @@ public class MentorCardAdapter extends RecyclerView.Adapter<MentorCardAdapter.Vi
 
     // Interface for item click events
     public interface OnItemClickListener {
-        void onItemClick(int position);
+        void onItemClick(Mentor position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -212,7 +208,7 @@ public class MentorCardAdapter extends RecyclerView.Adapter<MentorCardAdapter.Vi
                     if (listener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
-                            listener.onItemClick(position);
+                            listener.onItemClick(data.get(position));
                         }
                     }
                 }

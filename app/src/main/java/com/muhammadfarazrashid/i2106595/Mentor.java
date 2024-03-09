@@ -1,34 +1,32 @@
 package com.muhammadfarazrashid.i2106595;
 
-import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import android.net.Uri;
 
-public class Mentor {
+public class Mentor implements Parcelable {
 
     private String id;
     private String name;
     private String position;
     private String availability;
     private String salary;
-
     private String description;
-    private boolean isFavorite=false;
+    private boolean isFavorite = false;
 
-
-    public Mentor(String id, String name, String position, String availability, String salary,String description) {
+    public Mentor(String id, String name, String position, String availability, String salary, String description) {
+        this.id = id;
         this.name = name;
         this.position = position;
         this.availability = availability;
         this.salary = salary;
         this.description = description;
-
     }
 
     public Mentor(String name, String position, String availability, String salary) {
@@ -37,10 +35,41 @@ public class Mentor {
         this.availability = availability;
         this.salary = salary;
         this.description = "No description available";
-
     }
-    //no argument constructor
+
     public Mentor() {
+        // Empty constructor
+    }
+
+
+    protected Mentor(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        position = in.readString();
+        availability = in.readString();
+        salary = in.readString();
+        description = in.readString();
+        isFavorite = in.readByte() != 0;
+    }
+
+    public static final Creator<Mentor> CREATOR = new Creator<Mentor>() {
+        @Override
+        public Mentor createFromParcel(Parcel in) {
+            return new Mentor(in);
+        }
+
+        @Override
+        public Mentor[] newArray(int size) {
+            return new Mentor[size];
+        }
+    };
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -59,22 +88,6 @@ public class Mentor {
         return salary;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPosition(String position) {
-        this.position = position;
-    }
-
-    public void setAvailability(String availability) {
-        this.availability = availability;
-    }
-
-    public void setSalary(String salary) {
-        this.salary = salary;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -83,12 +96,12 @@ public class Mentor {
         this.description = description;
     }
 
-    public String getId() {
-        return id;
+    public boolean isFavorite() {
+        return isFavorite;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 
     public static void getImageUrl(String mentorId, final OnImageUrlListener listener) {
@@ -111,13 +124,6 @@ public class Mentor {
         });
     }
 
-    public boolean isFavorite() {
-        return isFavorite;
-    }
-
-    public void setFavorite(boolean favorite) {
-        isFavorite = favorite;
-    }
 
     // Define a listener interface for callback
     public interface OnImageUrlListener {
@@ -125,5 +131,19 @@ public class Mentor {
         void onFailure(String errorMessage);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(position);
+        dest.writeString(availability);
+        dest.writeString(salary);
+        dest.writeString(description);
+        dest.writeByte((byte) (isFavorite ? 1 : 0));
+    }
 }
