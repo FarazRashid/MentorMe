@@ -1,5 +1,6 @@
 package com.muhammadfarazrashid.i2106595
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipDescription
 import android.content.Intent
@@ -181,14 +182,14 @@ class AddAMentor : AppCompatActivity() {
         return true
     }
 
-    private fun uploadMentorProfilePicture(imageUri: Uri, mentorId: String) {
 
+        private fun uploadMentorProfilePicture(imageUri: Uri, mentorId: String) {
 
             // Define path for the image in Firebase Storage
-            val filePath = storageReference.child("mentor_profile_images").child("$mentorId/profile_picture.jpg")
-            Log.d("UploadImage", "Uploading image to: ${filePath.path}")
 
-            // Upload image to Firebase Storage
+            val filePath = storageReference.child("mentor_profile_images").child("$mentorId.jpg")
+            Log.d("UploadImage", "Uploading image to: ${filePath.path}")
+    // Upload image to Firebase Storage
             filePath.putFile(imageUri)
                 .addOnSuccessListener { taskSnapshot ->
                     // Image uploaded successfully, get the download URL
@@ -209,11 +210,30 @@ class AddAMentor : AppCompatActivity() {
 
     }
 
-    private fun saveMentorProfilePictureUrlToDatabase(mentorId: String,imageUrl: String) {
+    private fun sanitizeId(id: String): String {
+        var sanitizedId = id.replace(".", "a")
+            .replace("#", "a")
+            .replace("$", "a")
+            .replace("[", "a")
+            .replace("]", "a")
+
+        // Remove the dash if it exists at the beginning
+        if (sanitizedId.startsWith("-")) {
+            sanitizedId = sanitizedId.substring(1)
+        }
+
+        return sanitizedId
+    }
+
+
+    @SuppressLint("SuspiciousIndentation")
+    private fun saveMentorProfilePictureUrlToDatabase(mentorId: String, imageUrl: String) {
         val databaseReference = FirebaseDatabase.getInstance().getReference("mentors").child(mentorId)
             databaseReference.child("profilePictureUrl").setValue(imageUrl)
                 .addOnSuccessListener {
                     Snackbar.make(findViewById(android.R.id.content), "Profile picture uploaded successfully", Snackbar.LENGTH_SHORT).show()
+                    val intent = Intent(this, homePageActivity::class.java)
+                    startActivity(intent)
                 }
                 .addOnFailureListener { e ->
                     Log.e("SaveImageUrl", "Failed to save profile picture URL to database: $e")
@@ -238,13 +258,13 @@ class AddAMentor : AppCompatActivity() {
     fun addAMentor() {
         if(!verifyData()) return
 
-        val mentor= Mentor(mentorId,name.text.toString(),position.text.toString(),availabilitySpinner.selectedItem.toString(),sessionPrice.text.toString(), description.text.toString())
-        myRef.push().setValue(mentor)
+        val mentor = Mentor(sanitizeId(mentorId), name.text.toString(), position.text.toString(), availabilitySpinner.selectedItem.toString(), sessionPrice.text.toString(), description.text.toString())
+        Log.d("sanitizedId", sanitizeId(mentorId))
+        myRef.child(sanitizeId(mentorId)).setValue(mentor)
             .addOnSuccessListener {
                 Log.d("AddAMentor", "Mentor added successfully")
-                uploadMentorProfilePicture(selectedImageUri, mentorId)
-                val intent = Intent(this, homePageActivity::class.java)
-                startActivity(intent)
+                uploadMentorProfilePicture(selectedImageUri, sanitizeId(mentorId))
+
             }
             .addOnFailureListener {
                 Log.d("AddAMentor", "Mentor addition failed")
