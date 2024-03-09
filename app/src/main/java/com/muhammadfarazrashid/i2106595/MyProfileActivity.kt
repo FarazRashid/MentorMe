@@ -12,28 +12,27 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.helper.widget.MotionEffect
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.muhammadfarazrashid.i2106595.dataclasses.User
-import com.muhammadfarazrashid.i2106595.dataclasses.getUserWithEmail
 import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.NetworkPolicy
-import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
-import okhttp3.OkHttpClient
 import java.io.IOException
 
 
@@ -58,90 +57,70 @@ class MyProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_profile)
 
+        initViews()
+        loadUserInformation()
+        initReviewRecyclerView()
+        fetchUserFavorites()
+        initBottomNavigation()
+
+        setOnClickListeners()
+    }
+
+    private fun initViews() {
         name = findViewById(R.id.nameText)
         city = findViewById(R.id.location)
         banner = findViewById(R.id.bannerImage)
         profilePicture = findViewById(R.id.userProfilePhoto)
         editProfilePicture = findViewById(R.id.editProfilePicture)
         editProfileBanner = findViewById(R.id.editBanner)
-        loadUserInformation()
+    }
 
-        // Retrieve the RecyclerView using its ID
+    private fun getSampleReviewData(): List<ReviewItem> {
+        val reviewList = ArrayList<ReviewItem>()
+        // Add sample reviews
+        reviewList.add(ReviewItem("John Cooper", "John provided excellent prototyping techniques and insights. I highly recommend him!", 5))
+        reviewList.add(ReviewItem("Alice Smith", "Great mentor, very knowledgeable in app development.", 4))
+        reviewList.add(ReviewItem("Emma Johnson", "Average mentor, could improve communication skills.", 3))
+        return reviewList
+    }
+
+
+    private fun initReviewRecyclerView() {
         val myReviewsRecycler = findViewById<RecyclerView>(R.id.myReviewsRecycler)
         myReviewsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
-        // Sample data for reviews
         val reviewList = getSampleReviewData()
-
-        // Initialize the adapter
         reviewAdapter = ReviewItemAdapter(reviewList)
         myReviewsRecycler.adapter = reviewAdapter
+    }
 
-        topMentorsRecycler = findViewById(R.id.topMentorsRecycler)
-        topMentorsRecycler.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        topMentors = ArrayList()
-        topMentors.add(Mentor("Faraz Rashid", "Android Developer", "available", "$5000/hr"))
-        topMentors.add(Mentor("John Doe", "UX Designer", "unavailable", "$7000/hr"))
-        topMentors.add(Mentor("Jane Doe", "UI Designer", "available", "$6000/hr"))
-        topMentors.add(Mentor("John Smith", "Web Developer", "unavailable", "$8000/hr"))
-        topMentors.add(Mentor("Jane Smith", "Web Developer", "available", "$9000/hr"))
-
-        val horizontalLayoutResourceId = R.layout.mentorcard
-        val topMentorsAdapter = MentorCardAdapter(this, topMentors, horizontalLayoutResourceId)
-        topMentorsRecycler.adapter = topMentorsAdapter
-
-
+    private fun initBottomNavigation() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-
         bottomNavigation.setOnNavigationItemReselectedListener { item ->
             when (item.itemId) {
-                R.id.menu_search -> {
-                    val intent = Intent(this, searchPageActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.menu_home -> {
-                    val intent = Intent(this, homePageActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.menu_chat -> {
-                    val intent = Intent(this, mainChatActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.menu_profile -> {
-                    val intent = Intent(this, MyProfileActivity::class.java)
-                    startActivity(intent)
-                }
-
+                R.id.menu_search -> startActivity(Intent(this, searchPageActivity::class.java))
+                R.id.menu_home -> startActivity(Intent(this, homePageActivity::class.java))
+                R.id.menu_chat -> startActivity(Intent(this, mainChatActivity::class.java))
+                R.id.menu_profile -> startActivity(Intent(this, MyProfileActivity::class.java))
             }
-
         }
+    }
 
-        //click on add mentor button and go to add mentor page
+    private fun setOnClickListeners() {
         val addMentor = findViewById<ImageView>(R.id.addMentorButton)
         addMentor.setOnClickListener {
-            val intent = Intent(this, AddAMentor::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, AddAMentor::class.java))
         }
-
-        //click on bookedsessions and go to bookedsessions page
 
         val bookedSessions = findViewById<View>(R.id.bookedSessions)
         bookedSessions.setOnClickListener {
-            val intent = Intent(this, BookedSessionsActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, BookedSessionsActivity::class.java))
         }
-
-        //click on edit profile image and go to editprofile page
 
         val editProfile = findViewById<View>(R.id.editProfile)
-
         editProfile.setOnClickListener {
-            val intent = Intent(this, EditProfilePageActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, EditProfilePageActivity::class.java))
         }
-
-        //click on back button and go back
 
         val backButton = findViewById<Button>(R.id.backbutton)
         backButton.setOnClickListener {
@@ -155,7 +134,65 @@ class MyProfileActivity : AppCompatActivity() {
         banner.setOnClickListener {
             editProfileBanner()
         }
+    }
 
+    private fun fetchUserFavorites() {
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        val favoritesRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("favorites")
+        favoritesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val favoriteMentorIds = mutableListOf<String>()
+                for (mentorSnapshot in snapshot.children) {
+                    val mentorId = mentorSnapshot.key
+                    mentorId?.let { favoriteMentorIds.add(it) }
+                }
+                // After fetching favorite mentor IDs, fetch mentor objects
+                fetchMentors(favoriteMentorIds)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(MotionEffect.TAG, "Failed to fetch user favorites: " + error.message)
+            }
+        })
+    }
+
+    private fun fetchMentors(favoriteMentorIds: List<String>) {
+        val mentorsRef = FirebaseDatabase.getInstance().getReference("Mentors")
+        mentorsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val mentors = mutableListOf<Mentor>()
+                for (mentorSnapshot in snapshot.children) {
+                    val mentor = mentorSnapshot.getValue(Mentor::class.java)
+                    mentor?.let {
+                        it.id = mentorSnapshot.key // Set mentor ID
+                        if (favoriteMentorIds.contains(it.id)) {
+                            it.isFavorite = true
+                            mentors.add(it)
+                        }
+
+                    }
+                }
+                // Initialize the RecyclerView with fetched mentors
+                initTopMentorsRecyclerView(mentors)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(MotionEffect.TAG, "Failed to fetch mentors: " + error.message)
+            }
+        })
+    }
+
+
+    private fun initTopMentorsRecyclerView(mentors: List<Mentor>) {
+        topMentorsRecycler = findViewById(R.id.topMentorsRecycler)
+        topMentorsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
+        if(mentors.isEmpty()) {
+            findViewById<TextView>(R.id.favoriteMentorsText).visibility = View.GONE
+        }
+        val horizontalLayoutResourceId = R.layout.mentorcard
+        val topMentorsAdapter = MentorCardAdapter(this, mentors, horizontalLayoutResourceId)
+        topMentorsRecycler.adapter = topMentorsAdapter
     }
 
     //when user comes back from editprofile page, reload the user information
@@ -170,16 +207,6 @@ class MyProfileActivity : AppCompatActivity() {
         isImageSelectionInProgress = false // Reset the flag
     }
 
-    private fun getSampleReviewData(): List<ReviewItem> {
-        val reviewList = ArrayList<ReviewItem>()
-
-        // Add sample reviews
-        reviewList.add(ReviewItem("John Cooper", "John provided excellent prototyping techniques and insights. I highly recommend him!", 5))
-        reviewList.add(ReviewItem("Alice Smith", "Great mentor, very knowledgeable in app development.", 4))
-        reviewList.add(ReviewItem("Emma Johnson", "Average mentor, could improve communication skills.", 3))
-
-        return reviewList
-    }
 
 
     private fun loadUserInformation() {

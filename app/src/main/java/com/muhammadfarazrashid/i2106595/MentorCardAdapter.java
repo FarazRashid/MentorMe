@@ -203,10 +203,9 @@ public class MentorCardAdapter extends RecyclerView.Adapter<MentorCardAdapter.Vi
             mentorAvailability = itemView.findViewById(R.id.cardAvailability);
             mentorSalary = itemView.findViewById(R.id.cardSalary);
             mentorImage = itemView.findViewById(R.id.card);
-            heartButton = itemView.findViewById(R.id.favouriteButton); // Initialize heart button
+            heartButton = itemView.findViewById(R.id.favouriteButton);
 
 
-            // Set click listener for the item view
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
