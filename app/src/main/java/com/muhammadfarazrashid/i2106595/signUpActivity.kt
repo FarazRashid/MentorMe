@@ -311,7 +311,10 @@ class signUpActivity : AppCompatActivity() {
                     .addOnSuccessListener {
                         Log.d(TAG, "User data saved successfully")
                         saveUserAuthentication(user)
-                        navigateToProfile()
+                        UserManager.getInstance().fetchAndSetCurrentUser(user.email)
+                        {
+                            navigateToProfile()
+                        }
                     }
                     .addOnFailureListener { e ->
                         Log.e(TAG, "Error saving user data: ${e.message}")

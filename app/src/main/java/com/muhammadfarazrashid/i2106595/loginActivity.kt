@@ -1,5 +1,6 @@
 package com.muhammadfarazrashid.i2106595
 
+import UserManager
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
@@ -71,8 +72,16 @@ class loginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val user = mAuth.currentUser
                     val intent = Intent(this, homePageActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    //call user managerclass and save it
+                    val userManager = UserManager.getInstance()
+
+                    userManager.fetchAndSetCurrentUser(user?.email.toString())
+                    {
+                        //check if usermanager is properly initialising
+
+                        startActivity(intent)
+                        finish()
+                    }
                 } else {
 
                     Log.w(TAG, "signInWithEmail:failure", task.exception)

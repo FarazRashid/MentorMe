@@ -14,7 +14,8 @@ data class User(
     var country: String = "",
     var city: String = "",
     var password: String = "",
-    var phone: String = ""
+    var phone: String = "",
+
 ) {
     // No-argument constructor required for Firebase deserialization
     constructor() : this("", "", "", "", "", "", "")

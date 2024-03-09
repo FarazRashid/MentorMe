@@ -1,5 +1,6 @@
 package com.muhammadfarazrashid.i2106595
 
+import UserManager
 import android.app.Activity
 import android.content.ContentValues
 import android.content.ContentValues.TAG
@@ -158,7 +159,10 @@ class MyProfileActivity : AppCompatActivity() {
     //when user comes back from editprofile page, reload the user information
     override fun onResume() {
         super.onResume()
-        loadUserInformation()
+        UserManager.fetchAndSetCurrentUser(mAuth.currentUser?.email.toString())
+        {
+            loadUserInformation()
+        }
     }
 
     private fun getSampleReviewData(): List<ReviewItem> {
@@ -174,28 +178,24 @@ class MyProfileActivity : AppCompatActivity() {
 
 
     private fun loadUserInformation() {
-
+        val currentUser = UserManager.getCurrentUser()
         val userEmail = mAuth.currentUser?.email
-        if (userEmail != null) {
-            getUserWithEmail(userEmail) { user ->
-                if (user != null) {
-                    currentUser = user
-                    Log.d(ContentValues.TAG, "loadUserInformation: ${currentUser.id}")
-                    name.setText(user.name)
-                    city.setText(user.city)
-                    val profilePictureRef = FirebaseStorage.getInstance().reference.child("profilePictures/${user.id}")
-                    retrieveImageFromFirebaseStorage(this,"profile_picture", profilePicture)
+        if (currentUser != null) {
 
-                    val bannerRef = FirebaseStorage.getInstance().reference.child("banners/${user.id}")
-                    Log.d(TAG, "loadUserInformation: $bannerRef")
-                    retrieveImageFromFirebaseStorage(this,"banner", banner)
+            Log.d(ContentValues.TAG, "loadUserInformation: ${currentUser.id}")
+            name.setText(currentUser.name)
+            city.setText(currentUser.city)
+            val profilePictureRef = FirebaseStorage.getInstance().reference.child("profilePictures/${currentUser.id}")
+            retrieveImageFromFirebaseStorage(this,"profile_picture", profilePicture)
 
+            val bannerRef = FirebaseStorage.getInstance().reference.child("banners/${currentUser.id}")
+            Log.d(TAG, "loadUserInformation: $bannerRef")
+            retrieveImageFromFirebaseStorage(this,"banner", banner)
 
-
-                }
-            }
         }
     }
+
+
 
     private fun retrieveImageFromFirebaseStorage(context: Context, imageType: String, imageView: ImageView) {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid

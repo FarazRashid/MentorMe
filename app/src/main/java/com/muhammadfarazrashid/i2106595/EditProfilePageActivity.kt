@@ -191,25 +191,23 @@ class EditProfilePageActivity : AppCompatActivity() {
 
 
     private fun loadUserInformation() {
-
+        currentUser = UserManager.getCurrentUser()!!
         val userEmail = mAuth.currentUser?.email
-        if (userEmail != null) {
-            getUserWithEmail(userEmail) { user ->
-                if (user != null) {
-                    currentUser = user
-                    Log.d(TAG, "loadUserInformation: ${currentUser.id}")
-                    name.setText(user.name)
-                    email.setText(user.email)
-                    phone.setText(user.phone)
-                    val profilePictureRef = FirebaseStorage.getInstance().reference.child("profilePictures/${user.id}")
-                    retrieveImageFromFirebaseStorage(this,"profile_picture", userProfilePicture)
-                    setUpSpinners()
+        if (currentUser != null) {
 
+            Log.d(ContentValues.TAG, "loadUserInformation: ${currentUser.id}")
+            name.setText(currentUser.name)
+            email.setText(currentUser.email)
+            phone.setText(currentUser.phone)
 
-                }
-            }
+            val profilePictureRef = FirebaseStorage.getInstance().reference.child("profilePictures/${currentUser.id}")
+            retrieveImageFromFirebaseStorage(this,"profile_picture", userProfilePicture)
+            setUpSpinners()
+
         }
     }
+
+
 
     private fun retrieveImageFromFirebaseStorage(context: Context, imageType: String, imageView: ImageView) {
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid

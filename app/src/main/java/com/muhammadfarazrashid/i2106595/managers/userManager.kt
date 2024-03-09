@@ -1,26 +1,48 @@
-package com.muhammadfarazrashid.i2106595.managers
-
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.muhammadfarazrashid.i2106595.dataclasses.User
 import com.muhammadfarazrashid.i2106595.dataclasses.getUserWithEmail
+import com.squareup.picasso.MemoryPolicy
+import com.squareup.picasso.NetworkPolicy
+import com.squareup.picasso.Picasso
 
 object UserManager {
-    private var currentUser: User? = null
 
-    fun getCurrentUser(): User? {
-        return currentUser
+
+    // Singleton instance
+    private var instance: UserManager? = null
+
+    fun getInstance(): UserManager {
+        if (instance == null) {
+            instance = UserManager
+        }
+        return instance!!
     }
 
-    fun setCurrentUser(user: User?) {
+    private lateinit var currentUser: User
+
+    fun getCurrentUser(): User? {
+        return if (::currentUser.isInitialized) currentUser else null
+    }
+
+
+    fun setCurrentUser(user: User) {
         currentUser = user
     }
 
-    fun fetchAndSetCurrentUser() {
-        val userEmail = FirebaseAuth.getInstance().currentUser?.email
-        if (userEmail != null) {
-            getUserWithEmail(userEmail) { user ->
+    fun fetchAndSetCurrentUser(email: String, callback: () -> Unit) {
+        getUserWithEmail(email) { user ->
+            if (user != null) {
                 currentUser = user
+                setCurrentUser(user)
+                Log.d(TAG, "loadUserInformation: ${currentUser.id}")
+                callback.invoke() // Execute the callback function
             }
         }
+
+
     }
 }
