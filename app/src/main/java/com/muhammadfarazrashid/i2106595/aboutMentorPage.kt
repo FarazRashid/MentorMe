@@ -92,6 +92,22 @@ class aboutMentorPage : AppCompatActivity() {
         Log.d("AboutMentorPage", "Mentor isFavorite: $isFavorite")
     }
 
+    private fun checkIfCommunityChatExists(callback: (Boolean) -> Unit) {
+        val database = FirebaseDatabase.getInstance()
+        val chatRef = database.getReference("chat/community_chats/${currentMentor.id}/users")
+        chatRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                callback(dataSnapshot.exists())
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle database error
+                Log.e("CalendarPage", "Error fetching chat data: ${databaseError.message}")
+                callback(false)
+            }
+        })
+    }
+
     private fun isAlreadyRegisteredForChat(callback: (Boolean) -> Unit) {
         val database = FirebaseDatabase.getInstance()
         val currentUser = UserManager.getCurrentUser()
@@ -132,24 +148,29 @@ class aboutMentorPage : AppCompatActivity() {
         // Save chat reference under user's chats
         currentUser?.let { user ->
             val userChatRef = database.getReference("users/${user.id}/chats/community_chats")
-            chatKey?.let { key ->
-                userChatRef.child(key).setValue(currentMentor.id)
-            }
-        }
-
-        // Save chat reference under mentor's chats
-        val mentorChatRef = database.getReference("Mentors/${currentMentor.id}/chats/community_chats")
-        chatKey?.let { key ->
-            mentorChatRef.child(key).setValue(currentUser?.id)
+            userChatRef.push().setValue(currentMentor.id)
         }
 
         // Optionally, save chat details under the chat node
         chatKey?.let { key ->
-            val chatDetailsRef = database.getReference("chat/community_chats/$key/details")
-            chatDetailsRef.child("mentor_id").setValue(currentMentor.id)
+            val chatDetailsRef = database.getReference("chat/community_chats/${currentMentor.id}/users")
             currentUser?.id?.let { userId ->
-                chatDetailsRef.child("user_id").setValue(userId)
+                chatDetailsRef.push().setValue(userId)
             }
+        }
+    }
+
+    private fun addUserToCommunityChat() {
+        val database = FirebaseDatabase.getInstance()
+        val chatRef = database.getReference("chat/community_chats/${currentMentor.id}/users")
+        val currentUser = UserManager.getCurrentUser()
+        currentUser?.let { user ->
+            chatRef.push().setValue(user.id)
+        }
+
+        currentUser?.let { user ->
+            val userChatRef = database.getReference("users/${user.id}/chats/community_chats")
+            userChatRef.push().setValue(currentMentor.id)
         }
     }
 
@@ -161,17 +182,25 @@ class aboutMentorPage : AppCompatActivity() {
 
     private fun navigateToCommunityChatPage(mentor: Mentor) {
         val intent = Intent(this, communityChatActivity::class.java)
-        isAlreadyRegisteredForChat { isRegistered ->
-            if (isRegistered) {
-                // User is already registered for chat with the current mentor
-                Log.d("CalendarPage", "User is already registered for chat with mentor")
+        checkIfCommunityChatExists { communityChatExists ->
+            if (communityChatExists) {
+                // Community chat exists, check if user is registered
+                isAlreadyRegisteredForChat { isRegistered ->
+                    if (!isRegistered) {
+                        addUserToCommunityChat()
+                        Log.d("CalendarPage", "User is now registered for community chat")
+                    }
+                    // Proceed to community chat activity
+                    intent.putExtra("mentor", mentor)
+                    startActivity(intent)
+                }
             } else {
-                // Register the user for chat with the current mentor
+                // Community chat doesn't exist, create and register the user
                 registerForCommunityChat()
-                Log.d("CalendarPage", "User is now registered for chat with mentor")
+                Log.d("CalendarPage", "Created a new community chat and registered user")
+                intent.putExtra("mentor", mentor)
+                startActivity(intent)
             }
-            intent.putExtra("mentor", mentor)
-            startActivity(intent)
         }
     }
 
