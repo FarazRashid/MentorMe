@@ -41,7 +41,7 @@ class MyProfileActivity : AppCompatActivity() {
     private lateinit var reviewAdapter: ReviewItemAdapter
     private lateinit var topMentorsRecycler: RecyclerView
     private lateinit var topMentors: ArrayList<Mentor>
-    private lateinit var currentUser: User
+    private var currentUser: User = UserManager.getCurrentUser()!!
     private val mAuth = FirebaseAuth.getInstance()
     private lateinit var name: TextView
     private lateinit var city: TextView
@@ -57,13 +57,18 @@ class MyProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_profile)
 
-        initViews()
-        loadUserInformation()
+
+        Log.d(TAG, "onCreate: ${currentUser.id}")
         initReviewRecyclerView()
+        initViews()
+        fetchReviewsData()
+        loadUserInformation()
         fetchUserFavorites()
         initBottomNavigation()
 
+
         setOnClickListeners()
+
     }
 
     private fun initViews() {
@@ -75,24 +80,43 @@ class MyProfileActivity : AppCompatActivity() {
         editProfileBanner = findViewById(R.id.editBanner)
     }
 
-    private fun getSampleReviewData(): List<ReviewItem> {
-        val reviewList = ArrayList<ReviewItem>()
-        // Add sample reviews
-        reviewList.add(ReviewItem("John Cooper", "John provided excellent prototyping techniques and insights. I highly recommend him!", 5))
-        reviewList.add(ReviewItem("Alice Smith", "Great mentor, very knowledgeable in app development.", 4))
-        reviewList.add(ReviewItem("Emma Johnson", "Average mentor, could improve communication skills.", 3))
-        return reviewList
+    private fun fetchReviewsData() {
+        val userId = currentUser.id
+        val reviewsRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("reviews")
+
+        reviewsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val reviewList = mutableListOf<ReviewItem>()
+                for (reviewSnapshot in snapshot.children) {
+                    val mentorName = reviewSnapshot.child("mentorName").getValue(String::class.java)
+                    val rating = reviewSnapshot.child("rating").getValue(Float::class.java)
+                    val comment = reviewSnapshot.child("reviewText").getValue(String::class.java)
+                    rating?.let { r ->
+                        comment?.let { c ->
+                            val review = ReviewItem(mentorName, c, r)
+                            reviewList.add(review)
+                        }
+                    }
+                }
+                    initReviewRecyclerView(reviewList)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("FetchReviews", "Failed to fetch reviews: ${error.message}")
+            }
+        })
     }
 
 
-    private fun initReviewRecyclerView() {
+
+    private fun initReviewRecyclerView(review: List<ReviewItem> = mutableListOf()) {
         val myReviewsRecycler = findViewById<RecyclerView>(R.id.myReviewsRecycler)
+        reviewAdapter = ReviewItemAdapter(review)
         myReviewsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-
-        val reviewList = getSampleReviewData()
-        reviewAdapter = ReviewItemAdapter(reviewList)
         myReviewsRecycler.adapter = reviewAdapter
+
     }
+
 
     private fun initBottomNavigation() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)

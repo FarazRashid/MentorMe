@@ -5,6 +5,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 class ReviewItemAdapter extends RecyclerView.Adapter<ReviewViewHolder> {
@@ -31,5 +34,22 @@ class ReviewItemAdapter extends RecyclerView.Adapter<ReviewViewHolder> {
     @Override
     public int getItemCount() {
         return reviewItems.size();
+    }
+
+    // Method to add a single review to the adapter
+    public void addReview(ReviewItem review) {
+        reviewItems.add(review);
+        notifyItemInserted(reviewItems.size() - 1);
+    }
+
+    // Method to clear all reviews from the adapter
+    public void clearReviews() {
+        reviewItems.clear();
+        notifyDataSetChanged();
+    }
+
+    public void addAllReviews(@NotNull List<? extends ReviewItem> reviewList) {
+        reviewItems.addAll(reviewList);
+        notifyDataSetChanged();
     }
 }

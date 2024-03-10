@@ -216,7 +216,7 @@ class reviewpage: AppCompatActivity() {
 
     }
 
-    data class userReview(val mentorId:String, val rating: Float, val reviewText: String)
+    data class userReview(val mentorId:String,val mentorName:String, val rating: Float, val reviewText: String)
 
     //add another review constructor without mentorid
     data class mentorReview(val rating: Float, val reviewText: String)
@@ -268,7 +268,7 @@ class reviewpage: AppCompatActivity() {
                         // Upload review to user if user is available
                         UserManager.getInstance().getCurrentUser()?.let { user ->
                             database.getReference("users").child(user.id).child("reviews").push()
-                                .setValue(userReview(currentMentor.id ,rating, reviewText))
+                                .setValue(userReview(currentMentor.id, currentMentor.name, rating, reviewText))
                                 .addOnSuccessListener {
                                     Log.d("submitFeedback", "Review uploaded to user.")
                                 }.addOnFailureListener {
