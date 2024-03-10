@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MentorViewHolder extends RecyclerView.ViewHolder {
@@ -24,11 +26,6 @@ public class MentorViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(MentorItem mentorItem) {
-        // Set profile image
-        // You can use Glide or Picasso library to load image from URL
-        // Glide.with(itemView.getContext()).load(mentorItem.getProfileImageUrl()).into(profileImageView);
-
-        profileImageView.setImageDrawable(mentorItem.getProfileImageUrl());
 
         // Set mentor availability indicator background tint
         if (mentorItem.isMentorAvailable()) {

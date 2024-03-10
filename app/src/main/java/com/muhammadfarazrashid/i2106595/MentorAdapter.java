@@ -1,12 +1,15 @@
 package com.muhammadfarazrashid.i2106595;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 public class MentorAdapter extends RecyclerView.Adapter<MentorViewHolder> {
@@ -29,15 +32,43 @@ public class MentorAdapter extends RecyclerView.Adapter<MentorViewHolder> {
         MentorItem mentorItem = mentorItems.get(position);
         holder.bind(mentorItem);
 
+            Mentor.getImageUrl(mentorItem.getId(), new Mentor.OnImageUrlListener() {
+                @Override
+                public void onSuccess(String imageUrl) {
+                    // Load image from imageUrl
+                    Picasso.get().load(imageUrl).into(holder.profileImageView);
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+
+                }
+            });
+
+        Mentor.getMentorById(mentorItem.getId(), new Mentor.OnMentorListener() {
+            @Override
+            public void onSuccess(Mentor fetchedMentor) {
+                // Set mentor when fetched successfully
+                mentorItem.setMentor(fetchedMentor);
+
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                // Handle failure to fetch mentor details
+                Log.e("AllMessagesChat", "Failed to fetch mentor details: " + errorMessage);
+            }
+        });
+
         // Set OnClickListener on the item
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Handle item click here
-                // For example, you can open a new activity
+                Mentor mentor = mentorItem.getMentor();
+
                 Intent intent = new Intent(v.getContext(), communityChatActivity.class);
-                // Add any extra data if needed
-                // intent.putExtra("key", value);
+                intent.putExtra("mentor", mentor);
                 v.getContext().startActivity(intent);
             }
         });

@@ -3,6 +3,7 @@ package com.muhammadfarazrashid.i2106595;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -37,7 +40,6 @@ public class AllMessagesAdapter extends RecyclerView.Adapter<AllMessagesAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         AllMessagesChat message = chatMessages.get(position);
 
-        holder.userName.setText(message.getUserName());
         int unreadMessageCount = message.getUnreadMessages();
         holder.unreadMessages.setText(unreadMessageCount + " new message");
 
@@ -49,19 +51,51 @@ public class AllMessagesAdapter extends RecyclerView.Adapter<AllMessagesAdapter.
             holder.unreadMessages.setTextColor(ContextCompat.getColor(context, R.color.red));
         }
 
-        // Set other user image
-        Drawable otherPersonImage = message.getOtherUserImage();
-        if (otherPersonImage != null) {
-            holder.otherUserImage.setImageDrawable(otherPersonImage);
-        }
+        Mentor.getImageUrl(message.getId(), new Mentor.OnImageUrlListener() {
+            @Override
+            public void onSuccess(String imageUrl) {
+                // Load image from imageUrl
+                Picasso.get().load(imageUrl).into(holder.otherUserImage);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+
+            }
+
+        });
+
+        Mentor.getMentorById(message.getId(), new Mentor.OnMentorListener() {
+            @Override
+            public void onSuccess(Mentor fetchedMentor) {
+                // Set mentor when fetched successfully
+                message.setMentor(fetchedMentor);
+                message.setUserName(fetchedMentor.getName());
+                holder.userName.setText(fetchedMentor.getName());
+                // Notify any listeners or perform any further actions
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                // Handle failure to fetch mentor details
+                Log.e("AllMessagesChat", "Failed to fetch mentor details: " + errorMessage);
+            }
+        });
 
         // Set OnClickListener on the card
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                Mentor mentor = message.getMentor();
+
+                // Create an intent to start the MentorChatActivity
                 Intent intent = new Intent(context, MentorChatActivity.class);
 
+                // Pass the Mentor object to the MentorChatActivity
+                intent.putExtra("mentor", mentor);
+
+                // Start the activity
                 context.startActivity(intent);
             }
         });

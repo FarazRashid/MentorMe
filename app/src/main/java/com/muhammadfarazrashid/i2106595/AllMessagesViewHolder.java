@@ -26,7 +26,6 @@ public class AllMessagesViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(AllMessagesChat chatMessage) {
         userNameTextView.setText(chatMessage.getUserName());
-        otherUserImageView.setImageDrawable(chatMessage.getOtherUserImage());
         int unreadMessages = chatMessage.getUnreadMessages();
         if (unreadMessages > 0) {
             unreadMessagesTextView.setTextColor(Color.BLACK);
