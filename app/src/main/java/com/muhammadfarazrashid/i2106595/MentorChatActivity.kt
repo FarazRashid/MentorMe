@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MentorChatActivity: AppCompatActivity() {
+class MentorChatActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var chatAdapter: ChatAdapter
@@ -21,115 +21,75 @@ class MentorChatActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.mentorchat)
 
-        recyclerView = findViewById(R.id.communityChatRecyclerView)
-
         // Initialize RecyclerView
-        val layoutManager = LinearLayoutManager(this)
-        layoutManager.stackFromEnd = true
-        recyclerView.layoutManager = layoutManager
-
+        recyclerView = findViewById(R.id.communityChatRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this).apply {
+            stackFromEnd = true
+        }
 
         val chatMessages = ArrayList<ChatMessage>()
-
         chatAdapter = ChatAdapter(chatMessages)
         addExampleMessages()
-
         recyclerView.adapter = chatAdapter
 
-        //click on phone button and go to phone page
+        setButtonClickListeners()
+        setBottomNavigationListener()
+        setAddMentorClickListener()
+    }
 
-        val phone = findViewById<Button>(R.id.callButton)
-
-        phone.setOnClickListener {
-            val intent = Intent(this, PhoneCallActivity::class.java)
-            startActivity(intent)
+    private fun setButtonClickListeners() {
+        findViewById<Button>(R.id.callButton).setOnClickListener {
+            startActivity(Intent(this, PhoneCallActivity::class.java))
         }
 
-        //click on videobutton and go to videocall page
-
-        val video = findViewById<Button>(R.id.videoButton)
-
-        video.setOnClickListener {
-            val intent = Intent(this, VideoCallActivity::class.java)
-            startActivity(intent)
+        findViewById<Button>(R.id.videoButton).setOnClickListener {
+            startActivity(Intent(this, VideoCallActivity::class.java))
         }
 
-        //click on imageview4 and go back
-
-        val backButton = findViewById<Button>(R.id.backbutton)
-
-        backButton.setOnClickListener {
+        findViewById<Button>(R.id.backbutton).setOnClickListener {
             onBackPressed()
         }
 
-        //click on takephoto button inside of linear layout and go to photo page
-
-        val linearLayout: LinearLayout = findViewById(R.id.linearLayout2)
-        val takePhotoButton: Button = linearLayout.findViewById(R.id.takePhoto)
-
-        // Set click listener on the Take Photo button
-        takePhotoButton.setOnClickListener {
-            // Start PhotoActivity when the button is clicked
-            val intent = Intent(this, PhotoActivity::class.java)
-            startActivity(intent)
+        findViewById<Button>(R.id.takePhoto).setOnClickListener {
+            startActivity(Intent(this, PhotoActivity::class.java))
         }
-
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-
-        bottomNavigation.setOnNavigationItemReselectedListener { item ->
-            when (item.itemId) {
-                R.id.menu_search -> {
-                    val intent = Intent(this, searchPageActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.menu_home -> {
-                    val intent = Intent(this, homePageActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.menu_chat -> {
-                    val intent = Intent(this, mainChatActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.menu_profile -> {
-                    val intent = Intent(this, MyProfileActivity::class.java)
-                    startActivity(intent)
-                }
-
-            }
-
-        }
-
-        //click on add mentor button and go to add mentor page
-        val addMentor = findViewById<ImageView>(R.id.addMentorButton)
-        addMentor.setOnClickListener {
-            val intent = Intent(this, AddAMentor::class.java)
-            startActivity(intent)
-        }
-
     }
 
+    private fun setBottomNavigationListener() {
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigation.setOnNavigationItemReselectedListener { item ->
+            val intent = when (item.itemId) {
+                R.id.menu_search -> Intent(this, searchPageActivity::class.java)
+                R.id.menu_home -> Intent(this, homePageActivity::class.java)
+                R.id.menu_chat -> Intent(this, mainChatActivity::class.java)
+                R.id.menu_profile -> Intent(this, MyProfileActivity::class.java)
+                else -> null
+            }
+            intent?.let {
+                startActivity(it)
+            }
+        }
+    }
 
+    private fun setAddMentorClickListener() {
+        findViewById<ImageView>(R.id.addMentorButton).setOnClickListener {
+            startActivity(Intent(this, AddAMentor::class.java))
+        }
+    }
 
     private fun addExampleMessages() {
-        // Example messages from the other user
         val otherPersonImage: Drawable? = ContextCompat.getDrawable(this, R.mipmap.johnmayer)
-        chatAdapter.addMessage(ChatMessage("Hello!", "10:00 AM", false, otherPersonImage))
-        chatAdapter.addMessage(ChatMessage("How are you?", "10:05 AM", false, otherPersonImage))
+        val fourthPersonImage: Drawable? = ContextCompat.getDrawable(this, R.mipmap.johnmayer)
 
-        // Example messages from the user
-        chatAdapter.addMessage(ChatMessage("Hi there!", "10:10 AM", true, otherPersonImage))
-        chatAdapter.addMessage(ChatMessage("I'm doing well, thanks!", "10:15 AM", true, otherPersonImage))
-
-
-        val fourthPerson : Drawable? = ContextCompat.getDrawable(this, R.mipmap.johnmayer)
-        chatAdapter.addMessage(ChatMessage("Hello!", "10:00 AM", false, fourthPerson))
-        chatAdapter.addMessage(ChatMessage("How are you?", "10:05 AM", false, fourthPerson))
-
-        chatAdapter.addMessage(ChatMessage("Hi there!", "10:10 AM", true, fourthPerson))
-        chatAdapter.addMessage(ChatMessage("I'm doing well, thanks!", "10:15 AM", true, fourthPerson))
-
-
-
+        chatAdapter.apply {
+            addMessage(ChatMessage("Hello!", "10:00 AM", false, otherPersonImage))
+            addMessage(ChatMessage("How are you?", "10:05 AM", false, otherPersonImage))
+            addMessage(ChatMessage("Hi there!", "10:10 AM", true, fourthPersonImage))
+            addMessage(ChatMessage("I'm doing well, thanks!", "10:15 AM", true, fourthPersonImage))
+            addMessage(ChatMessage("Hello!", "10:00 AM", false, fourthPersonImage))
+            addMessage(ChatMessage("How are you?", "10:05 AM", false, fourthPersonImage))
+            addMessage(ChatMessage("Hi there!", "10:10 AM", true, fourthPersonImage))
+            addMessage(ChatMessage("I'm doing well, thanks!", "10:15 AM", true, fourthPersonImage))
+        }
     }
-
 }
