@@ -234,8 +234,9 @@ class MentorChatActivity : AppCompatActivity() {
                     val time = messageSnapshot.child("time").value as String
                     val date = messageSnapshot.child("date").value as String
                     val userId = messageSnapshot.child("userId").value as String
+                    val messageId= messageSnapshot.key.toString()
                     val isCurrentUser = userId == currentUser
-                    chatAdapter.addMessage(ChatMessage(message, time, isCurrentUser, mentorImageUrl))
+                    chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, mentorImageUrl))
                 }
             }
 

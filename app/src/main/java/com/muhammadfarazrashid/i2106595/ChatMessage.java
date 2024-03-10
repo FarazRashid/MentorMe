@@ -14,6 +14,8 @@ public class ChatMessage {
 
     private String imageUrl;
 
+    private String id;
+
     public ChatMessage(String message, boolean isUser, String imageUrl){
         this.message = message;
         this.isUser = isUser;
@@ -25,6 +27,22 @@ public class ChatMessage {
         this.time = time;
         this.isUser = isUser;
         this.imageUrl = imageUrl;
+    }
+
+    public ChatMessage(String id,String message, String time, boolean isUser, String imageUrl){
+        this.message = message;
+        this.time = time;
+        this.isUser = isUser;
+        this.imageUrl = imageUrl;
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getMessage() {
