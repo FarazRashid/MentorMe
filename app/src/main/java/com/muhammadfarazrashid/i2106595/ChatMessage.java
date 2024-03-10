@@ -6,13 +6,14 @@ public class ChatMessage {
     private String message;
     private String time;
     private boolean isUser; // true if the message is sent by the user, false otherwise
-    private Drawable otherPersonImage; // Image for the other person
 
-    public ChatMessage(String message, String time, boolean isUser, Drawable otherPersonImage) {
+    private String imageUrl;
+
+    public ChatMessage(String message, String time, boolean isUser, String imageUrl){
         this.message = message;
         this.time = time;
         this.isUser = isUser;
-        this.otherPersonImage = otherPersonImage;
+        this.imageUrl = imageUrl;
     }
 
     public String getMessage() {
@@ -27,7 +28,7 @@ public class ChatMessage {
         return isUser;
     }
 
-    public Drawable getOtherPersonImage() {
-        return otherPersonImage;
+    public String getOtherPersonImage() {
+        return imageUrl;
     }
 }

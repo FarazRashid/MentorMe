@@ -59,11 +59,9 @@ public class AllMessagesAdapter extends RecyclerView.Adapter<AllMessagesAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Handle item click here
-                // For example, you can open a new activity
+
                 Intent intent = new Intent(context, MentorChatActivity.class);
-                // Add any extra data if needed
-                // intent.putExtra("key", value);
+
                 context.startActivity(intent);
             }
         });

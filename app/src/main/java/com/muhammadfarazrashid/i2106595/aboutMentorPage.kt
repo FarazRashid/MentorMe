@@ -94,16 +94,28 @@ class aboutMentorPage : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun navigateToCommunityChatPage(mentor: Mentor) {
+        val intent = Intent(this, communityChatActivity::class.java)
+        intent.putExtra("mentor", mentor)
+        startActivity(intent)
+    }
+
+    private fun navigateToSignUpPage(mentor: Mentor) {
+        val intent = Intent(this, calendarPage::class.java)
+        intent.putExtra("mentor", mentor)
+        startActivity(intent)
+    }
+
     private fun setUpOnClickListeners() {
         findViewById<ImageView>(R.id.imageView4).setOnClickListener { onBackPressed() }
         findViewById<Button>(R.id.reviewButton).setOnClickListener {
             navigateToMentorReviewPage(currentMentor)
         }
         findViewById<Button>(R.id.communityButton).setOnClickListener {
-            startActivity(Intent(this, communityChatActivity::class.java))
+            navigateToCommunityChatPage(currentMentor)
         }
         findViewById<Button>(R.id.signupButton).setOnClickListener {
-            startActivity(Intent(this, calenderPage::class.java))
+            navigateToSignUpPage(currentMentor)
         }
     }
 }

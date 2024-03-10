@@ -7,6 +7,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 public class ChatViewHolder extends RecyclerView.ViewHolder {
     private TextView messageTextView;
     private TextView timeTextView;
@@ -27,7 +29,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         if (!chatMessage.isUser() && chatMessage.getOtherPersonImage() != null) {
             if(otherPersonImageView != null) {
                 otherPersonImageView.setVisibility(View.VISIBLE);
-                otherPersonImageView.setImageDrawable(chatMessage.getOtherPersonImage());
+                Picasso.get().load(chatMessage.getOtherPersonImage()).into(otherPersonImageView);
             }
         } else {
             if(otherPersonImageView != null) {

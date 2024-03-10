@@ -144,7 +144,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".calenderPage"
+            android:name=".calendarPage"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,93 +1,111 @@
 package com.muhammadfarazrashid.i2106595
 
+
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+
 import android.widget.Button
-import android.widget.CalendarView
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.util.Calendar
+import com.squareup.picasso.Picasso
 
-class calenderPage: AppCompatActivity() {
+
+class calendarPage : AppCompatActivity() {
 
     private lateinit var badgesRecycler: RecyclerView
-    private lateinit var badges: ArrayList<Badge>
+    private lateinit var badgeAdapter: BadgeAdapter
+    private lateinit var mentorName: TextView
+    private lateinit var mentorImage: ImageView
+    private lateinit var currentMentor: Mentor
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.calenderpage)
+        currentMentor = intent.getParcelableExtra<Mentor>("mentor")!!
+        initializeViews()
+        setMentorDetails(currentMentor)
+        setUpAvailability()
+        setUpOnClickListeners()
+    }
 
-        //add availability timings
+    private fun setMentorDetails(mentor: Mentor) {
+        mentorName.text = mentor.name
+        currentMentor = mentor
 
-        badges = ArrayList()
-        badges.add(Badge("11:00 AM", false))
-        badges.add(Badge("12:00 PM", false))
-        badges.add(Badge("10:00 AM", true)) // This badge is selected
+        // Call getImageUrl function to get the mentor's image URL
+        Mentor.getImageUrl(mentor.id, object : Mentor.OnImageUrlListener {
+            override fun onSuccess(imageUrl: String) {
+                // Load image using Picasso
+                Picasso.get().load(imageUrl).into(mentorImage)
+            }
 
-        badgesRecycler = findViewById(R.id.badgesRecycler)
-        badgesRecycler.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            override fun onFailure(errorMessage: String) {
+                // Handle failure to retrieve image URL
+                Log.e("MentorCardAdapter", "Failed to retrieve image URL: $errorMessage")
+            }
+        })
+    }
 
+    private fun setUpAvailability() {
+        // Set up badges
+        val badges = arrayListOf(
+            Badge("11:00 AM", false),
+            Badge("12:00 PM", false),
+            Badge("10:00 AM", true) // This badge is selected
+        )
 
-        val badgeAdapter = BadgeAdapter(badges)
+        badgeAdapter = BadgeAdapter(badges)
         badgesRecycler.adapter = badgeAdapter
 
         // Set the badge click listener
         badgeAdapter.setOnBadgeClickListener(object : BadgeAdapter.OnBadgeClickListener {
             override fun onBadgeClick(position: Int) {
                 // Handle badge click
-                Log.d("MainActivity", "Badge clicked at position: $position")
+                Log.d("CalendarPage", "Badge clicked at position: $position")
             }
         })
+    }
 
-        //click on chat image button button and go to chat page
+    private fun initializeViews() {
+        badgesRecycler = findViewById(R.id.badgesRecycler)
+        badgesRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        mentorName= findViewById(R.id.mentorName)
+        mentorImage = findViewById(R.id.imageView9)
 
-        val chat = findViewById<ImageView>(R.id.chatButton)
+    }
+    private fun navigateToChatPage(mentor: Mentor) {
+        val intent = Intent(this, MentorChatActivity::class.java)
+        intent.putExtra("mentor", mentor)
+        startActivity(intent)
+    }
 
-        chat.setOnClickListener {
-            val intent = Intent(this, mainChatActivity::class.java)
-            startActivity(intent)
+
+
+    private fun setUpOnClickListeners()
+    {
+        findViewById<ImageView>(R.id.chatButton).setOnClickListener {
+            navigateToChatPage(currentMentor)
         }
 
-        //click on phone button and go to phone page
-
-        val phone = findViewById<ImageView>(R.id.phoneButton)
-
-        phone.setOnClickListener {
-            val intent = Intent(this, PhoneCallActivity::class.java)
-            startActivity(intent)
+        findViewById<ImageView>(R.id.phoneButton).setOnClickListener {
+            startActivity(Intent(this, PhoneCallActivity::class.java))
         }
 
-        //click on videobutton and go to videocall page
-
-        val video = findViewById<ImageView>(R.id.cameraButton)
-
-        video.setOnClickListener {
-            val intent = Intent(this, VideoCallActivity::class.java)
-            startActivity(intent)
+        findViewById<ImageView>(R.id.cameraButton).setOnClickListener {
+            startActivity(Intent(this, VideoCallActivity::class.java))
         }
 
-        //click on imageview4 and go back
-
-        val bottomNavigationView = findViewById<ImageView>(R.id.imageView4)
-
-        bottomNavigationView.setOnClickListener {
+        findViewById<ImageView>(R.id.imageView4).setOnClickListener {
             onBackPressed()
         }
 
-        //click on book an appointmentbutton and go back to home
-
-        val bookAppointment = findViewById<Button>(R.id.bookAnAppointmentButton)
-
-        bookAppointment.setOnClickListener {
-            val intent = Intent(this, homePageActivity::class.java)
-            startActivity(intent)
+        findViewById<Button>(R.id.bookAnAppointmentButton).setOnClickListener {
+            startActivity(Intent(this, homePageActivity::class.java))
         }
-
-
     }
 }
