@@ -23,7 +23,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(ChatMessage chatMessage) {
         messageTextView.setText(chatMessage.getMessage());
-        timeTextView.setText(chatMessage.getTime());
+        timeTextView.setText(chatMessage.getTimeStampFormatted());
 
         // Check if the message is from the other person and if there's an image available
         if (!chatMessage.isUser() && chatMessage.getOtherPersonImage() != null) {

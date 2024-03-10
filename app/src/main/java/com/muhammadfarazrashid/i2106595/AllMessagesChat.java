@@ -11,7 +11,6 @@ public class AllMessagesChat {
     public void setMentor(Mentor mentor){
         this.mentor = mentor;
     }
-
     public Mentor getMentor(){
         return mentor;
     }

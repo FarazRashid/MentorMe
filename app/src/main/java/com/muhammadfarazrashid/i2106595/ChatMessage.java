@@ -2,6 +2,11 @@ package com.muhammadfarazrashid.i2106595;
 
 import android.graphics.drawable.Drawable;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class ChatMessage {
     private String message;
     private String time;
@@ -9,7 +14,13 @@ public class ChatMessage {
 
     private String imageUrl;
 
-    public ChatMessage(String message, String time, boolean isUser, String imageUrl){
+    public ChatMessage(String message, boolean isUser, String imageUrl){
+        this.message = message;
+        this.isUser = isUser;
+        this.imageUrl = imageUrl;
+    }
+
+    public ChatMessage(String message,String time, boolean isUser, String imageUrl){
         this.message = message;
         this.time = time;
         this.isUser = isUser;
@@ -30,5 +41,30 @@ public class ChatMessage {
 
     public String getOtherPersonImage() {
         return imageUrl;
+    }
+
+    public String getTimeStampFormatted() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM 'at' hh:mm a", Locale.getDefault());
+
+        try {
+            // Parse time to Date object
+            Date messageDate = new SimpleDateFormat("HH:mm", Locale.getDefault()).parse(time);
+
+            // Check if message time is before midnight
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(messageDate);
+            int messageHour = calendar.get(Calendar.HOUR_OF_DAY);
+
+            // If message time is before midnight, show only time
+            if (messageHour < 24) {
+                sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                return sdf.format(messageDate);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        this.time = sdf.format(new Date());
+        return sdf.format(new Date());
     }
 }

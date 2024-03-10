@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -22,6 +23,12 @@ class communityChatActivity : AppCompatActivity() {
     private lateinit var mentorName: TextView
     private lateinit var currentMentor: Mentor
     private lateinit var mentorImage: ImageView
+    private lateinit var sendButton: Button
+    private lateinit var micButton: Button
+    private lateinit var messageField: EditText
+    private lateinit var takePhoto: Button
+    private lateinit var sendImage: Button
+    private lateinit var attachImage: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +74,13 @@ class communityChatActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
+        micButton = findViewById(R.id.micButton)
+        messageField = findViewById(R.id.reviewText)
+        takePhoto = findViewById(R.id.takePhoto)
+        sendImage = findViewById(R.id.sendImage)
+        attachImage = findViewById(R.id.sendFile)
+        sendButton = findViewById(R.id.sendButton)
+
         recyclerView = findViewById(R.id.communityChatRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this).apply {
             stackFromEnd = true
@@ -77,7 +91,40 @@ class communityChatActivity : AppCompatActivity() {
         recyclerView.adapter = chatAdapter
     }
 
+    private fun sendMessage() {
+        val message = messageField.text.toString()
+        //get current time in hour and minute e.g. 10:20 AM
+        val currentTime = java.text.SimpleDateFormat("HH:mm a").format(java.util.Date())
+        chatAdapter.addMessage(ChatMessage(message, currentTime, true, ""))
+    }
+
     private fun setButtonClickListeners() {
+
+        sendButton.setOnClickListener {
+            val message = messageField.text.toString()
+            if (message.isNotEmpty()) {
+                sendMessage()
+                messageField.text.clear()
+            }
+        }
+
+        micButton.setOnClickListener {
+            // recordVoiceMessage()
+        }
+
+        takePhoto.setOnClickListener {
+            //takePhoto()
+        }
+
+        sendImage.setOnClickListener {
+            //sendImage()
+        }
+
+        attachImage.setOnClickListener {
+            //attachImage()
+        }
+
+
         findViewById<Button>(R.id.callButton).setOnClickListener {
             startActivity(Intent(this, PhoneCallActivity::class.java))
         }
@@ -136,28 +183,6 @@ class communityChatActivity : AppCompatActivity() {
             }
         }
     }
-//        val otherPersonImage: Drawable? = ContextCompat.getDrawable(this, R.mipmap.johnmayer)
-//        val thirdPersonImage: Drawable? = ContextCompat.getDrawable(this, R.mipmap.elizabeth)
-//        val fourthPersonImage: Drawable? = ContextCompat.getDrawable(this, R.mipmap.johnmayer)
-//
-//        chatAdapter.apply {
-//            // Example messages from the other user
-//            addMessage(ChatMessage("Hello!", "10:00 AM", false, otherPersonImage))
-//            addMessage(ChatMessage("How are you?", "10:05 AM", false, otherPersonImage))
-//
-//            // Example messages from the user
-//            addMessage(ChatMessage("Hi there!", "10:10 AM", true, otherPersonImage))
-//            addMessage(ChatMessage("I'm doing well, thanks!", "10:15 AM", true, otherPersonImage))
-//
-//            addMessage(ChatMessage("Hello!", "10:00 AM", false, thirdPersonImage))
-//            addMessage(ChatMessage("My name is Elizabeth", "10:05 AM", false, thirdPersonImage))
-//            addMessage(ChatMessage("Hi there!", "10:10 AM", true, thirdPersonImage))
-//            addMessage(ChatMessage("I'm doing well, thanks!", "10:15 AM", true, thirdPersonImage))
-//
-//            addMessage(ChatMessage("Hello!", "10:00 AM", false, fourthPersonImage))
-//            addMessage(ChatMessage("How are you?", "10:05 AM", false, fourthPersonImage))
-//            addMessage(ChatMessage("Hi there!", "10:10 AM", true, fourthPersonImage))
-//            addMessage(ChatMessage("I'm doing well, thanks!", "10:15 AM", true, fourthPersonImage))
-//        }
+
 
 }
