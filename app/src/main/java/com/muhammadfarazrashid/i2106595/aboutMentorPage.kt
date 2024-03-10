@@ -7,6 +7,10 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.muhammadfarazrashid.i2106595.Mentor.OnImageUrlListener
 import com.squareup.picasso.Picasso
 
@@ -88,6 +92,67 @@ class aboutMentorPage : AppCompatActivity() {
         Log.d("AboutMentorPage", "Mentor isFavorite: $isFavorite")
     }
 
+    private fun isAlreadyRegisteredForChat(callback: (Boolean) -> Unit) {
+        val database = FirebaseDatabase.getInstance()
+        val currentUser = UserManager.getCurrentUser()
+        val userChatRef = database.getReference("users/${currentUser?.id}/chats/community_chats")
+        userChatRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    var isRegistered = false
+                    for (snapshot in dataSnapshot.children) {
+                        val mentorId = snapshot.value as String
+                        if (mentorId == currentMentor.id) {
+                            isRegistered = true
+                            Log.d("CalendarPage", "Is already registered for chat: $isRegistered")
+                            break
+                        }
+                    }
+                    Log.d("CalendarPage", "Is already registered for chat: $isRegistered")
+                    callback(isRegistered)
+                } else {
+                    callback(false)
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle database error
+                Log.e("CalendarPage", "Error fetching user chat data: ${databaseError.message}")
+                callback(false)
+            }
+        })
+    }
+
+    private fun registerForCommunityChat() {
+        val database = FirebaseDatabase.getInstance()
+        val chatRef = database.getReference("chat").push()
+        val chatKey = chatRef.key
+        val currentUser = UserManager.getCurrentUser()
+
+        // Save chat reference under user's chats
+        currentUser?.let { user ->
+            val userChatRef = database.getReference("users/${user.id}/chats/community_chats")
+            chatKey?.let { key ->
+                userChatRef.child(key).setValue(currentMentor.id)
+            }
+        }
+
+        // Save chat reference under mentor's chats
+        val mentorChatRef = database.getReference("Mentors/${currentMentor.id}/chats/community_chats")
+        chatKey?.let { key ->
+            mentorChatRef.child(key).setValue(currentUser?.id)
+        }
+
+        // Optionally, save chat details under the chat node
+        chatKey?.let { key ->
+            val chatDetailsRef = database.getReference("chat/community_chats/$key/details")
+            chatDetailsRef.child("mentor_id").setValue(currentMentor.id)
+            currentUser?.id?.let { userId ->
+                chatDetailsRef.child("user_id").setValue(userId)
+            }
+        }
+    }
+
     private fun navigateToMentorReviewPage(mentor: Mentor) {
         val intent = Intent(this, reviewpage::class.java)
         intent.putExtra("mentor", mentor)
@@ -96,8 +161,18 @@ class aboutMentorPage : AppCompatActivity() {
 
     private fun navigateToCommunityChatPage(mentor: Mentor) {
         val intent = Intent(this, communityChatActivity::class.java)
-        intent.putExtra("mentor", mentor)
-        startActivity(intent)
+        isAlreadyRegisteredForChat { isRegistered ->
+            if (isRegistered) {
+                // User is already registered for chat with the current mentor
+                Log.d("CalendarPage", "User is already registered for chat with mentor")
+            } else {
+                // Register the user for chat with the current mentor
+                registerForCommunityChat()
+                Log.d("CalendarPage", "User is now registered for chat with mentor")
+            }
+            intent.putExtra("mentor", mentor)
+            startActivity(intent)
+        }
     }
 
     private fun navigateToSignUpPage(mentor: Mentor) {
