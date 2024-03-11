@@ -1,6 +1,7 @@
 package com.muhammadfarazrashid.i2106595
 
 
+import UserManager
 import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -200,48 +201,15 @@ class EditProfilePageActivity : AppCompatActivity() {
             name.setText(currentUser.name)
             email.setText(currentUser.email)
             phone.setText(currentUser.phone)
+            val userProfileImage = UserManager.getUserUrl()
+            if (userProfileImage != null) {
+                Picasso.get().load(userProfileImage)
+                    .into(userProfilePicture)
 
-            val profilePictureRef = FirebaseStorage.getInstance().reference.child("profilePictures/${currentUser.id}")
-            retrieveImageFromFirebaseStorage(this,"profile_picture", userProfilePicture)
-            setUpSpinners()
-
-        }
-    }
-
-
-
-    private fun retrieveImageFromFirebaseStorage(context: Context, imageType: String, imageView: ImageView) {
-        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
-        if (currentUserUid != null) {
-            // Define the reference to the image in Firebase Storage
-            val imageRef = storageReference.child("profile_images").child("$currentUserUid/$imageType.jpg")
-
-            // Get the download URL of the image
-            imageRef.downloadUrl.addOnSuccessListener { uri ->
-                // Log the download URL for debugging
-                Log.d("RetrieveImage", "Download URL: $uri")
-
-                // Check if the image is loaded from cache or fetched from network
-                val startTime = System.currentTimeMillis()
-                Picasso.get().load(uri)
-                    .into(imageView, object : Callback {
-                        override fun onSuccess() {
-                            val endTime = System.currentTimeMillis()
-                            val duration = endTime - startTime
-                            Log.d("RetrieveImage", "Image loaded from network in $duration ms")
-                        }
-
-                        override fun onError(e: Exception?) {
-                            // Handle any errors that occur during image loading
-                            Log.e("RetrieveImage", "Failed to load image: $e")
-                        }
-                    })
-            }.addOnFailureListener { e ->
-                // Handle any errors that occur during download
-                Log.e("RetrieveImage", "Failed to retrieve image: $e")
             }
         }
     }
+
 
     private fun checkEmailAvailability(email: String, completion: (Boolean) -> Unit) {
         val database = FirebaseDatabase.getInstance()

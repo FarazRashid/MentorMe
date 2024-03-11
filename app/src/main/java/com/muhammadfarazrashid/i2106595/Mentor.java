@@ -24,6 +24,8 @@ public class Mentor implements Parcelable {
 
     private int rating =0;
 
+    private String profileImageUrl="";
+
     public Mentor(String id, String name, String position, String availability, String salary, String description) {
         this.id = id;
         this.name = name;
@@ -39,6 +41,23 @@ public class Mentor implements Parcelable {
         this.availability = availability;
         this.salary = salary;
         this.description = "No description available";
+    }
+
+    public Mentor(String id, String name, String position, String availability, String salary, String description, String profileImageUrl) {
+        this.name = name;
+        this.position = position;
+        this.availability = availability;
+        this.salary = salary;
+        this.description = description;
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 
     public Mentor() {

@@ -15,10 +15,12 @@ data class User(
     var city: String = "",
     var password: String = "",
     var phone: String = "",
+    var profilePictureUrl: String = "",
+    var bannerImageUrl: String = "",
 
 ) {
     // No-argument constructor required for Firebase deserialization
-    constructor() : this("", "", "", "", "", "", "")
+    constructor() : this("", "", "", "", "", "", "", "", "")
 }
 fun getUserWithEmail(email: String, completion: (User?) -> Unit) {
     val currentUserEmail = FirebaseAuth.getInstance().currentUser?.email

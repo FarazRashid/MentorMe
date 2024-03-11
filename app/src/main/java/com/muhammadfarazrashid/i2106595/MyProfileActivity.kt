@@ -242,48 +242,17 @@ class MyProfileActivity : AppCompatActivity() {
             name.setText(currentUser.name)
             city.setText(currentUser.city)
             val profilePictureRef = FirebaseStorage.getInstance().reference.child("profilePictures/${currentUser.id}")
-            retrieveImageFromFirebaseStorage(this,"profile_picture", profilePicture)
-
-            val bannerRef = FirebaseStorage.getInstance().reference.child("banners/${currentUser.id}")
-            Log.d(TAG, "loadUserInformation: $bannerRef")
-            retrieveImageFromFirebaseStorage(this,"banner", banner)
-
-        }
-    }
-
-
-
-    private fun retrieveImageFromFirebaseStorage(context: Context, imageType: String, imageView: ImageView) {
-        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
-        if (currentUserUid != null) {
-            // Define the reference to the image in Firebase Storage
-            val imageRef = storageReference.child("profile_images").child("$currentUserUid/$imageType.jpg")
-
-            // Get the download URL of the image
-            imageRef.downloadUrl.addOnSuccessListener { uri ->
-                // Log the download URL for debugging
-                Log.d("RetrieveImage", "Download URL: $uri")
-
-                // Check if the image is loaded from cache or fetched from network
-                val startTime = System.currentTimeMillis()
-                Picasso.get().load(uri)
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .networkPolicy(NetworkPolicy.OFFLINE)
-                    .into(imageView, object : Callback {
-                        override fun onSuccess() {
-                            val endTime = System.currentTimeMillis()
-                            val duration = endTime - startTime
-                            Log.d("RetrieveImage", "Image loaded from network in $duration ms")
-                        }
-
-                        override fun onError(e: Exception?) {
-                            Picasso.get().load(uri).into(imageView)
-                        }
-                    })
-            }.addOnFailureListener { e ->
-                // Handle any errors that occur during download
-                Log.e("RetrieveImage", "Failed to retrieve image: $e")
+            val userProfileImage = UserManager.getUserUrl()
+            if (userProfileImage != null) {
+                Picasso.get().load(userProfileImage)
+                    .into(profilePicture)
             }
+            val bannerProfileImage= UserManager.getCurrentUser()?.bannerImageUrl
+            if (bannerProfileImage != null) {
+                Picasso.get().load(bannerProfileImage)
+                    .into(banner)
+            }
+
         }
     }
 
@@ -304,6 +273,7 @@ class MyProfileActivity : AppCompatActivity() {
                     filePath.downloadUrl.addOnSuccessListener { uri ->
                         // Save the download URL to Firebase Realtime Database or Firestore
                         saveImageUrlToDatabase(uri.toString(), imageType, selectedImageUri)
+                        UserManager.setUserUrl(uri.toString())
                     }
                 }
                 .addOnFailureListener { e ->
@@ -321,7 +291,7 @@ class MyProfileActivity : AppCompatActivity() {
     private fun saveImageUrlToDatabase(imageUrl: String, imageType: String, selectedImageUri: Uri) {
         // Save the image URL to Firebase Realtime Database or Firestore under the user's profile
         // For example, if you're using Realtime Database:
-        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        val currentUserUid = UserManager.getCurrentUser()?.id
         if (currentUserUid != null) {
             val databaseReference = FirebaseDatabase.getInstance().getReference("users").child(currentUserUid)
             val imageField = if (imageType == "profile_picture") "profilePictureUrl" else "bannerImageUrl"

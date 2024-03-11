@@ -34,6 +34,14 @@ object UserManager {
         currentUser = user
     }
 
+    fun setUserUrl(url: String) {
+        this.currentUser.profilePictureUrl = url
+    }
+
+    fun getUserUrl(): String {
+        return this.currentUser.profilePictureUrl
+    }
+
     fun fetchAndSetCurrentUser(email: String, callback: () -> Unit) {
         getUserWithEmail(email) { user ->
             if (user != null) {
