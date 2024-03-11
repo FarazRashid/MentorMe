@@ -105,6 +105,8 @@ class homePageActivity : AppCompatActivity() {
 
     private fun navigateToMentorAbout(mentor: Mentor) {
         val intent = Intent(this, aboutMentorPage::class.java)
+        Log.d("homePageActivity", "Navigating to aboutMentorPage with mentor: ${mentor.id}")
+        Log.d("homePageActivity", "Navigating to aboutMentorPage with mentor: ${mentor.getprofilePictureUrl()}")
         intent.putExtra("mentor", mentor) // Pass the mentor data to the aboutMentorPage
         startActivity(intent)
     }

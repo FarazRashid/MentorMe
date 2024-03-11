@@ -32,24 +32,15 @@ public class MentorAdapter extends RecyclerView.Adapter<MentorViewHolder> {
         MentorItem mentorItem = mentorItems.get(position);
         holder.bind(mentorItem);
 
-            Mentor.getImageUrl(mentorItem.getId(), new Mentor.OnImageUrlListener() {
-                @Override
-                public void onSuccess(String imageUrl) {
-                    // Load image from imageUrl
-                    Picasso.get().load(imageUrl).into(holder.profileImageView);
-                }
 
-                @Override
-                public void onFailure(String errorMessage) {
-
-                }
-            });
 
         Mentor.getMentorById(mentorItem.getId(), new Mentor.OnMentorListener() {
             @Override
             public void onSuccess(Mentor fetchedMentor) {
                 // Set mentor when fetched successfully
                 mentorItem.setMentor(fetchedMentor);
+                Picasso.get().load(mentorItem.getMentor().getprofilePictureUrl()).into(holder.profileImageView);
+
 
             }
 

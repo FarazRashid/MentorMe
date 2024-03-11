@@ -195,7 +195,7 @@ class AddAMentor : AppCompatActivity() {
                     // Image uploaded successfully, get the download URL
                     filePath.downloadUrl.addOnSuccessListener { uri ->
                         // Save the download URL to Firebase Realtime Database or Firestore
-                        saveMentorProfilePictureUrlToDatabase(uri.toString(), mentorId)
+                        saveMentorProfilePictureUrlToDatabase(mentorId, uri.toString())
                     }
                 }
                 .addOnFailureListener { e ->
@@ -226,9 +226,10 @@ class AddAMentor : AppCompatActivity() {
     }
 
 
+
     @SuppressLint("SuspiciousIndentation")
     private fun saveMentorProfilePictureUrlToDatabase(mentorId: String, imageUrl: String) {
-        val databaseReference = FirebaseDatabase.getInstance().getReference("mentors").child(mentorId)
+        val databaseReference = FirebaseDatabase.getInstance().getReference("Mentors").child(mentorId)
             databaseReference.child("profilePictureUrl").setValue(imageUrl)
                 .addOnSuccessListener {
                     Snackbar.make(findViewById(android.R.id.content), "Profile picture uploaded successfully", Snackbar.LENGTH_SHORT).show()
@@ -260,10 +261,11 @@ class AddAMentor : AppCompatActivity() {
 
         val mentor = Mentor(sanitizeId(mentorId), name.text.toString(), position.text.toString(), availabilitySpinner.selectedItem.toString(), sessionPrice.text.toString(), description.text.toString())
         Log.d("sanitizedId", sanitizeId(mentorId))
-        myRef.child(sanitizeId(mentorId)).setValue(mentor)
+        val mentorId=sanitizeId(mentorId)
+        myRef.child(mentorId).setValue(mentor)
             .addOnSuccessListener {
                 Log.d("AddAMentor", "Mentor added successfully")
-                uploadMentorProfilePicture(selectedImageUri, sanitizeId(mentorId))
+                uploadMentorProfilePicture(selectedImageUri, mentorId)
 
             }
             .addOnFailureListener {

@@ -87,18 +87,9 @@ class reviewpage: AppCompatActivity() {
         name.text = mentor.name
         currentMentor = mentor
 
-        // Call getImageUrl function to get the mentor's image URL
-        Mentor.getImageUrl(mentor.id, object : Mentor.OnImageUrlListener {
-            override fun onSuccess(imageUrl: String) {
-                // Load image using Picasso
-                Picasso.get().load(imageUrl).into(mentorImageView)
-            }
-
-            override fun onFailure(errorMessage: String) {
-                // Handle failure to retrieve image URL
-                Log.e("MentorCardAdapter", "Failed to retrieve image URL: $errorMessage")
-            }
-        })
+        if (mentor.getprofilePictureUrl().isNotEmpty()) {
+            Picasso.get().load(mentor.getprofilePictureUrl()).into(mentorImageView)
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

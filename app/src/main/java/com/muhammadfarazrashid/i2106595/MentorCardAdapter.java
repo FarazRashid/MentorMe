@@ -76,19 +76,10 @@ public class MentorCardAdapter extends RecyclerView.Adapter<MentorCardAdapter.Vi
         holder.mentorSalary.setText("$"+mentor.getSalary()+"/hr");
 
         String mentorId = data.get(position).getId();
-        Mentor.getImageUrl(mentorId, new Mentor.OnImageUrlListener() {
-            @Override
-            public void onSuccess(String imageUrl) {
-                // Load image using Picasso
-                Picasso.get().load(imageUrl).into(holder.mentorImage);
-            }
 
-            @Override
-            public void onFailure(String errorMessage) {
-                // Handle failure to retrieve image URL
-                Log.e("MentorCardAdapter", "Failed to retrieve image URL: " + errorMessage);
-            }
-        });
+        if(!mentor.getprofilePictureUrl().isEmpty()){
+            Picasso.get().load(mentor.getprofilePictureUrl()).into(holder.mentorImage);
+        }
 
         holder.heartButton.setOnClickListener(new View.OnClickListener() {
             @Override

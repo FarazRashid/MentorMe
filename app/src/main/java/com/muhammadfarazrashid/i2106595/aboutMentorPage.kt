@@ -1,5 +1,6 @@
 package com.muhammadfarazrashid.i2106595
 
+import UserManager
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -11,7 +12,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.muhammadfarazrashid.i2106595.Mentor.OnImageUrlListener
 import com.squareup.picasso.Picasso
 
 class aboutMentorPage : AppCompatActivity() {
@@ -32,7 +32,7 @@ class aboutMentorPage : AppCompatActivity() {
         // Log mentor details to verify if data is received correctly
         mentor?.let {
             with(it) {
-                logMentorDetails(id, name, position, availability, salary, description, isFavorite)
+                logMentorDetails(id, name, position, availability, salary, description, isFavorite, getprofilePictureUrl())
             }
         }
 
@@ -60,18 +60,10 @@ class aboutMentorPage : AppCompatActivity() {
         aboutMe.text = mentor.description
         currentMentor = mentor
 
-        // Call getImageUrl function to get the mentor's image URL
-        Mentor.getImageUrl(mentor.id, object : OnImageUrlListener {
-            override fun onSuccess(imageUrl: String) {
-                // Load image using Picasso
-                Picasso.get().load(imageUrl).into(mentorImageView)
-            }
 
-            override fun onFailure(errorMessage: String) {
-                // Handle failure to retrieve image URL
-                Log.e("MentorCardAdapter", "Failed to retrieve image URL: $errorMessage")
-            }
-        })
+        if (mentor.getprofilePictureUrl().isNotEmpty()) {
+            Picasso.get().load(mentor.getprofilePictureUrl()).into(mentorImageView)
+        }
     }
 
     private fun Mentor.logMentorDetails(
@@ -81,7 +73,8 @@ class aboutMentorPage : AppCompatActivity() {
         availability: String?,
         salary: String?,
         description: String?,
-        isFavorite: Boolean
+        isFavorite: Boolean,
+        profilePictureUrl: String?
     ) {
         id?.let { Log.d("AboutMentorPage", "Mentor ID: $it") }
         name?.let { Log.d("AboutMentorPage", "Mentor Name: $it") }
@@ -90,6 +83,7 @@ class aboutMentorPage : AppCompatActivity() {
         salary?.let { Log.d("AboutMentorPage", "Mentor Salary: $it") }
         description?.let { Log.d("AboutMentorPage", "Mentor Description: $it") }
         Log.d("AboutMentorPage", "Mentor isFavorite: $isFavorite")
+        profilePictureUrl?.let { Log.d("AboutMentorPage", "Mentor Profile Picture URL: $it") }
     }
 
     private fun checkIfCommunityChatExists(callback: (Boolean) -> Unit) {

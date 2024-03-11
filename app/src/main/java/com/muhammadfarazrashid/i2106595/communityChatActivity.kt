@@ -3,11 +3,9 @@ package com.muhammadfarazrashid.i2106595
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -37,9 +35,8 @@ class communityChatActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.communityChatRecyclerView)
 
         currentMentor = intent.getParcelableExtra<Mentor>("mentor")!!
-        setMentorDetails(currentMentor)
         initViews()
-
+        setMentorDetails(currentMentor)
         setButtonClickListeners()
         setBottomNavigationListener()
         setAddMentorClickListener()
@@ -50,27 +47,10 @@ class communityChatActivity : AppCompatActivity() {
         mentorName.text = currentMentor.name
         mentorImage = findViewById(R.id.imageView9)
 
-        Mentor.getImageUrl(mentor.id, object : Mentor.OnImageUrlListener {
-            override fun onSuccess(imageUrl: String) {
-                // Load image using Picasso
-                Picasso.get().load(imageUrl).fetch(object: com.squareup.picasso.Callback {
-                    override fun onSuccess() {
-                        Picasso.get().load(imageUrl).into(mentorImage)
-                        addExampleMessages(imageUrl)
-                    }
-
-                    override fun onError(e: Exception?) {
-                        // Handle failure to load image
-                        Log.e("MentorChatActivity", "Failed to load mentor image: ${e?.message}")
-                    }
-                })
-            }
-
-            override fun onFailure(errorMessage: String) {
-                // Handle failure to retrieve image URL
-                Log.e("MentorChatActivity", "Failed to retrieve image URL: $errorMessage")
-            }
-        })
+        if (!mentor.getprofilePictureUrl().isEmpty()) {
+            Picasso.get().load(mentor.getprofilePictureUrl()).into(mentorImage)
+            addExampleMessages(mentor.getprofilePictureUrl())
+        }
     }
 
     private fun initViews() {

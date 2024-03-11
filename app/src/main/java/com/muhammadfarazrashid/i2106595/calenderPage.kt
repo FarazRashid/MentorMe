@@ -42,19 +42,10 @@ class calendarPage : AppCompatActivity() {
     private fun setMentorDetails(mentor: Mentor) {
         mentorName.text = mentor.name
         currentMentor = mentor
-
-        // Call getImageUrl function to get the mentor's image URL
-        Mentor.getImageUrl(mentor.id, object : Mentor.OnImageUrlListener {
-            override fun onSuccess(imageUrl: String) {
-                // Load image using Picasso
-                Picasso.get().load(imageUrl).into(mentorImage)
-            }
-
-            override fun onFailure(errorMessage: String) {
-                // Handle failure to retrieve image URL
-                Log.e("MentorCardAdapter", "Failed to retrieve image URL: $errorMessage")
-            }
-        })
+        Log.d("MentorDetails", "Mentor name: ${mentor.getprofilePictureUrl()}")
+        if (mentor.getprofilePictureUrl().isNotEmpty()) {
+            Picasso.get().load(mentor.getprofilePictureUrl()).into(mentorImage)
+        }
     }
 
     private fun setUpAvailability() {

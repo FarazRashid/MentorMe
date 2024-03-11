@@ -65,8 +65,6 @@ class MyProfileActivity : AppCompatActivity() {
         loadUserInformation()
         fetchUserFavorites()
         initBottomNavigation()
-
-
         setOnClickListeners()
 
     }
@@ -225,7 +223,7 @@ class MyProfileActivity : AppCompatActivity() {
         if (!isImageSelectionInProgress) {
             val userEmail = mAuth.currentUser?.email.toString()
             UserManager.fetchAndSetCurrentUser(userEmail) {
-                loadUserInformation()
+                loadUserInformationWithoutFirebase()
             }
         }
         isImageSelectionInProgress = false // Reset the flag
@@ -233,28 +231,73 @@ class MyProfileActivity : AppCompatActivity() {
 
 
 
-    private fun loadUserInformation() {
+    private fun loadUserInformationWithoutFirebase() {
         val currentUser = UserManager.getCurrentUser()
-        val userEmail = mAuth.currentUser?.email
         if (currentUser != null) {
 
             Log.d(ContentValues.TAG, "loadUserInformation: ${currentUser.id}")
             name.setText(currentUser.name)
             city.setText(currentUser.city)
-            val profilePictureRef = FirebaseStorage.getInstance().reference.child("profilePictures/${currentUser.id}")
-            val userProfileImage = UserManager.getUserUrl()
-            if (userProfileImage != null) {
-                Picasso.get().load(userProfileImage)
-                    .into(profilePicture)
+            Log.d("LoadUserInformation", "Profile Picture URL: ${currentUser.profilePictureUrl}")
+            if (currentUser.profilePictureUrl.isEmpty()) {
+                Picasso.get().load(currentUser.profilePictureUrl).into(profilePicture)
             }
-            val bannerProfileImage= UserManager.getCurrentUser()?.bannerImageUrl
-            if (bannerProfileImage != null) {
-                Picasso.get().load(bannerProfileImage)
-                    .into(banner)
-            }
+            Picasso.get().load(currentUser.bannerImageUrl).into(banner)
+
 
         }
     }
+
+    private fun loadUserInformation() {
+        val currentUser = UserManager.getCurrentUser()
+        if (currentUser != null) {
+
+            Log.d(ContentValues.TAG, "loadUserInformation: ${currentUser.id}")
+            name.setText(currentUser.name)
+            city.setText(currentUser.city)
+            Log.d("LoadUserInformation", "Profile Picture URL: ${currentUser.profilePictureUrl}")
+            retrieveImageFromFirebaseStorage(this,"profile_picture", profilePicture)
+            Picasso.get().load(currentUser.bannerImageUrl).into(banner)
+
+
+        }
+    }
+
+    private fun retrieveImageFromFirebaseStorage(context: Context, imageType: String, imageView: ImageView) {
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        if (currentUserUid != null) {
+            // Define the reference to the image in Firebase Storage
+            val imageRef = storageReference.child("profile_images").child("$currentUserUid/$imageType.jpg")
+
+            // Get the download URL of the image
+            imageRef.downloadUrl.addOnSuccessListener { uri ->
+                // Log the download URL for debugging
+                Log.d("RetrieveImage", "Download URL: $uri")
+
+                // Check if the image is loaded from cache or fetched from network
+                val startTime = System.currentTimeMillis()
+                Picasso.get().load(uri)
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.OFFLINE)
+                    .into(imageView, object : Callback {
+                        override fun onSuccess() {
+                            val endTime = System.currentTimeMillis()
+                            val duration = endTime - startTime
+                            Log.d("RetrieveImage", "Image loaded from network in $duration ms")
+                        }
+
+                        override fun onError(e: Exception?) {
+                            Picasso.get().load(uri).into(imageView)
+                        }
+                    })
+            }.addOnFailureListener { e ->
+                // Handle any errors that occur during download
+                Log.e("RetrieveImage", "Failed to retrieve image: $e")
+            }
+        }
+    }
+
+
 
 
 
@@ -304,10 +347,12 @@ class MyProfileActivity : AppCompatActivity() {
                         "profile_picture" -> {
                             // Update the profile picture ImageView with the locally selected image
                             profilePicture.setImageURI(selectedImageUri)
+                            Picasso.get().load(selectedImageUri).into(profilePicture)
                         }
                         "banner" -> {
                             // Update the banner ImageView with the locally selected image
                             banner.setImageURI(selectedImageUri)
+                            Picasso.get().load(selectedImageUri).into(banner)
                         }
                     }
                 }

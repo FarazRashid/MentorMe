@@ -1,5 +1,6 @@
 package com.muhammadfarazrashid.i2106595;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -24,7 +25,7 @@ public class Mentor implements Parcelable {
 
     private int rating =0;
 
-    private String profileImageUrl="";
+    private String profilePictureUrl="";
 
     public Mentor(String id, String name, String position, String availability, String salary, String description) {
         this.id = id;
@@ -43,21 +44,33 @@ public class Mentor implements Parcelable {
         this.description = "No description available";
     }
 
-    public Mentor(String id, String name, String position, String availability, String salary, String description, String profileImageUrl) {
+    public Mentor(String id, String name, String position, String availability, String salary, String description, String profilePictureUrl) {
+        this.id = id;
         this.name = name;
         this.position = position;
         this.availability = availability;
         this.salary = salary;
         this.description = description;
-        this.profileImageUrl = profileImageUrl;
+        this.profilePictureUrl = profilePictureUrl;
     }
 
-    public String getProfileImageUrl() {
-        return profileImageUrl;
+    public Mentor(String id, String name, String position, String availability, String salary, String description, String profilePictureUrl, Boolean isFavorite) {
+        this.id = id;
+        this.name = name;
+        this.position = position;
+        this.availability = availability;
+        this.salary = salary;
+        this.description = description;
+        this.profilePictureUrl = profilePictureUrl;
+        this.isFavorite = isFavorite;
     }
 
-    public void setProfileImageUrl(String profileImageUrl) {
-        this.profileImageUrl = profileImageUrl;
+    public String getprofilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setprofilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     public Mentor() {
@@ -78,7 +91,16 @@ public class Mentor implements Parcelable {
     public static final Creator<Mentor> CREATOR = new Creator<Mentor>() {
         @Override
         public Mentor createFromParcel(Parcel in) {
-            return new Mentor(in);
+            return new Mentor(
+                    in.readString(),
+                    in.readString(),
+                    in.readString(),
+                    in.readString(),
+                    in.readString(),
+                    in.readString(),
+                    in.readString(),
+                    in.readByte() != 0
+            );
         }
 
         @Override
@@ -166,9 +188,10 @@ public class Mentor implements Parcelable {
                 String availability = snapshot.child("availability").getValue(String.class);
                 String salary = snapshot.child("salary").getValue(String.class);
                 String description = snapshot.child("description").getValue(String.class);
+                String profilePictureUrl = snapshot.child("profilePictureUrl").getValue(String.class);
 
                 // Create a new Mentor object with the retrieved fields
-                Mentor mentor = new Mentor(mentorId, name, position, availability, salary, description);
+                Mentor mentor = new Mentor(mentorId, name, position, availability, salary, description,profilePictureUrl);
 
                 listener.onSuccess(mentor);
             } else {
@@ -204,6 +227,7 @@ public class Mentor implements Parcelable {
         dest.writeString(availability);
         dest.writeString(salary);
         dest.writeString(description);
+        dest.writeString(profilePictureUrl);
         dest.writeByte((byte) (isFavorite ? 1 : 0));
     }
 }

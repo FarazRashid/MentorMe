@@ -51,19 +51,6 @@ public class AllMessagesAdapter extends RecyclerView.Adapter<AllMessagesAdapter.
             holder.unreadMessages.setTextColor(ContextCompat.getColor(context, R.color.red));
         }
 
-        Mentor.getImageUrl(message.getId(), new Mentor.OnImageUrlListener() {
-            @Override
-            public void onSuccess(String imageUrl) {
-                // Load image from imageUrl
-                Picasso.get().load(imageUrl).into(holder.otherUserImage);
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-
-            }
-
-        });
 
         Mentor.getMentorById(message.getId(), new Mentor.OnMentorListener() {
             @Override
@@ -72,6 +59,10 @@ public class AllMessagesAdapter extends RecyclerView.Adapter<AllMessagesAdapter.
                 message.setMentor(fetchedMentor);
                 message.setUserName(fetchedMentor.getName());
                 holder.userName.setText(fetchedMentor.getName());
+                Picasso.get().load(message.getMentor().getprofilePictureUrl()).into(holder.otherUserImage);
+
+
+                Log.d("AllMessagesChat", "Mentor fetched successfully: " + fetchedMentor.getId());
                 // Notify any listeners or perform any further actions
             }
 

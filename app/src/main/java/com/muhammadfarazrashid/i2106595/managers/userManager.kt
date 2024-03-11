@@ -42,10 +42,22 @@ object UserManager {
         return this.currentUser.profilePictureUrl
     }
 
+    fun logUser(user: User){
+        Log.d(TAG, "loadUserInformation: ${currentUser.id}")
+        Log.d(TAG, "loadUserInformation: ${currentUser.name}")
+        Log.d(TAG, "loadUserInformation: ${currentUser.email}")
+        Log.d(TAG, "loadUserInformation: ${currentUser.country}")
+        Log.d(TAG, "loadUserInformation: ${currentUser.city}")
+        Log.d(TAG, "loadUserInformation: ${currentUser.phone}")
+        Log.d(TAG, "loadUserInformation: ${currentUser.profilePictureUrl}")
+        Log.d(TAG, "loadUserInformation: ${currentUser.bannerImageUrl}")
+    }
+
     fun fetchAndSetCurrentUser(email: String, callback: () -> Unit) {
         getUserWithEmail(email) { user ->
             if (user != null) {
                 currentUser = user
+                logUser(user)
                 setCurrentUser(user)
                 Log.d(TAG, "loadUserInformation: ${currentUser.id}")
                 callback.invoke() // Execute the callback function
