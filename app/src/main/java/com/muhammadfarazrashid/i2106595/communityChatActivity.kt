@@ -38,6 +38,8 @@ class communityChatActivity : AppCompatActivity() {
     private lateinit var sendImage: Button
     private lateinit var attachImage: Button
     private lateinit var listOfUsers: ArrayList<User>
+    private var selectedMessageId: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,6 +102,9 @@ class communityChatActivity : AppCompatActivity() {
                         // Handle edit message
                         // val editMessageDialog = EditMessageDialog(chatMessage.message, chatMessage.id, this)
                         // editMessageDialog.show(supportFragmentManager, "EditMessageDialog")
+                        messageField.setText(chatMessage.message)
+                        selectedMessageId = chatMessage.id
+
                         true
                     }
                     R.id.deleteItem -> {
@@ -150,12 +155,39 @@ class communityChatActivity : AppCompatActivity() {
             }
     }
 
+    private fun editMessageInDatabase(newMessage: String, messageId: String) {
+        // Update the message in the database using Firebase
+        // Example code:
+        val databaseRef = FirebaseDatabase.getInstance().getReference("chat/community_chats/${currentMentor.id}/messages/$messageId")
+        databaseRef.child("message").setValue(newMessage)
+            .addOnSuccessListener {
+                // Handle success
+                Log.d(TAG, "Message edited successfully")
+                //update adapter
+                chatAdapter.editMessage(messageId, newMessage)
+            }
+            .addOnFailureListener { e ->
+                // Handle failure
+                Log.e(TAG, "Failed to edit message: ${e.message}")
+            }
+    }
+
     private fun sendMessage() {
         val message = messageField.text.toString()
-        //get current time in hour and minute e.g. 10:20 AM
         val currentTime = java.text.SimpleDateFormat("HH:mm a").format(java.util.Date())
-        saveMessageToDatabase(message, currentTime)
-
+        if (message.isNotEmpty()) {
+            if (selectedMessageId != null) {
+                // Update the message in the database
+                editMessageInDatabase(message, selectedMessageId!!)
+                // Clear the selected message ID
+                selectedMessageId = null
+            } else {
+                // Add a new message to the database
+                saveMessageToDatabase(message, currentTime)
+            }
+            // Clear the message field
+            messageField.text.clear()
+        }
     }
 
     private fun setButtonClickListeners() {

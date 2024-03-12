@@ -40,6 +40,7 @@ class MentorChatActivity : AppCompatActivity() {
     private lateinit var attachImage: Button
     private var chatId: String =""
     private var mentorImageUrl: String = ""
+    private var selectedMessageId: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,6 +134,9 @@ class MentorChatActivity : AppCompatActivity() {
                         // Handle edit message
                         // val editMessageDialog = EditMessageDialog(chatMessage.message, chatMessage.id, this)
                         // editMessageDialog.show(supportFragmentManager, "EditMessageDialog")
+                        messageField.setText(chatMessage.message)
+                        selectedMessageId = chatMessage.id
+
                         true
                     }
                     R.id.deleteItem -> {
@@ -217,9 +221,20 @@ class MentorChatActivity : AppCompatActivity() {
 
     private fun sendMessage() {
         val message = messageField.text.toString()
-        //get current time in hour and minute e.g. 10:20 AM
         val currentTime = java.text.SimpleDateFormat("HH:mm a").format(java.util.Date())
-        saveMessageToDatabase(message, currentTime)
+        if (message.isNotEmpty()) {
+            if (selectedMessageId != null) {
+                // Update the message in the database
+                editMessageInDatabase(message, selectedMessageId!!)
+                // Clear the selected message ID
+                selectedMessageId = null
+            } else {
+                // Add a new message to the database
+                saveMessageToDatabase(message, currentTime)
+            }
+            // Clear the message field
+            messageField.text.clear()
+        }
     }
     private fun setButtonClickListeners() {
 
