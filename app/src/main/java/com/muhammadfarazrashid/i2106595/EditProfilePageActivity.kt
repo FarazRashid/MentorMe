@@ -201,8 +201,9 @@ class EditProfilePageActivity : AppCompatActivity() {
             name.setText(currentUser.name)
             email.setText(currentUser.email)
             phone.setText(currentUser.phone)
+            setUpSpinners()
             val userProfileImage = UserManager.getUserUrl()
-            if (userProfileImage != null) {
+            if (userProfileImage.isNotEmpty()) {
                 Picasso.get().load(userProfileImage)
                     .into(userProfilePicture)
 

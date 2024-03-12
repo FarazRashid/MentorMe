@@ -239,10 +239,11 @@ class MyProfileActivity : AppCompatActivity() {
             name.setText(currentUser.name)
             city.setText(currentUser.city)
             Log.d("LoadUserInformation", "Profile Picture URL: ${currentUser.profilePictureUrl}")
-            if (currentUser.profilePictureUrl.isEmpty()) {
+            if (currentUser.profilePictureUrl.isNotEmpty()) {
                 Picasso.get().load(currentUser.profilePictureUrl).into(profilePicture)
             }
-            Picasso.get().load(currentUser.bannerImageUrl).into(banner)
+            if(currentUser.bannerImageUrl.isNotEmpty())
+                Picasso.get().load(currentUser.bannerImageUrl).into(banner)
 
 
         }
@@ -256,8 +257,10 @@ class MyProfileActivity : AppCompatActivity() {
             name.setText(currentUser.name)
             city.setText(currentUser.city)
             Log.d("LoadUserInformation", "Profile Picture URL: ${currentUser.profilePictureUrl}")
-            retrieveImageFromFirebaseStorage(this,"profile_picture", profilePicture)
-            Picasso.get().load(currentUser.bannerImageUrl).into(banner)
+            if (currentUser.profilePictureUrl.isNotEmpty())
+                retrieveImageFromFirebaseStorage(this,"profile_picture", profilePicture)
+            if(currentUser.bannerImageUrl.isNotEmpty())
+                Picasso.get().load(currentUser.bannerImageUrl).into(banner)
 
 
         }
