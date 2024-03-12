@@ -9,11 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Objects;
+
 public class ChatViewHolder extends RecyclerView.ViewHolder {
     private TextView messageTextView;
     private TextView timeTextView;
     private ImageView otherPersonImageView; // ImageView for the other person's image
     private ChatMessage chatMessage;
+
+    private ImageView messageImageView;
 
 
     public ChatViewHolder(@NonNull View itemView) {
@@ -26,6 +30,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     public void bind(ChatMessage chatMessage) {
         messageTextView.setText(chatMessage.getMessage());
         timeTextView.setText(chatMessage.getTimeStampFormatted());
+        messageImageView = itemView.findViewById(R.id.messageImageView);
 
         // Check if the message is from the other person and if there's an image available
         if (!chatMessage.isUser() && chatMessage.getOtherPersonImage() != null) {
@@ -37,6 +42,14 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
             if(otherPersonImageView != null) {
                 otherPersonImageView.setVisibility(View.GONE);
             }
+        }
+
+        if(!Objects.equals(chatMessage.getMessageImageUrl(), "")){
+            messageImageView.setVisibility(View.VISIBLE);
+            Picasso.get().load(chatMessage.getMessageImageUrl()).into(messageImageView);
+        }
+        else if(messageImageView != null){
+            messageImageView.setVisibility(View.GONE);
         }
     }
 }

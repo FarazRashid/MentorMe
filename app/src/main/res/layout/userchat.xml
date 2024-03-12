@@ -5,34 +5,54 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/userChatMessage"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginEnd="10dp"
-        android:text="Hello, you there?"
-        android:background="@drawable/rounded_details"
-        android:backgroundTint="#A2E6DF"
-        android:textSize="15sp"
-        android:textColor="@color/black"
         app:layout_constraintTop_toTopOf="parent"
-        />
+        android:layout_marginEnd="5dp"
+        android:padding="5dp"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/userChatTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="#A2E6DF"
-        android:text="10:32"
-        android:layout_marginRight="10dp"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        app:layout_constraintTop_toBottomOf="@id/userChatMessage"
-        app:layout_constraintEnd_toEndOf="@+id/userChatMessage"
-        app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteY="63dp" />
+        <TextView
+            android:id="@+id/userChatMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_details"
+            android:backgroundTint="#A2E6DF"
+            android:padding="15dp"
+            app:layout_constraintRight_toRightOf="parent"
+            android:text="Hello, you there?"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/messageImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/rounded_details"
+            android:backgroundTint="#A2E6DF"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userChatMessage" />
+
+        <TextView
+            android:id="@+id/userChatTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#A2E6DF"
+            android:text="10:32"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/messageImageView"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:layout_editor_absoluteY="63dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

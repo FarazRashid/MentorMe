@@ -25,6 +25,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 
@@ -116,6 +118,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
                 break;
             }
         }
+    }
+
+    @NotNull
+    public ChatMessage getMessage(@NotNull String messageId) {
+        for (ChatMessage chatMessage : chatMessages) {
+            if (chatMessage.getId().equals(messageId)) {
+                return chatMessage;
+            }
+        }
+        return null;
     }
 
     public interface onMessageClickListener {

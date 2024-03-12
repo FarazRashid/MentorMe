@@ -1,11 +1,14 @@
 package com.muhammadfarazrashid.i2106595
 
 import UserManager
+import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.View
@@ -14,6 +17,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
@@ -24,6 +28,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 
 class MentorChatActivity : AppCompatActivity() {
@@ -41,6 +46,8 @@ class MentorChatActivity : AppCompatActivity() {
     private var chatId: String =""
     private var mentorImageUrl: String = ""
     private var selectedMessageId: String? = null
+    private lateinit var selectedImageUri: Uri
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -199,6 +206,21 @@ class MentorChatActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 // Handle success
                 Log.d(TAG, "Message deleted successfully")
+                //if message has an image we will delete the image from storage too
+                if(chatAdapter.getMessage(messageId).messageImageUrl.isNotEmpty())
+                {
+                    val storage = FirebaseStorage.getInstance()
+                    val currentUser = UserManager.getCurrentUser()?.id
+                    val storageRef = currentUser?.let { storage.reference.child("chat_images").child(it).child(messageId) }
+                   Log.d("Deleting Message In Database", "Image URL: ${storageRef.toString()}")
+                    if (storageRef != null) {
+                        storageRef.delete().addOnSuccessListener {
+                            Log.d(TAG, "Image deleted successfully")
+                        }.addOnFailureListener { e ->
+                            Log.e(TAG, "Failed to delete image: ${e.message}")
+                        }
+                    }
+                }
                 //remove from adapter
                 chatAdapter.removeMessage(messageId)
             }
@@ -208,16 +230,6 @@ class MentorChatActivity : AppCompatActivity() {
             }
     }
 
-
-    fun onMessageEdit(position: Int, newMessage: String) {
-        val messageId= chatAdapter.chatMessages[position].id
-        editMessageInDatabase(messageId, newMessage)
-    }
-
-     fun onMessageDelete(position: Int) {
-        val messageId= chatAdapter.chatMessages[position].id
-        deleteMessageInDatabase(messageId)
-    }
 
     private fun sendMessage() {
         val message = messageField.text.toString()
@@ -236,6 +248,66 @@ class MentorChatActivity : AppCompatActivity() {
             messageField.text.clear()
         }
     }
+
+    private fun sendImageToStorage(selectedImageUri: Uri)
+    {
+        val storage = FirebaseStorage.getInstance()
+        val currentUser = UserManager.getCurrentUser()?.id
+        val database = FirebaseDatabase.getInstance()
+        val chatRef = currentUser?.let {
+            database.getReference("chat").child("mentor_chats").child(chatId).child("messages").push()
+        }
+        val storageRef = currentUser?.let { storage.reference.child("chat_images").child(it).child(
+            chatRef?.key.toString()) }
+        val uploadTask = storageRef?.putFile(selectedImageUri)
+
+        uploadTask?.addOnSuccessListener {
+            Log.d(TAG, "Image uploaded successfully")
+            storageRef.downloadUrl.addOnSuccessListener { uri ->
+                sendImageToChat(uri, chatRef?.key.toString())
+            }
+        }?.addOnFailureListener { e ->
+            Log.e(TAG, "Failed to upload image: ${e.message}")
+        }
+    }
+
+    private fun sendImageToChat(selectedImageUri: Uri, chatRef: String = "")
+    {
+        val database = FirebaseDatabase.getInstance()
+        val currentUser = UserManager.getCurrentUser()?.id
+        val chatRef = currentUser?.let {
+            database.getReference("chat").child("mentor_chats").child(chatId).child("messages").child(chatRef)
+        }
+
+        if (chatRef != null) {
+            val date = java.text.SimpleDateFormat("dd MMMM").format(java.util.Date())
+            chatRef.setValue(mapOf("message" to "", "time" to "", "date" to date, "userId" to currentUser, "messageImageUrl" to selectedImageUri.toString()))
+                .addOnSuccessListener {
+                    Log.d(TAG, "Image saved successfully")
+                    Log.d(TAG, "Image: ${chatRef.key}, Time: ")
+                    chatAdapter.addMessage(ChatMessage(chatRef.key.toString(),"", "", true, mentorImageUrl,selectedImageUri.toString()))
+
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Failed to save image: ${e.message}")
+                }
+        } else {
+            Log.e(TAG, "Failed to get chat reference")
+        }
+    }
+
+    private val pickImageGalleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            selectedImageUri = result.data?.data ?: return@registerForActivityResult
+            // Send the image to the chat
+            sendImageToStorage(selectedImageUri)
+        }
+    }
+    private fun sendImage(){
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        pickImageGalleryLauncher.launch(galleryIntent)
+    }
+
     private fun setButtonClickListeners() {
 
         sendButton.setOnClickListener {
@@ -255,7 +327,7 @@ class MentorChatActivity : AppCompatActivity() {
         }
 
         sendImage.setOnClickListener {
-            //sendImage()
+           sendImage()
         }
 
         attachImage.setOnClickListener {
@@ -345,8 +417,11 @@ class MentorChatActivity : AppCompatActivity() {
                     val date = messageSnapshot.child("date").value as String
                     val userId = messageSnapshot.child("userId").value as String
                     val messageId= messageSnapshot.key.toString()
+                    var messageImageUrl=""
+                    if(messageSnapshot.child("messageImageUrl").exists())
+                        messageImageUrl= messageSnapshot.child("messageImageUrl").value as String
                     val isCurrentUser = userId == currentUser
-                    chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, mentorImageUrl))
+                    chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, mentorImageUrl,messageImageUrl))
                 }
             }
 
