@@ -22,4 +22,9 @@
     <style name="CalenderViewWeekCustomText" parent="android:TextAppearance.DeviceDefault.Small">
         <item name="android:textColor">@color/black</item>
     </style>
+    <style name="MyMenuItemStyle" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:background">#8FDADE</item>
+        <item name="android:textColor">#FFFFFF</item> <!-- For example, setting text color to white -->
+    </style>
+
 </resources>

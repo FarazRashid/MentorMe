@@ -3,6 +3,7 @@ package com.muhammadfarazrashid.i2106595
 import UserManager
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -77,8 +78,6 @@ class loginActivity : AppCompatActivity() {
 
                     userManager.fetchAndSetCurrentUser(user?.email.toString())
                     {
-                        //check if usermanager is properly initialising
-
                         startActivity(intent)
                         finish()
                     }

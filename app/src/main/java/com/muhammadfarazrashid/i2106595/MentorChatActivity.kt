@@ -1,16 +1,21 @@
 package com.muhammadfarazrashid.i2106595
 
 import UserManager
+import android.content.ContentValues.TAG
+import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
+import android.view.ContextThemeWrapper
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -62,6 +67,7 @@ class MentorChatActivity : AppCompatActivity() {
         setButtonClickListeners()
         setBottomNavigationListener()
         setAddMentorClickListener()
+
     }
 
     private fun setMentorDetails(mentor: Mentor) {
@@ -106,24 +112,113 @@ class MentorChatActivity : AppCompatActivity() {
         }
 
         val chatMessages = ArrayList<ChatMessage>()
-        chatAdapter = ChatAdapter(chatMessages)
+        chatAdapter = ChatAdapter(chatMessages, this, object : ChatAdapter.onMessageClickListener {
+            override fun onMessageClick(position: Int) {
+                val view = recyclerView.layoutManager?.findViewByPosition(position)
+                showPopupMenu(chatMessages[position], view)
+            }
+        })
         recyclerView.adapter = chatAdapter
+    }
+
+    private fun showPopupMenu(chatMessage: ChatMessage, view: View?)
+    {
+        view?.let {
+            val contextWrapper = ContextThemeWrapper(this, R.style.MyMenuItemStyle)
+            val popupMenu = PopupMenu(contextWrapper, it)
+            popupMenu.menuInflater.inflate(R.menu.edit_delete_menu, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.editItem -> {
+                        // Handle edit message
+                        // val editMessageDialog = EditMessageDialog(chatMessage.message, chatMessage.id, this)
+                        // editMessageDialog.show(supportFragmentManager, "EditMessageDialog")
+                        true
+                    }
+                    R.id.deleteItem -> {
+                        deleteMessageInDatabase(chatMessage.id)
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popupMenu.show()
+        }
     }
 
     private fun saveMessageToDatabase(message: String, time: String) {
         val database = FirebaseDatabase.getInstance()
         val currentUser = UserManager.getCurrentUser()?.id
-        val chatRef = currentUser?.let { database.getReference("chat").child("mentor_chats").child(chatId).child("messages").push() }
-        //save message, time, and date (XX of month), userid to database without using chatmessage object
-        val date = java.text.SimpleDateFormat("dd MMMM").format(java.util.Date())
-        chatRef?.setValue(mapOf("message" to message, "time" to time, "date" to date, "userId" to currentUser))
+        val chatRef = currentUser?.let {
+            database.getReference("chat").child("mentor_chats").child(chatId).child("messages").push()
+        }
+
+        if (chatRef != null) {
+            val date = java.text.SimpleDateFormat("dd MMMM").format(java.util.Date())
+            chatRef.setValue(mapOf("message" to message, "time" to time, "date" to date, "userId" to currentUser))
+                .addOnSuccessListener {
+                    Log.d(TAG, "Message saved successfully")
+                    Log.d(TAG, "Message: ${chatRef.key}, Time: $time")
+                    chatAdapter.addMessage(ChatMessage(chatRef.key.toString(),message, time, true, ""))
+
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Failed to save message: ${e.message}")
+                }
+        } else {
+            Log.e(TAG, "Failed to get chat reference")
+        }
+    }
+
+    private fun editMessageInDatabase(newMessage: String, messageId: String) {
+        // Update the message in the database using Firebase
+        // Example code:
+        val databaseRef = FirebaseDatabase.getInstance().getReference("chat/mentor_chats/$chatId/messages/$messageId")
+        databaseRef.child("message").setValue(newMessage)
+            .addOnSuccessListener {
+                // Handle success
+                Log.d(TAG, "Message edited successfully")
+                //update adapter
+                chatAdapter.editMessage(messageId, newMessage)
+            }
+            .addOnFailureListener { e ->
+                // Handle failure
+                Log.e(TAG, "Failed to edit message: ${e.message}")
+            }
+    }
+
+    private fun deleteMessageInDatabase(messageId: String) {
+        // Delete the message from the database using Firebase
+        // Example code:
+        val databaseRef = FirebaseDatabase.getInstance().getReference("chat/mentor_chats/$chatId/messages/$messageId")
+        databaseRef.removeValue()
+            .addOnSuccessListener {
+                // Handle success
+                Log.d(TAG, "Message deleted successfully")
+                //remove from adapter
+                chatAdapter.removeMessage(messageId)
+            }
+            .addOnFailureListener { e ->
+                // Handle failure
+                Log.e(TAG, "Failed to delete message: ${e.message}")
+            }
+    }
+
+
+    fun onMessageEdit(position: Int, newMessage: String) {
+        val messageId= chatAdapter.chatMessages[position].id
+        editMessageInDatabase(messageId, newMessage)
+    }
+
+     fun onMessageDelete(position: Int) {
+        val messageId= chatAdapter.chatMessages[position].id
+        deleteMessageInDatabase(messageId)
     }
 
     private fun sendMessage() {
         val message = messageField.text.toString()
         //get current time in hour and minute e.g. 10:20 AM
         val currentTime = java.text.SimpleDateFormat("HH:mm a").format(java.util.Date())
-        chatAdapter.addMessage(ChatMessage(message, currentTime, true, ""))
         saveMessageToDatabase(message, currentTime)
     }
     private fun setButtonClickListeners() {
@@ -245,6 +340,7 @@ class MentorChatActivity : AppCompatActivity() {
             }
         })
     }
+
 
 
 

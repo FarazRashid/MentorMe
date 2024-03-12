@@ -1,20 +1,43 @@
 package com.muhammadfarazrashid.i2106595;
 
+import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
-    private List<ChatMessage> chatMessages;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
-    public ChatAdapter(List<ChatMessage> chatMessages) {
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.List;
+
+
+public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
+    public List<ChatMessage> chatMessages;
+    private Context context;
+
+    private onMessageClickListener listener;
+
+    public ChatAdapter(List<ChatMessage> chatMessages, Context context, onMessageClickListener listener) {
         this.chatMessages = chatMessages;
+        this.context = context;
+        this.listener = listener;
     }
 
     // Method to add a new message to the chat adapter
@@ -22,6 +45,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
         chatMessages.add(chatMessage);
         notifyDataSetChanged();
     }
+
+
 
     @NonNull
     @Override
@@ -36,8 +61,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ChatViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.bind(chatMessages.get(position));
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                // Show options for editing/deleting message
+                listener.onMessageClick(position);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -49,4 +83,47 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
     public int getItemViewType(int position) {
         return chatMessages.get(position).isUser() ? 0 : 1;
     }
+
+    //delete message
+
+    public void editMessage(int position, String newMessage) {
+        chatMessages.get(position).setMessage(newMessage);
+        notifyItemChanged(position);
+
+    }
+
+    public void deleteMessage(int position) {
+        chatMessages.remove(position);
+        notifyItemRemoved(position);
+
+    }
+
+    public void removeMessage(String id){
+        for (int i = 0; i < chatMessages.size(); i++) {
+            if (chatMessages.get(i).getId().equals(id)) {
+                chatMessages.remove(i);
+                notifyItemRemoved(i);
+                break;
+            }
+        }
+    }
+
+    public void editMessage(String id, String newMessage) {
+        for (int i = 0; i < chatMessages.size(); i++) {
+            if (chatMessages.get(i).getId().equals(id)) {
+                chatMessages.get(i).setMessage(newMessage);
+                notifyItemChanged(i);
+                break;
+            }
+        }
+    }
+
+    public interface onMessageClickListener {
+
+        void onMessageClick(int position);
+    }
+
+
+
 }
+

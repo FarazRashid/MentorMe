@@ -13,6 +13,8 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
     private TextView messageTextView;
     private TextView timeTextView;
     private ImageView otherPersonImageView; // ImageView for the other person's image
+    private ChatMessage chatMessage;
+
 
     public ChatViewHolder(@NonNull View itemView) {
         super(itemView);
