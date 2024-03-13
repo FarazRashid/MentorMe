@@ -17,6 +17,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
@@ -149,7 +150,7 @@ class MentorChatActivity : AppCompatActivity() {
                         true
                     }
                     R.id.deleteItem -> {
-                        FirebaseManager.deleteMessageInDatabase(chatMessage.id, "mentor_chats", chatId, chatAdapter)
+                        FirebaseManager.deleteMessageInDatabase(chatMessage.id, "mentor_chats", "chat_videos", chatId, chatAdapter)
                         true
                     }
                     else -> false
@@ -186,12 +187,59 @@ class MentorChatActivity : AppCompatActivity() {
         if (result.resultCode == Activity.RESULT_OK) {
             selectedImageUri = result.data?.data ?: return@registerForActivityResult
             // Send the image to the chat
-            FirebaseManager.sendImageToStorage(selectedImageUri, chatId, "mentor_chats",chatAdapter)
+            FirebaseManager.sendImageToStorage(selectedImageUri, chatId, "mentor_chats",chatAdapter,"chat_images")
         }
     }
+
+
+
     private fun sendImage(){
         val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         pickImageGalleryLauncher.launch(galleryIntent)
+    }
+
+    private val pickFile = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val selectedFileUri = result.data?.data ?: return@registerForActivityResult
+            val fileType = getFileType(selectedFileUri)
+            if (fileType != null) {
+
+                when (fileType) {
+                    FileType.IMAGE -> FirebaseManager.sendImageToStorage(selectedFileUri, chatId, "mentor_chats", chatAdapter, "chat_images")
+                    FileType.VIDEO -> FirebaseManager.sendImageToStorage(selectedFileUri, chatId, "mentor_chats", chatAdapter, "chat_videos")
+                    FileType.PDF -> FirebaseManager.sendImageToStorage(selectedFileUri, chatId, "mentor_chats", chatAdapter, "chat_documents")
+                    FileType.AUDIO -> FirebaseManager.sendImageToStorage(selectedFileUri, chatId, "mentor_chats", chatAdapter, "chat_audio")
+                }
+            } else {
+
+                Toast.makeText(this, "Unsupported file type", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun attachFile() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "*/*"
+        pickFile.launch(intent)
+    }
+
+    private fun getFileType(uri: Uri): FileType? {
+        val contentResolver = applicationContext.contentResolver
+        val mimeType = contentResolver.getType(uri)
+        return when {
+            mimeType?.startsWith("image") == true -> FileType.IMAGE
+            mimeType?.startsWith("video") == true -> FileType.VIDEO
+            mimeType?.endsWith("pdf") == true -> FileType.PDF
+            mimeType?.startsWith("audio") == true -> FileType.AUDIO
+            else -> null
+        }
+    }
+
+    enum class FileType {
+        IMAGE,
+        VIDEO,
+        PDF,
+        AUDIO
     }
 
     private fun setButtonClickListeners() {
@@ -217,7 +265,7 @@ class MentorChatActivity : AppCompatActivity() {
         }
 
         attachImage.setOnClickListener {
-            //attachImage()
+            attachFile()
         }
 
         findViewById<Button>(R.id.callButton).setOnClickListener {
@@ -303,11 +351,22 @@ class MentorChatActivity : AppCompatActivity() {
                     val date = messageSnapshot.child("date").value as String
                     val userId = messageSnapshot.child("userId").value as String
                     val messageId= messageSnapshot.key.toString()
+                    val isCurrentUser = userId == currentUser
                     var messageImageUrl=""
+                    var messageVideoUrl=""
+                    var messageAudioUrl=""
+                    var messageDocumentUrl=""
+
                     if(messageSnapshot.child("messageImageUrl").exists())
                         messageImageUrl= messageSnapshot.child("messageImageUrl").value as String
-                    val isCurrentUser = userId == currentUser
-                    chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, mentorImageUrl,messageImageUrl))
+                    if(messageSnapshot.child("messageVideoUrl").exists())
+                        messageVideoUrl= messageSnapshot.child("messageVideoUrl").value as String
+                    if(messageSnapshot.child("messageAudioUrl").exists())
+                        messageAudioUrl= messageSnapshot.child("messageAudioUrl").value as String
+                    if(messageDocumentUrl.isNotEmpty())
+                        messageDocumentUrl= messageSnapshot.child("messageDocumentUrl").value as String
+                    chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, mentorImageUrl,messageImageUrl,messageVideoUrl,messageAudioUrl,messageDocumentUrl))
+
                 }
             }
 

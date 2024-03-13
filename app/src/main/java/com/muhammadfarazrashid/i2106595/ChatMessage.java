@@ -16,6 +16,12 @@ public class ChatMessage {
 
     private String messageImageUrl="";
 
+    private String videoImageUrl="";
+
+    private String voiceMemoUrl="";
+
+    private String documentUrl="";
+
     private String id;
 
     public ChatMessage(String message, boolean isUser, String imageUrl){
@@ -48,12 +54,69 @@ public class ChatMessage {
         this.messageImageUrl = messageImageUrl;
     }
 
+    public ChatMessage(String id,String message, String time, boolean isUser, String imageUrl,String messageImageUrl,String videoImageUrl){
+        this.message = message;
+        this.time = time;
+        this.isUser = isUser;
+        this.imageUrl = imageUrl;
+        this.id = id;
+        this.messageImageUrl = messageImageUrl;
+        this.videoImageUrl = videoImageUrl;
+    }
+
+    public ChatMessage(String id,String message, String time, boolean isUser, String imageUrl,String messageImageUrl,String videoImageUrl, String voiceMemoUrl){
+        this.message = message;
+        this.time = time;
+        this.isUser = isUser;
+        this.imageUrl = imageUrl;
+        this.id = id;
+        this.messageImageUrl = messageImageUrl;
+        this.videoImageUrl = videoImageUrl;
+        this.voiceMemoUrl = voiceMemoUrl;
+    }
+
+    public ChatMessage(String id,String message, String time, boolean isUser, String imageUrl,String messageImageUrl,String videoImageUrl, String voiceMemoUrl, String documentUrl){
+        this.message = message;
+        this.time = time;
+        this.isUser = isUser;
+        this.imageUrl = imageUrl;
+        this.id = id;
+        this.messageImageUrl = messageImageUrl;
+        this.videoImageUrl = videoImageUrl;
+        this.voiceMemoUrl = voiceMemoUrl;
+        this.documentUrl = documentUrl;
+    }
+
+    public String getDocumentUrl() {
+        return documentUrl;
+    }
+
+    public void setDocumentUrl(String documentUrl) {
+        this.documentUrl = documentUrl;
+    }
+
     public String getMessageImageUrl() {
         return messageImageUrl;
     }
 
     public void setMessageImageUrl(String messageImageUrl) {
         this.messageImageUrl = messageImageUrl;
+    }
+
+    public String getVideoImageUrl() {
+        return videoImageUrl;
+    }
+
+    public void setVideoImageUrl(String videoImageUrl) {
+        this.videoImageUrl = videoImageUrl;
+    }
+
+    public String getVoiceMemoUrl() {
+        return voiceMemoUrl;
+    }
+
+    public void setVoiceMemoUrl(String voiceMemoUrl) {
+        this.voiceMemoUrl = voiceMemoUrl;
     }
 
     public String getId() {

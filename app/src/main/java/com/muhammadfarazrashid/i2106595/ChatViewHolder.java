@@ -1,9 +1,12 @@
 package com.muhammadfarazrashid.i2106595;
 
+import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +23,8 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
     private ImageView messageImageView;
 
+    public VideoView videoView;
+
 
     public ChatViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -27,6 +32,8 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         timeTextView = itemView.findViewById(R.id.userChatTime);
         otherPersonImageView = itemView.findViewById(R.id.otherUserImage); // Initialize ImageView
         messageImageView = itemView.findViewById(R.id.messageImageView);
+        videoView = itemView.findViewById(R.id.messageVideoView);
+
     }
 
     public void bind(ChatMessage chatMessage) {
@@ -55,6 +62,10 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         else if(messageImageView != null){
             messageImageView.setVisibility(View.GONE);
         }
+
+        Log.d("ChatViewHolder", "bind: " + chatMessage.getVideoImageUrl());
+
+
     }
 }
 

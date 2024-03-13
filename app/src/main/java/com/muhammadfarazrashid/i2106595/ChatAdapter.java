@@ -2,6 +2,8 @@ package com.muhammadfarazrashid.i2106595;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.MediaController;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
@@ -74,6 +78,31 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
                 return true;
             }
         });
+        if(!Objects.equals(chatMessages.get(position).getVideoImageUrl(), "")) {
+
+                holder.videoView.setVisibility(View.VISIBLE);
+                Uri uri = Uri.parse(chatMessages.get(position).getVideoImageUrl());
+                MediaController mediaController = new MediaController(holder.videoView.getContext());
+                mediaController.setAnchorView(holder.videoView);
+                holder.videoView.setMediaController(mediaController);
+                holder.videoView.setVideoURI(uri);
+                //on click start the video
+                Log.d("ChatAdapter", "onBindViewHolder: " + uri.toString());
+
+            holder.videoView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        if (holder.videoView.isPlaying()) {
+                            holder.videoView.pause();
+                        } else {
+                            holder.videoView.start();
+                        }
+                    }
+                });
+
+
+        }
     }
 
     @Override

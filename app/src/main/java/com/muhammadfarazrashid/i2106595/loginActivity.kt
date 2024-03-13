@@ -75,9 +75,12 @@ class loginActivity : AppCompatActivity() {
                     val intent = Intent(this, homePageActivity::class.java)
                     //call user managerclass and save it
                     val userManager = UserManager.getInstance()
+                    UserManager.saveUserLoggedInSP(true, getSharedPreferences("USER_LOGIN", MODE_PRIVATE))
+                    UserManager.saveUserEmailSP(user?.email.toString(), getSharedPreferences("USER_LOGIN", MODE_PRIVATE))
 
                     userManager.fetchAndSetCurrentUser(user?.email.toString())
                     {
+                        //add logged in boolean to shared preferences
                         startActivity(intent)
                         finish()
                     }

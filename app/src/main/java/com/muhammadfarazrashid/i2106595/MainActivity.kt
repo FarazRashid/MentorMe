@@ -1,5 +1,6 @@
 package com.muhammadfarazrashid.i2106595
 
+import UserManager
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -12,12 +13,28 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.entrancepage)
 
+        //if user logged in, go to home page
+        if (UserManager.getInstance().getUserLoggedInSP(getSharedPreferences("USER_LOGIN", MODE_PRIVATE))) {
 
-        // Delay for 5000 milliseconds (5 seconds)
-        Handler().postDelayed({
-            val intent = Intent(this, loginActivity::class.java)
-            startActivity(intent)
-            finish()
-        }, 5000)
+            UserManager.getInstance().getUserEmailSP(getSharedPreferences("USER_LOGIN", MODE_PRIVATE))?.let {
+
+                val intent = Intent(this, homePageActivity::class.java)
+
+                UserManager.getInstance().fetchAndSetCurrentUser(it)
+                {
+                    //add logged in boolean to shared preferences
+                    startActivity(intent)
+                    finish()
+                }
+
+            }
+        } else {
+            // Delay for 5000 milliseconds (5 seconds)
+            Handler().postDelayed({
+                val intent = Intent(this, loginActivity::class.java)
+                startActivity(intent)
+                finish()
+            }, 5000)
+        }
     }
 }

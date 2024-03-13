@@ -215,6 +215,15 @@
             app:layout_constraintTop_toTopOf="@+id/myProfileText"
             app:srcCompat="@drawable/threedots" />
 
+        <ImageView
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            app:layout_constraintEnd_toEndOf="@id/editProfile"
+            app:layout_constraintTop_toTopOf="@+id/myProfileText"
+            app:srcCompat="@drawable/logout" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

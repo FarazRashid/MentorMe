@@ -18,7 +18,8 @@ class FirebaseManager {
             selectedImageUri: Uri,
             chatId: String,
             chat_type: String,
-            chatAdapter: ChatAdapter
+            chatAdapter: ChatAdapter,
+            fileType:String
         ) {
             val storage = FirebaseStorage.getInstance()
             val currentUser = UserManager.getCurrentUser()?.id
@@ -28,7 +29,7 @@ class FirebaseManager {
                     .push()
             }
             val storageRef = currentUser?.let {
-                storage.reference.child("chat_images").child(it).child(
+                storage.reference.child(fileType).child(it).child(
                     chatRef?.key.toString()
                 )
             }
@@ -43,7 +44,8 @@ class FirebaseManager {
                         chatId,
                         chat_type,
                         "",
-                        chatAdapter
+                        chatAdapter,
+                        fileType
                     )
                 }
             }?.addOnFailureListener { e ->
@@ -57,47 +59,168 @@ class FirebaseManager {
             chatId: String,
             chat_type: String,
             mentorImageUrl: String,
-            chatAdapter: ChatAdapter
+            chatAdapter: ChatAdapter,
+            fileType:String
         ) {
             val database = FirebaseDatabase.getInstance()
             val currentUser = UserManager.getCurrentUser()?.id
+            val currentTime = java.text.SimpleDateFormat("HH:mm a").format(java.util.Date())
             val chatRef = currentUser?.let {
                 database.getReference("chat").child(chat_type).child(chatId).child("messages")
                     .child(chatRef)
             }
+            if(fileType=="chat_images") {
 
-            if (chatRef != null) {
-                val date = java.text.SimpleDateFormat("dd MMMM").format(java.util.Date())
-                chatRef.setValue(
-                    mapOf(
-                        "message" to "",
-                        "time" to "",
-                        "date" to date,
-                        "userId" to currentUser,
-                        "messageImageUrl" to selectedImageUri.toString()
-                    )
-                )
-                    .addOnSuccessListener {
-                        Log.d(ContentValues.TAG, "Image saved successfully")
-                        Log.d(ContentValues.TAG, "Image: ${chatRef.key}, Time: ")
-                        chatAdapter.addMessage(
-                            ChatMessage(
-                                chatRef.key.toString(),
-                                "",
-                                "",
-                                true,
-                                mentorImageUrl,
-                                selectedImageUri.toString()
-                            )
+                if (chatRef != null) {
+                    val date = java.text.SimpleDateFormat("dd MMMM").format(java.util.Date())
+                    chatRef.setValue(
+                        mapOf(
+                            "message" to "",
+                            "time" to currentTime,
+                            "date" to date,
+                            "userId" to currentUser,
+                            "messageImageUrl" to selectedImageUri.toString()
                         )
+                    )
+                        .addOnSuccessListener {
+                            Log.d(ContentValues.TAG, "Image saved successfully")
+                            Log.d(ContentValues.TAG, "Image: ${chatRef.key}, Time: ")
+                            chatAdapter.addMessage(
+                                ChatMessage(
+                                    chatRef.key.toString(),
+                                    "",
+                                    "",
+                                    true,
+                                    mentorImageUrl,
+                                    selectedImageUri.toString(),
+                                    "",
+                                    ""
+                                )
+                            )
 
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e(ContentValues.TAG, "Failed to save image: ${e.message}")
-                    }
-            } else {
-                Log.e(ContentValues.TAG, "Failed to get chat reference")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e(ContentValues.TAG, "Failed to save image: ${e.message}")
+                        }
+                } else {
+                    Log.e(ContentValues.TAG, "Failed to get chat reference")
+                }
             }
+            else if(fileType=="chat_videos")
+            {
+                if (chatRef != null) {
+                    val date = java.text.SimpleDateFormat("dd MMMM").format(java.util.Date())
+                    chatRef.setValue(
+                        mapOf(
+                            "message" to "",
+                            "time" to currentTime,
+                            "date" to date,
+                            "userId" to currentUser,
+                            "messageVideoUrl" to selectedImageUri.toString()
+                        )
+                    )
+                        .addOnSuccessListener {
+                            Log.d(ContentValues.TAG, "File saved successfully")
+                            Log.d(ContentValues.TAG, "File: ${chatRef.key}, Time: ")
+                            chatAdapter.addMessage(
+                                ChatMessage(
+                                    chatRef.key.toString(),
+                                    "",
+                                    "",
+                                    true,
+                                    mentorImageUrl,
+                                    "",
+                                    selectedImageUri.toString(),
+                                    "",
+                                    ""
+                                )
+                            )
+
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e(ContentValues.TAG, "Failed to save file: ${e.message}")
+                        }
+                } else {
+                    Log.e(ContentValues.TAG, "Failed to get chat reference")
+                }
+            }
+            else if(fileType=="chat_audios")
+            {
+                if (chatRef != null) {
+                    val date = java.text.SimpleDateFormat("dd MMMM").format(java.util.Date())
+                    chatRef.setValue(
+                        mapOf(
+                            "message" to "",
+                            "time" to currentTime,
+                            "date" to date,
+                            "userId" to currentUser,
+                            "messageVoiceUrl" to selectedImageUri.toString()
+                        )
+                    )
+                        .addOnSuccessListener {
+                            Log.d(ContentValues.TAG, "File saved successfully")
+                            Log.d(ContentValues.TAG, "File: ${chatRef.key}, Time: ")
+                            chatAdapter.addMessage(
+                                ChatMessage(
+                                    chatRef.key.toString(),
+                                    "",
+                                    "",
+                                    true,
+                                    mentorImageUrl,
+                                    "",
+                                    "",
+                                    selectedImageUri.toString(),
+                                    ""
+                                )
+                            )
+
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e(ContentValues.TAG, "Failed to save file: ${e.message}")
+                        }
+                } else {
+                    Log.e(ContentValues.TAG, "Failed to get chat reference")
+                }
+            }
+            else if(fileType=="chat_documents")
+            {
+                if (chatRef != null) {
+                    val date = java.text.SimpleDateFormat("dd MMMM").format(java.util.Date())
+                    chatRef.setValue(
+                        mapOf(
+                            "message" to "",
+                            "time" to currentTime,
+                            "date" to date,
+                            "userId" to currentUser,
+                            "messageDocumentUrl" to selectedImageUri.toString()
+                        )
+                    )
+                        .addOnSuccessListener {
+                            Log.d(ContentValues.TAG, "File saved successfully")
+                            Log.d(ContentValues.TAG, "File: ${chatRef.key}, Time: ")
+                            chatAdapter.addMessage(
+                                ChatMessage(
+                                    chatRef.key.toString(),
+                                    "",
+                                    "",
+                                    true,
+                                    mentorImageUrl,
+                                    "",
+                                    "",
+                                    "",
+                                    selectedImageUri.toString()
+                                )
+                            )
+
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e(ContentValues.TAG, "Failed to save file: ${e.message}")
+                        }
+                } else {
+                    Log.e(ContentValues.TAG, "Failed to get chat reference")
+                }
+            }
+
 
         }
 
@@ -125,7 +248,8 @@ class FirebaseManager {
             }
         }
 
-        fun deleteMessageInDatabase(messageId: String, chat_type: String, chatId: String, chatAdapter: ChatAdapter) {
+
+        fun deleteMessageInDatabase(messageId: String, chat_type: String, fileType: String, chatId: String, chatAdapter: ChatAdapter) {
             // Delete the message from the database using Firebase
             // Example code:
             val databaseRef = FirebaseDatabase.getInstance().getReference("chat/$chat_type/$chatId/messages/$messageId")
@@ -134,11 +258,12 @@ class FirebaseManager {
                     // Handle success
                     Log.d(ContentValues.TAG, "Message deleted successfully")
                     //if message has an image we will delete the image from storage too
-                    if(chatAdapter.getMessage(messageId).messageImageUrl.isNotEmpty())
+                    Log.d("Deleting Message In Database", "Image URL: ${chatAdapter.getMessage(messageId).videoImageUrl}")
+                    if(chatAdapter.getMessage(messageId).messageImageUrl.isNotEmpty() || chatAdapter.getMessage(messageId).videoImageUrl.isNotEmpty() || chatAdapter.getMessage(messageId).voiceMemoUrl.isNotEmpty()|| chatAdapter.getMessage(messageId).documentUrl.isNotEmpty())
                     {
                         val storage = FirebaseStorage.getInstance()
                         val currentUser = UserManager.getCurrentUser()?.id
-                        val storageRef = currentUser?.let { storage.reference.child("chat_images").child(it).child(messageId) }
+                        val storageRef = currentUser?.let { storage.reference.child(fileType).child(it).child(messageId) }
                         Log.d("Deleting Message In Database", "Image URL: ${storageRef.toString()}")
                         if (storageRef != null) {
                             storageRef.delete().addOnSuccessListener {

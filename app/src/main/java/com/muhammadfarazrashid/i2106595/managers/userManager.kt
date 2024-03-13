@@ -1,5 +1,6 @@
 
 import android.content.ContentValues.TAG
+import android.content.SharedPreferences
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -21,6 +22,29 @@ object UserManager {
             instance = UserManager
         }
         return instance!!
+    }
+
+    //save user logged in in shared preferences as boolean
+    fun saveUserLoggedInSP(isLoggedIn:Boolean, sharedPreferences: SharedPreferences) {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("IS_LOGGED_IN", isLoggedIn)
+        editor.apply()
+    }
+
+    fun saveUserEmailSP(email:String, sharedPreferences: SharedPreferences) {
+        val editor = sharedPreferences.edit()
+        editor.putString("EMAIL", email)
+        editor.apply()
+    }
+
+    //retrieve user logged in from shared preferences
+
+    fun getUserLoggedInSP(sharedPreferences: SharedPreferences): Boolean {
+        return sharedPreferences.getBoolean("IS_LOGGED_IN", false)
+    }
+
+    fun getUserEmailSP(sharedPreferences: SharedPreferences): String? {
+        return sharedPreferences.getString("EMAIL", null)
     }
 
     private lateinit var currentUser: User

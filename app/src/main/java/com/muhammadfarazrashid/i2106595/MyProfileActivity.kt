@@ -52,6 +52,7 @@ class MyProfileActivity : AppCompatActivity() {
     private var selectedImageRequestCode: Int = 0
     private val storageReference: StorageReference = FirebaseStorage.getInstance().reference
     private var isImageSelectionInProgress = false
+    private lateinit var logoutButton:ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +77,7 @@ class MyProfileActivity : AppCompatActivity() {
         profilePicture = findViewById(R.id.userProfilePhoto)
         editProfilePicture = findViewById(R.id.editProfilePicture)
         editProfileBanner = findViewById(R.id.editBanner)
+        logoutButton = findViewById(R.id.logoutButton)
     }
 
     private fun fetchReviewsData() {
@@ -156,6 +158,18 @@ class MyProfileActivity : AppCompatActivity() {
         banner.setOnClickListener {
             editProfileBanner()
         }
+
+        logoutButton.setOnClickListener {
+            logout()
+            startActivity(Intent(this, loginActivity::class.java))
+            finish()
+        }
+    }
+    private fun logout()
+    {
+        UserManager.saveUserLoggedInSP(false, getSharedPreferences("USER_LOGIN", MODE_PRIVATE))
+        UserManager.saveUserEmailSP("", getSharedPreferences("USER_LOGIN", MODE_PRIVATE))
+        mAuth.signOut()
     }
 
     private fun fetchUserFavorites() {
