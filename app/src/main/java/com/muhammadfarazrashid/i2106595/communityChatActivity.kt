@@ -114,7 +114,7 @@ class communityChatActivity : AppCompatActivity() {
                         true
                     }
                     R.id.deleteItem -> {
-                        deleteMessageInDatabase(chatMessage.id)
+                        FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats", currentMentor.id, chatAdapter)
                         true
                     }
                     else -> false
@@ -125,72 +125,7 @@ class communityChatActivity : AppCompatActivity() {
     }
 
 
-    private fun saveMessageToDatabase(message: String, time: String) {
-        val database = FirebaseDatabase.getInstance()
-        val currentUser = UserManager.getCurrentUser()?.id
-        val chatRef = currentUser?.let { database.getReference("chat").child("community_chats").child(currentMentor.id).child("messages").push() }
-        if (chatRef != null) {
-            val date = java.text.SimpleDateFormat("dd MMMM").format(java.util.Date())
-            chatRef.setValue(mapOf("message" to message, "time" to time, "date" to date, "userId" to currentUser))
-                .addOnSuccessListener {
-                    Log.d(TAG, "Message saved successfully")
-                    Log.d(TAG, "Message: ${chatRef.key}, Time: $time")
-                    chatAdapter.addMessage(ChatMessage(chatRef.key.toString(),message, time, true, ""))
 
-                }
-                .addOnFailureListener { e ->
-                    Log.e(TAG, "Failed to save message: ${e.message}")
-                }
-        } else {
-            Log.e(TAG, "Failed to get chat reference")
-        }
-    }
-
-    private fun deleteMessageInDatabase(messageId: String) {
-        val databaseRef = FirebaseDatabase.getInstance().getReference("chat/community_chats/${currentMentor.id}/messages/$messageId")
-        databaseRef.removeValue()
-            .addOnSuccessListener {
-                // Handle success
-                Log.d(TAG, "Message deleted successfully")
-                if(chatAdapter.getMessage(messageId).messageImageUrl.isNotEmpty())
-                {
-                    val storage = FirebaseStorage.getInstance()
-                    val currentUser = UserManager.getCurrentUser()?.id
-                    val storageRef = currentUser?.let { storage.reference.child("chat_images").child(it).child(messageId) }
-                    Log.d("Deleting Message In Database", "Image URL: ${storageRef.toString()}")
-                    if (storageRef != null) {
-                        storageRef.delete().addOnSuccessListener {
-                            Log.d(TAG, "Image deleted successfully")
-                        }.addOnFailureListener { e ->
-                            Log.e(TAG, "Failed to delete image: ${e.message}")
-                        }
-                    }
-                }
-                //remove from adapter
-                chatAdapter.removeMessage(messageId)
-            }
-            .addOnFailureListener { e ->
-                // Handle failure
-                Log.e(TAG, "Failed to delete message: ${e.message}")
-            }
-    }
-
-    private fun editMessageInDatabase(newMessage: String, messageId: String) {
-        // Update the message in the database using Firebase
-        // Example code:
-        val databaseRef = FirebaseDatabase.getInstance().getReference("chat/community_chats/${currentMentor.id}/messages/$messageId")
-        databaseRef.child("message").setValue(newMessage)
-            .addOnSuccessListener {
-                // Handle success
-                Log.d(TAG, "Message edited successfully")
-                //update adapter
-                chatAdapter.editMessage(messageId, newMessage)
-            }
-            .addOnFailureListener { e ->
-                // Handle failure
-                Log.e(TAG, "Failed to edit message: ${e.message}")
-            }
-    }
 
     private fun sendMessage() {
         val message = messageField.text.toString()
@@ -198,12 +133,13 @@ class communityChatActivity : AppCompatActivity() {
         if (message.isNotEmpty()) {
             if (selectedMessageId != null) {
                 // Update the message in the database
-                editMessageInDatabase(message, selectedMessageId!!)
+                FirebaseManager.editMessageInDatabase(message, selectedMessageId!!, "community_chats", currentMentor.id, chatAdapter)
                 // Clear the selected message ID
                 selectedMessageId = null
             } else {
                 // Add a new message to the database
-                saveMessageToDatabase(message, currentTime)
+                FirebaseManager.saveMessageToDatabase(message, currentTime, "community_chats",currentMentor.id , chatAdapter)
+
             }
             // Clear the message field
             messageField.text.clear()
