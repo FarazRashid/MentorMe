@@ -1,5 +1,6 @@
 package com.muhammadfarazrashid.i2106595;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         messageTextView = itemView.findViewById(R.id.userChatMessage);
         timeTextView = itemView.findViewById(R.id.userChatTime);
         otherPersonImageView = itemView.findViewById(R.id.otherUserImage); // Initialize ImageView
+        messageImageView = itemView.findViewById(R.id.messageImageView);
     }
 
     public void bind(ChatMessage chatMessage) {
@@ -43,6 +45,8 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
                 otherPersonImageView.setVisibility(View.GONE);
             }
         }
+
+        Log.d("ChatViewHolder", "bind: " + chatMessage.getMessageImageUrl());
 
         if(!Objects.equals(chatMessage.getMessageImageUrl(), "")){
             messageImageView.setVisibility(View.VISIBLE);
