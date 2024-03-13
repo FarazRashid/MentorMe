@@ -115,7 +115,14 @@ class communityChatActivity : AppCompatActivity() {
                         true
                     }
                     R.id.deleteItem -> {
-                        FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats","chat_videos" ,currentMentor.id, chatAdapter)
+                        if(chatMessage.messageImageUrl.isNotEmpty())
+                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats","chat_images" ,currentMentor.id, chatAdapter)
+                        else if(chatMessage.videoImageUrl.isNotEmpty())
+                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats","chat_videos" ,currentMentor.id, chatAdapter)
+                        else if(chatMessage.voiceMemoUrl.isNotEmpty())
+                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats","chat_audio" ,currentMentor.id, chatAdapter)
+                        else if(chatMessage.documentUrl.isNotEmpty())
+                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats","chat_documents" ,currentMentor.id, chatAdapter)
                         true
                     }
                     else -> false

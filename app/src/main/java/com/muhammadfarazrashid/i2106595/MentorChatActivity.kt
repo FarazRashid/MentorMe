@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.camera.video.VideoRecordEvent.Start
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
+import com.muhammadfarazrashid.i2106595.managers.photoTakerManager
 import com.squareup.picasso.Picasso
 
 class MentorChatActivity : AppCompatActivity() {
@@ -50,6 +52,7 @@ class MentorChatActivity : AppCompatActivity() {
     private var selectedMessageId: String? = null
     private lateinit var selectedImageUri: Uri
 
+    //create a request code in a bundle
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,6 +81,11 @@ class MentorChatActivity : AppCompatActivity() {
         setBottomNavigationListener()
         setAddMentorClickListener()
 
+    }
+
+    companion object {
+        const val EXTRA_MESSAGE = "com.example.intent.MESSAGE"
+        const val REQUEST_CODE_PHOTO_ACTIVITY = 1
     }
 
     private fun setMentorDetails(mentor: Mentor) {
@@ -150,7 +158,14 @@ class MentorChatActivity : AppCompatActivity() {
                         true
                     }
                     R.id.deleteItem -> {
-                        FirebaseManager.deleteMessageInDatabase(chatMessage.id, "mentor_chats", "chat_videos", chatId, chatAdapter)
+                        if(chatMessage.messageImageUrl.isNotEmpty())
+                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "mentor_chats", "chat_images", chatId, chatAdapter)
+                        else if(chatMessage.videoImageUrl.isNotEmpty())
+                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "mentor_chats", "chat_videos", chatId, chatAdapter)
+                        else if(chatMessage.voiceMemoUrl.isNotEmpty())
+                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "mentor_chats", "chat_audio", chatId, chatAdapter)
+                        else if(chatMessage.documentUrl.isNotEmpty())
+                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "mentor_chats", "chat_documents", chatId, chatAdapter)
                         true
                     }
                     else -> false
@@ -242,6 +257,32 @@ class MentorChatActivity : AppCompatActivity() {
         AUDIO
     }
 
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d("MentorChatActivity", "onActivityResult: requestCode=$requestCode, resultCode=$resultCode")
+        if (requestCode == REQUEST_CODE_PHOTO_ACTIVITY && resultCode == RESULT_OK) {
+            // Check if the result is from the PhotoActivity
+            val photoUri = data?.getStringExtra("photoUri")
+            if (photoUri != null) {
+                FirebaseManager.sendImageToStorage(Uri.parse(photoUri), chatId, "mentor_chats", chatAdapter, "chat_images")
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(photoTakerManager.getInstance().getImageUrl()!=""){
+            val photoUri = photoTakerManager.getInstance().getImageUrl()
+            Log.d("MentorChatActivity", "onResume: isTakingPhoto=${photoTakerManager.getInstance().getIsTakingPhoto()}"
+            )
+            FirebaseManager.sendImageToStorage(Uri.parse(photoUri), chatId, "mentor_chats", chatAdapter, "chat_images")
+            photoTakerManager.getInstance().setImageUrl("")
+        }
+    }
+
+
     private fun setButtonClickListeners() {
 
         sendButton.setOnClickListener {
@@ -257,7 +298,10 @@ class MentorChatActivity : AppCompatActivity() {
         }
 
         takePhoto.setOnClickListener {
-            //takePhoto()
+
+            photoTakerManager.getInstance().setIsTakingPhoto(true)
+            val intent= Intent(this, PhotoActivity::class.java)
+            startActivity(intent)
         }
 
         sendImage.setOnClickListener {
