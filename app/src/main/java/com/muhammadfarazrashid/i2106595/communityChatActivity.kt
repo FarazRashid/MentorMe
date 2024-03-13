@@ -1,9 +1,12 @@
 package com.muhammadfarazrashid.i2106595
 
+import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.ContextThemeWrapper
 import android.view.View
@@ -11,6 +14,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
@@ -21,6 +25,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
 import com.muhammadfarazrashid.i2106595.dataclasses.User
 import com.squareup.picasso.Picasso
 
@@ -39,7 +45,7 @@ class communityChatActivity : AppCompatActivity() {
     private lateinit var attachImage: Button
     private lateinit var listOfUsers: ArrayList<User>
     private var selectedMessageId: String? = null
-
+    private lateinit var selectedImageUri: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,6 +152,20 @@ class communityChatActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 // Handle success
                 Log.d(TAG, "Message deleted successfully")
+                if(chatAdapter.getMessage(messageId).messageImageUrl.isNotEmpty())
+                {
+                    val storage = FirebaseStorage.getInstance()
+                    val currentUser = UserManager.getCurrentUser()?.id
+                    val storageRef = currentUser?.let { storage.reference.child("chat_images").child(it).child(messageId) }
+                    Log.d("Deleting Message In Database", "Image URL: ${storageRef.toString()}")
+                    if (storageRef != null) {
+                        storageRef.delete().addOnSuccessListener {
+                            Log.d(TAG, "Image deleted successfully")
+                        }.addOnFailureListener { e ->
+                            Log.e(TAG, "Failed to delete image: ${e.message}")
+                        }
+                    }
+                }
                 //remove from adapter
                 chatAdapter.removeMessage(messageId)
             }
@@ -190,6 +210,19 @@ class communityChatActivity : AppCompatActivity() {
         }
     }
 
+    private val pickImageGalleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            selectedImageUri = result.data?.data ?: return@registerForActivityResult
+            // Send the image to the chat
+            FirebaseManager.sendImageToStorage(selectedImageUri, currentMentor.id, "community_chats",chatAdapter)
+        }
+    }
+    private fun sendImage(){
+        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        pickImageGalleryLauncher.launch(galleryIntent)
+    }
+
+
     private fun setButtonClickListeners() {
 
         sendButton.setOnClickListener {
@@ -209,7 +242,7 @@ class communityChatActivity : AppCompatActivity() {
         }
 
         sendImage.setOnClickListener {
-            //sendImage()
+            sendImage()
         }
 
         attachImage.setOnClickListener {
@@ -345,14 +378,17 @@ class communityChatActivity : AppCompatActivity() {
                     val userId = messageSnapshot.child("userId").value as String
                     val messageId= messageSnapshot.key.toString()
                     val isCurrentUser = userId == currentUser
+                    var messageImageUrl=""
+                    if(messageSnapshot.child("messageImageUrl").exists())
+                        messageImageUrl= messageSnapshot.child("messageImageUrl").value as String
                     if(!isCurrentUser&& userId!=currentMentor.id){
                         val user = listOfUsers.find { it.id==userId }
                         if(user!=null){
-                            chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, user.profilePictureUrl))
+                            chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, user.profilePictureUrl,messageImageUrl))
                         }
                     }
                     else
-                        chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, mentorImageUrl))
+                        chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, mentorImageUrl,messageImageUrl))
                 }
 
             }

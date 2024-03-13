@@ -29,6 +29,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
+import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
 import com.squareup.picasso.Picasso
 
 class MentorChatActivity : AppCompatActivity() {
@@ -114,6 +115,7 @@ class MentorChatActivity : AppCompatActivity() {
         sendImage = findViewById(R.id.sendImage)
         attachImage = findViewById(R.id.sendFile)
         sendButton = findViewById(R.id.sendButton)
+
         recyclerView = findViewById(R.id.communityChatRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this).apply {
             stackFromEnd = true
@@ -249,58 +251,13 @@ class MentorChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendImageToStorage(selectedImageUri: Uri)
-    {
-        val storage = FirebaseStorage.getInstance()
-        val currentUser = UserManager.getCurrentUser()?.id
-        val database = FirebaseDatabase.getInstance()
-        val chatRef = currentUser?.let {
-            database.getReference("chat").child("mentor_chats").child(chatId).child("messages").push()
-        }
-        val storageRef = currentUser?.let { storage.reference.child("chat_images").child(it).child(
-            chatRef?.key.toString()) }
-        val uploadTask = storageRef?.putFile(selectedImageUri)
 
-        uploadTask?.addOnSuccessListener {
-            Log.d(TAG, "Image uploaded successfully")
-            storageRef.downloadUrl.addOnSuccessListener { uri ->
-                sendImageToChat(uri, chatRef?.key.toString())
-            }
-        }?.addOnFailureListener { e ->
-            Log.e(TAG, "Failed to upload image: ${e.message}")
-        }
-    }
-
-    private fun sendImageToChat(selectedImageUri: Uri, chatRef: String = "")
-    {
-        val database = FirebaseDatabase.getInstance()
-        val currentUser = UserManager.getCurrentUser()?.id
-        val chatRef = currentUser?.let {
-            database.getReference("chat").child("mentor_chats").child(chatId).child("messages").child(chatRef)
-        }
-
-        if (chatRef != null) {
-            val date = java.text.SimpleDateFormat("dd MMMM").format(java.util.Date())
-            chatRef.setValue(mapOf("message" to "", "time" to "", "date" to date, "userId" to currentUser, "messageImageUrl" to selectedImageUri.toString()))
-                .addOnSuccessListener {
-                    Log.d(TAG, "Image saved successfully")
-                    Log.d(TAG, "Image: ${chatRef.key}, Time: ")
-                    chatAdapter.addMessage(ChatMessage(chatRef.key.toString(),"", "", true, mentorImageUrl,selectedImageUri.toString()))
-
-                }
-                .addOnFailureListener { e ->
-                    Log.e(TAG, "Failed to save image: ${e.message}")
-                }
-        } else {
-            Log.e(TAG, "Failed to get chat reference")
-        }
-    }
 
     private val pickImageGalleryLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             selectedImageUri = result.data?.data ?: return@registerForActivityResult
             // Send the image to the chat
-            sendImageToStorage(selectedImageUri)
+            FirebaseManager.sendImageToStorage(selectedImageUri, chatId, "mentor_chats",chatAdapter)
         }
     }
     private fun sendImage(){
