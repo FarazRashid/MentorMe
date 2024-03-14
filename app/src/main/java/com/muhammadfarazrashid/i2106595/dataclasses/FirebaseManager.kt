@@ -154,12 +154,13 @@ class FirebaseManager {
                             "time" to currentTime,
                             "date" to date,
                             "userId" to currentUser,
-                            "messageVoiceUrl" to selectedImageUri.toString()
+                            "messageAudioUrl" to selectedImageUri.toString()
                         )
                     )
                         .addOnSuccessListener {
                             Log.d(ContentValues.TAG, "File saved successfully")
                             Log.d(ContentValues.TAG, "File: ${chatRef.key}, Time: ")
+                            Log.d(ContentValues.TAG, "File: ${selectedImageUri.toString()}, Time: ")
                             chatAdapter.addMessage(
                                 ChatMessage(
                                     chatRef.key.toString(),

@@ -1,12 +1,13 @@
 package com.muhammadfarazrashid.i2106595
 
 import UserManager
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentValues.TAG
-import android.content.ContextWrapper
 import android.content.Intent
-import android.graphics.drawable.Drawable
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -15,16 +16,21 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
-import androidx.camera.video.VideoRecordEvent.Start
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.devlomi.record_view.OnRecordClickListener
+import com.devlomi.record_view.OnRecordListener
+import com.devlomi.record_view.RecordButton
+import com.devlomi.record_view.RecordPermissionHandler
+import com.devlomi.record_view.RecordView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -34,6 +40,11 @@ import com.google.firebase.storage.FirebaseStorage
 import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
 import com.muhammadfarazrashid.i2106595.managers.photoTakerManager
 import com.squareup.picasso.Picasso
+import java.io.File
+import java.io.IOException
+import java.util.UUID
+import java.util.concurrent.TimeUnit
+
 
 class MentorChatActivity : AppCompatActivity() {
 
@@ -42,7 +53,7 @@ class MentorChatActivity : AppCompatActivity() {
     private lateinit var mentorName: TextView
     private lateinit var currentMentor: Mentor
     private lateinit var sendButton: Button
-    private lateinit var micButton: Button
+    private lateinit var recordButton: RecordButton
     private lateinit var messageField: EditText
     private lateinit var takePhoto: Button
     private lateinit var sendImage: Button
@@ -51,6 +62,10 @@ class MentorChatActivity : AppCompatActivity() {
     private var mentorImageUrl: String = ""
     private var selectedMessageId: String? = null
     private lateinit var selectedImageUri: Uri
+    private lateinit var recordView: RecordView
+    private var audioRecorder: AudioRecorder? = null
+    private var recordFile: File? = null
+
 
     //create a request code in a bundle
 
@@ -62,6 +77,9 @@ class MentorChatActivity : AppCompatActivity() {
         currentMentor = intent.getParcelableExtra<Mentor>("mentor")!!
         setMentorDetails(currentMentor)
         initViews()
+
+        initRecording()
+
 
         getChatId(object : ChatIdCallback {
             override fun onChatIdReceived(chatId1: String) {
@@ -118,13 +136,12 @@ class MentorChatActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        micButton = findViewById(R.id.micButton)
         messageField = findViewById(R.id.reviewText)
         takePhoto = findViewById(R.id.takePhoto)
         sendImage = findViewById(R.id.sendImage)
         attachImage = findViewById(R.id.sendFile)
         sendButton = findViewById(R.id.sendButton)
-
+       
         recyclerView = findViewById(R.id.communityChatRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this).apply {
             stackFromEnd = true
@@ -138,6 +155,144 @@ class MentorChatActivity : AppCompatActivity() {
             }
         })
         recyclerView.adapter = chatAdapter
+    }
+    
+  
+    private fun initRecording(){
+
+            audioRecorder = AudioRecorder()
+            recordView = findViewById(R.id.record_view)
+            recordButton = findViewById(R.id.micButton)
+         //   val btnChangeOnclick = findViewById<Button>(R.id.btn_change_onclick)
+
+            // To Enable Record Lock
+//        recordView.setLockEnabled(true);
+//        recordView.setRecordLockImageView(findViewById(R.id.record_lock));
+            //IMPORTANT
+            recordButton.setRecordView(recordView)
+
+            // if you want to click the button (in case if you want to make the record button a Send Button for example..)
+//        recordButton.setListenForRecord(false);
+
+            //ListenForRecord must be false ,otherwise onClick will not be called
+            recordButton.setOnRecordClickListener {
+                Toast.makeText(this@MentorChatActivity, "RECORD BUTTON CLICKED", Toast.LENGTH_SHORT).show()
+                Log.d("RecordButton", "RECORD BUTTON CLICKED")
+            }
+
+
+            //Cancel Bounds is when the Slide To Cancel text gets before the timer . default is 8
+            recordView.cancelBounds = 8f
+            recordView.setSmallMicColor(Color.parseColor("#c2185b"))
+
+            //prevent recording under one Second
+            recordView.setLessThanSecondAllowed(false)
+            recordView.setSlideToCancelText("Slide To Cancel")
+            recordView.setOnRecordListener(object : OnRecordListener {
+                override fun onStart() {
+                    onRecordSetupVisibilities()
+                    recordFile = File(filesDir, UUID.randomUUID().toString() + ".3gp")
+                    try {
+                        audioRecorder!!.start(recordFile!!.path)
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                    Log.d("RecordView", "onStart")
+                    Toast.makeText(this@MentorChatActivity, "OnStartRecord", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onCancel() {
+                    stopRecording(true)
+                    onFinishSetupVisibilities()
+                    Toast.makeText(this@MentorChatActivity, "onCancel", Toast.LENGTH_SHORT).show()
+                    Log.d("RecordView", "onCancel")
+                }
+
+                override fun onFinish(recordTime: Long, limitReached: Boolean) {
+                    stopRecording(false)
+                    onFinishSetupVisibilities()
+                    val time = getHumanTimeText(recordTime)
+                    Toast.makeText(
+                        this@MentorChatActivity,
+                        "onFinishRecord - Recorded Time is: " + time + " File saved at " + recordFile!!.path,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    FirebaseManager.sendImageToStorage(Uri.fromFile(recordFile), chatId, "mentor_chats", chatAdapter, "chat_audios")
+                    Log.d("RecordView", "onFinish Limit Reached? $limitReached")
+                    if (time != null) {
+                        Log.d("RecordTime", time)
+                    }
+                }
+
+                override fun onLessThanSecond() {
+                    stopRecording(true)
+                    onFinishSetupVisibilities()
+                    Toast.makeText(this@MentorChatActivity, "OnLessThanSecond", Toast.LENGTH_SHORT).show()
+                    Log.d("RecordView", "onLessThanSecond")
+                }
+
+                override fun onLock() {
+                    onFinishSetupVisibilities()
+                    Toast.makeText(this@MentorChatActivity, "onLock", Toast.LENGTH_SHORT).show()
+                    Log.d("RecordView", "onLock")
+                }
+            })
+            recordView.setOnBasketAnimationEndListener {
+                Log.d(
+                    "RecordView",
+                    "Basket Animation Finished"
+                )
+            }
+            recordView.setRecordPermissionHandler(RecordPermissionHandler {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    return@RecordPermissionHandler true
+                }
+                val recordPermissionAvailable = ContextCompat.checkSelfPermission(
+                    this@MentorChatActivity,
+                    Manifest.permission.RECORD_AUDIO
+                ) == PermissionChecker.PERMISSION_GRANTED
+                if (recordPermissionAvailable) {
+                    return@RecordPermissionHandler true
+                }
+                ActivityCompat.requestPermissions(
+                    this@MentorChatActivity, arrayOf(Manifest.permission.RECORD_AUDIO),
+                    0
+                )
+                false
+            })
+    }
+
+
+    private fun stopRecording(deleteFile: Boolean) {
+        audioRecorder!!.stop()
+        if (recordFile != null && deleteFile) {
+            recordFile!!.delete()
+        }
+    }
+
+    private fun onRecordSetupVisibilities() {
+        recordView.visibility = View.VISIBLE
+        messageField.visibility = View.GONE
+        attachImage.visibility = View.GONE
+        sendImage.visibility = View.GONE
+
+    }
+
+    private fun onFinishSetupVisibilities() {
+        recordView.visibility = View.GONE
+        messageField.visibility = View.VISIBLE
+        attachImage.visibility = View.VISIBLE
+        sendImage.visibility = View.VISIBLE
+    }
+
+    @SuppressLint("DefaultLocale")
+    private fun getHumanTimeText(milliseconds: Long): String? {
+        return java.lang.String.format(
+            "%02d:%02d",
+            TimeUnit.MILLISECONDS.toMinutes(milliseconds),
+            TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
+                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds))
+        )
     }
 
     private fun showPopupMenu(chatMessage: ChatMessage, view: View?)
@@ -163,7 +318,7 @@ class MentorChatActivity : AppCompatActivity() {
                         else if(chatMessage.videoImageUrl.isNotEmpty())
                             FirebaseManager.deleteMessageInDatabase(chatMessage.id, "mentor_chats", "chat_videos", chatId, chatAdapter)
                         else if(chatMessage.voiceMemoUrl.isNotEmpty())
-                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "mentor_chats", "chat_audio", chatId, chatAdapter)
+                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "mentor_chats", "chat_audios", chatId, chatAdapter)
                         else if(chatMessage.documentUrl.isNotEmpty())
                             FirebaseManager.deleteMessageInDatabase(chatMessage.id, "mentor_chats", "chat_documents", chatId, chatAdapter)
                         true
@@ -293,7 +448,7 @@ class MentorChatActivity : AppCompatActivity() {
             }
         }
 
-        micButton.setOnClickListener {
+        recordButton.setOnClickListener {
            // recordVoiceMessage()
         }
 

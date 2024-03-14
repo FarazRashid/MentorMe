@@ -42,6 +42,7 @@ android {
 
 dependencies {
 
+
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
@@ -76,6 +77,10 @@ dependencies {
 
     implementation ("androidx.camera:camera-view:${camerax_version}")
     implementation ("androidx.camera:camera-extensions:${camerax_version}")
+
+    implementation ("com.github.3llomi:RecordView:3.1.3")
+    implementation ("com.github.JagarYousef:ChatVoicePlayer:1.0.7")
+
 
 
 

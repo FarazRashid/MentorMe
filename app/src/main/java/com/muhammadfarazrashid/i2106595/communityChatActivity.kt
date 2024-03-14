@@ -29,6 +29,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
 import com.muhammadfarazrashid.i2106595.dataclasses.User
+import com.muhammadfarazrashid.i2106595.managers.photoTakerManager
 import com.squareup.picasso.Picasso
 
 class communityChatActivity : AppCompatActivity() {
@@ -61,6 +62,18 @@ class communityChatActivity : AppCompatActivity() {
         setButtonClickListeners()
         setBottomNavigationListener()
         setAddMentorClickListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(photoTakerManager.getInstance().getImageUrl()!=""){
+            val photoUri = photoTakerManager.getInstance().getImageUrl()
+            Log.d("MentorChatActivity", "onResume: isTakingPhoto=${photoTakerManager.getInstance().getIsTakingPhoto()}"
+            )
+            FirebaseManager.sendImageToStorage(Uri.parse(photoUri), currentMentor.id, "mentor_chats", chatAdapter, "chat_images")
+            photoTakerManager.getInstance().setImageUrl("")
+        }
     }
 
     private fun setMentorDetails(mentor: Mentor) {
@@ -226,7 +239,9 @@ class communityChatActivity : AppCompatActivity() {
         }
 
         takePhoto.setOnClickListener {
-            //takePhoto()
+            photoTakerManager.getInstance().setIsTakingPhoto(true)
+            val intent= Intent(this, PhotoActivity::class.java)
+            startActivity(intent)
         }
 
         sendImage.setOnClickListener {

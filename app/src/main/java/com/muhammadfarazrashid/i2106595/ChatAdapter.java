@@ -60,25 +60,32 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
         View view;
         if (viewType == 0) { // User message layout
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.userchat, parent, false);
-        } else { // Other person's message layout
+        } else if(viewType==1) { // Other person's message layout
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.otheruserchat, parent, false);
+        }
+        else if(viewType==2) { // User message layout with voice memo
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.right_audio_item_layout, parent, false);
+        }
+        else { // Other person's message layout with voice memo
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.left_audio_item_layout, parent, false);
         }
         return new ChatViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        holder.bind(chatMessages.get(position));
+        if(getItemViewType(position)==0 || getItemViewType(position)==1) {
+            holder.bind(chatMessages.get(position), "message");
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                // Show options for editing/deleting message
-                listener.onMessageClick(position);
-                return true;
-            }
-        });
-        if(!Objects.equals(chatMessages.get(position).getVideoImageUrl(), "")) {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    // Show options for editing/deleting message
+                    listener.onMessageClick(position);
+                    return true;
+                }
+            });
+            if(!Objects.equals(chatMessages.get(position).getVideoImageUrl(), "")) {
 
                 holder.videoView.setVisibility(View.VISIBLE);
                 Uri uri = Uri.parse(chatMessages.get(position).getVideoImageUrl());
@@ -89,7 +96,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
                 //on click start the video
                 Log.d("ChatAdapter", "onBindViewHolder: " + uri.toString());
 
-            holder.videoView.setOnClickListener(new View.OnClickListener() {
+                holder.videoView.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View view) {
@@ -102,7 +109,33 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
                 });
 
 
+            }
+
+        }else if(getItemViewType(position)==2 ) {
+            holder.bind(chatMessages.get(position), "voice");
+
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    // Show options for editing/deleting message
+                    listener.onMessageClick(position);
+                    return true;
+                }
+            });
         }
+        else if(getItemViewType(position)==3) {
+            holder.bind(chatMessages.get(position), "voice_other_user");
+
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    // Show options for editing/deleting message
+                    listener.onMessageClick(position);
+                    return true;
+                }
+            });
+        }
+
     }
 
     @Override
@@ -112,7 +145,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return chatMessages.get(position).isUser() ? 0 : 1;
+
+        if(chatMessages.get(position).isUser()){
+            if(!Objects.equals(chatMessages.get(position).getVoiceMemoUrl(), ""))
+                return 2;
+            else
+                return 0;
+        }
+        else{
+            if(!Objects.equals(chatMessages.get(position).getVoiceMemoUrl(), ""))
+                return 3;
+            else
+                return 1;
+        }
+
     }
 
     //delete message

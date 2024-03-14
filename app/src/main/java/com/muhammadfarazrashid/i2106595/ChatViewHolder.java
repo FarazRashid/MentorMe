@@ -15,6 +15,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
+import me.jagar.chatvoiceplayerlibrary.VoicePlayerView;
+
+
 public class ChatViewHolder extends RecyclerView.ViewHolder {
     private TextView messageTextView;
     private TextView timeTextView;
@@ -25,6 +28,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
     public VideoView videoView;
 
+    private VoicePlayerView voicePlayerView;
 
     public ChatViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -33,37 +37,80 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         otherPersonImageView = itemView.findViewById(R.id.otherUserImage); // Initialize ImageView
         messageImageView = itemView.findViewById(R.id.messageImageView);
         videoView = itemView.findViewById(R.id.messageVideoView);
-
+        voicePlayerView = itemView.findViewById(R.id.voicePlayerView);
     }
 
-    public void bind(ChatMessage chatMessage) {
-        messageTextView.setText(chatMessage.getMessage());
-        timeTextView.setText(chatMessage.getTimeStampFormatted());
-        messageImageView = itemView.findViewById(R.id.messageImageView);
+    public void bind(ChatMessage chatMessage, String type){
 
-        // Check if the message is from the other person and if there's an image available
-        if (!chatMessage.isUser() && chatMessage.getOtherPersonImage() != null) {
-            if(otherPersonImageView != null) {
-                otherPersonImageView.setVisibility(View.VISIBLE);
-                Picasso.get().load(chatMessage.getOtherPersonImage()).into(otherPersonImageView);
+        if(Objects.equals(type, "message")) {
+
+            messageTextView.setText(chatMessage.getMessage());
+            timeTextView.setText(chatMessage.getTimeStampFormatted());
+
+            // Check if the message is from the other person and if there's an image available
+            if (!chatMessage.isUser() && chatMessage.getOtherPersonImage() != null) {
+                if (otherPersonImageView != null) {
+                    otherPersonImageView.setVisibility(View.VISIBLE);
+                    Picasso.get().load(chatMessage.getOtherPersonImage()).into(otherPersonImageView);
+                }
+            } else {
+                if (otherPersonImageView != null) {
+                    otherPersonImageView.setVisibility(View.GONE);
+                }
             }
-        } else {
-            if(otherPersonImageView != null) {
-                otherPersonImageView.setVisibility(View.GONE);
+
+            Log.d("ChatViewHolder", "bind: " + chatMessage.getMessageImageUrl());
+
+            if (!Objects.equals(chatMessage.getMessageImageUrl(), "")) {
+                messageImageView.setVisibility(View.VISIBLE);
+                Picasso.get().load(chatMessage.getMessageImageUrl()).into(messageImageView);
+            } else if (messageImageView != null) {
+                messageImageView.setVisibility(View.GONE);
             }
+
+            if (!Objects.equals(chatMessage.getVideoImageUrl(), "")) {
+                videoView.setVisibility(View.VISIBLE);
+                videoView.setVideoURI(Uri.parse(chatMessage.getVideoImageUrl()));
+                videoView.setMediaController(new MediaController(itemView.getContext()));
+                videoView.start();
+            } else if (videoView != null) {
+                videoView.setVisibility(View.GONE);
+            }
+
+            Log.d("ChatViewHolder", "bind: " + chatMessage.getVideoImageUrl());
+
+        }
+        else if(Objects.equals(type, "voice")) {
+
+            if (!Objects.equals(chatMessage.getVoiceMemoUrl(), "")) {
+                voicePlayerView.setAudio(chatMessage.getVoiceMemoUrl());
+            }
+
+            Log.d("ChatViewHolder", "bind: " + chatMessage.getVoiceMemoUrl());
+
         }
 
-        Log.d("ChatViewHolder", "bind: " + chatMessage.getMessageImageUrl());
+        else if(Objects.equals(type, "voice_other_user"))
+        {
+            if (!Objects.equals(chatMessage.getVoiceMemoUrl(), "")) {
+                voicePlayerView.setAudio(chatMessage.getVoiceMemoUrl());
+            }
 
-        if(!Objects.equals(chatMessage.getMessageImageUrl(), "")){
-            messageImageView.setVisibility(View.VISIBLE);
-            Picasso.get().load(chatMessage.getMessageImageUrl()).into(messageImageView);
-        }
-        else if(messageImageView != null){
-            messageImageView.setVisibility(View.GONE);
-        }
+            Log.d("ChatViewHolder", "bind: " + chatMessage.getVoiceMemoUrl());
 
-        Log.d("ChatViewHolder", "bind: " + chatMessage.getVideoImageUrl());
+            // Check if the message is from the other person and if there's an image available
+            if (!chatMessage.isUser() && chatMessage.getOtherPersonImage() != null) {
+                if (otherPersonImageView != null) {
+                    otherPersonImageView.setVisibility(View.VISIBLE);
+                    Picasso.get().load(chatMessage.getOtherPersonImage()).into(otherPersonImageView);
+                }
+            } else {
+                if (otherPersonImageView != null) {
+                    otherPersonImageView.setVisibility(View.GONE);
+                }
+            }
+
+        }
 
 
     }
