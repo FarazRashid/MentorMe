@@ -1,7 +1,6 @@
 package com.muhammadfarazrashid.i2106595
 
 
-import UserManager
 import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context

@@ -1,94 +1,119 @@
 package com.muhammadfarazrashid.i2106595
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.ChildEventListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
 
 class NotificationsActivity : AppCompatActivity() {
 
-    private lateinit var notifcationsRecycler: RecyclerView
+    private lateinit var notificationsRecycler: RecyclerView
     private lateinit var notificationsAdapter: RecentSearchesAdapter
     private val notificationsList = mutableListOf<String>()
+    private val notificationsIdList= mutableListOf<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifications)
-
-        notifcationsRecycler = findViewById(R.id.notificationsRecyclerView)
-
-        // Create a list of recent searches (replace with your actual data)
-        notificationsList.addAll(getSampleRecentSearches())
-
-        // Initialize the adapter with the list and set the click listener
-        val onRemoveClickListener =
-            RecentSearchesAdapter.OnRemoveClickListener { position ->
-                notificationsAdapter.removeRecentSearch(
-                    position
-                )
-            }
-
-        notificationsAdapter = RecentSearchesAdapter(notificationsList, onRemoveClickListener, "notifications")
-
-        notifcationsRecycler.layoutManager = LinearLayoutManager(this)
-        notifcationsRecycler.adapter = notificationsAdapter
-
-        val clearAllButton: TextView= findViewById(R.id.filterSpinner)
-        clearAllButton.setOnClickListener {
-            clearAllNotifications()
-        }
-
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-
-        bottomNavigation.setOnNavigationItemReselectedListener { item ->
-            when (item.itemId) {
-                R.id.menu_search -> {
-                    val intent = Intent(this, searchPageActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.menu_home -> {
-                    val intent = Intent(this, homePageActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.menu_chat -> {
-                    val intent = Intent(this, mainChatActivity::class.java)
-                    startActivity(intent)
-                }
-                R.id.menu_profile -> {
-                    val intent = Intent(this, MyProfileActivity::class.java)
-                    startActivity(intent)
-                }
-
-            }
-
-        }
-
-        //click on backbutton and go back to previous page
-
-        val backButton = findViewById<ImageView>(R.id.imageView10)
-
-        backButton.setOnClickListener {
-            onBackPressed()
-        }
-
-
+        setupViews()
+        setupBottomNavigation()
+        setupBackButton()
+        setupNotificationsRecyclerView()
+        setupClearAllButton()
+        fetchAllUserNotifications() // Fetch notifications when activity is created
     }
 
-    private fun getSampleRecentSearches(): List<String> {
-        val recentSearches = mutableListOf<String>()
-        recentSearches.add("Mentor 1")
-        recentSearches.add("Mentor 2")
-        recentSearches.add("Mentor 3")
-        // Add more items as needed
-        return recentSearches
+    private fun setupViews() {
+        notificationsRecycler = findViewById(R.id.notificationsRecyclerView)
+    }
+
+    private fun setupBottomNavigation() {
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigation.setOnNavigationItemReselectedListener { item ->
+            val intent = when (item.itemId) {
+                R.id.menu_search -> Intent(this, searchPageActivity::class.java)
+                R.id.menu_home -> Intent(this, homePageActivity::class.java)
+                R.id.menu_chat -> Intent(this, mainChatActivity::class.java)
+                R.id.menu_profile -> Intent(this, MyProfileActivity::class.java)
+                else -> null
+            }
+            intent?.let { startActivity(it) }
+        }
+    }
+
+    private fun setupBackButton() {
+        val backButton = findViewById<ImageView>(R.id.imageView10)
+        backButton.setOnClickListener { onBackPressed() }
+    }
+
+    private fun fetchAllUserNotifications() {
+        val currentUser = UserManager.getCurrentUser()
+        currentUser?.let { user ->
+            val myDatabase = FirebaseDatabase.getInstance().getReference("users").child(user.id).child("notifications")
+
+            myDatabase.addChildEventListener(object : ChildEventListener {
+                override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                    val notification = dataSnapshot.child("notification").value.toString()
+                    val notificationId= dataSnapshot.key.toString()
+                    notification.let {
+                        Log.d("NotificationsActivity", "Adding notification to list: $it")
+                        notificationsList.add(it)
+                        notificationsIdList.add(notificationId)
+                        notificationsAdapter.notifyDataSetChanged() // Notify adapter when new notification is added
+                    }
+                }
+
+                override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                    // Handle changes to notifications
+                }
+
+                override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+                    // Handle removed notifications
+                }
+
+                override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                    // Handle moved notifications
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    // Handle database error
+                }
+            })
+        }
+    }
+
+    private fun setupNotificationsRecyclerView() {
+        notificationsAdapter = RecentSearchesAdapter(notificationsList, onRemoveClickListener, "notifications")
+        notificationsRecycler.layoutManager = LinearLayoutManager(this)
+        notificationsRecycler.adapter = notificationsAdapter
+    }
+
+    private fun setupClearAllButton() {
+        val clearAllButton = findViewById<TextView>(R.id.filterSpinner)
+        clearAllButton.setOnClickListener { clearAllNotifications() }
     }
 
     private fun clearAllNotifications() {
         notificationsList.clear()
         notificationsAdapter.notifyDataSetChanged()
+        UserManager.getCurrentUser()?.let { FirebaseManager.removeAllNotificationsFromUser(it.id) }
+    }
+
+    private val onRemoveClickListener = RecentSearchesAdapter.OnRemoveClickListener { position ->
+        notificationsAdapter.removeRecentSearch(position)
+        Log.d("NotificationsActivity", "Removing notification at position $position from list ${notificationsIdList[position]}")
+        UserManager.getCurrentUser()
+            ?.let { FirebaseManager.removeNotificationFromDatabase(it.id, notificationsIdList[position]) }
+
     }
 }

@@ -12,6 +12,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.muhammadfarazrashid.i2106595.ChatAdapter
 import com.muhammadfarazrashid.i2106595.ChatMessage
+import com.muhammadfarazrashid.i2106595.UserManager
 
 class FirebaseManager {
 
@@ -76,6 +77,49 @@ class FirebaseManager {
             }
         })
     }
+
+    fun addNotificationToUser(
+        userId: String,
+        notification: String,
+        notificationType: String,
+    ) {
+        val database = FirebaseDatabase.getInstance()
+        val notificationRef = database.getReference("users").child(userId).child("notifications").push()
+
+        notificationRef.setValue(
+            mapOf(
+                "notification" to notification,
+                "notificationType" to notificationType,
+            )
+        )
+            .addOnSuccessListener {
+                Log.d(ContentValues.TAG, "Notification added successfully")
+            }
+            .addOnFailureListener { e ->
+                Log.e(ContentValues.TAG, "Failed to add notification: ${e.message}")
+            }
+
+
+    }
+
+    fun removeNotificationFromUser(
+        userId: String,
+        notificationId: Int
+    ) {
+        val databaseRef = FirebaseDatabase.getInstance()
+            .getReference("users/$userId/notifications/$notificationId")
+        databaseRef.removeValue()
+            .addOnSuccessListener {
+                // Handle success
+                Log.d(ContentValues.TAG, "Notification deleted successfully")
+            }
+            .addOnFailureListener { e ->
+                // Handle failure
+                Log.e(ContentValues.TAG, "Failed to delete notification: ${e.message}")
+            }
+    }
+
+
 
 
 
@@ -313,6 +357,8 @@ class FirebaseManager {
                     .addOnSuccessListener {
                         Log.d(ContentValues.TAG, "Message saved successfully")
                         Log.d(ContentValues.TAG, "Message: ${chatRef.key}, Time: $time")
+
+
                         chatAdapter.addMessage(
                             ChatMessage(
                                 chatRef.key.toString(),
@@ -406,7 +452,36 @@ class FirebaseManager {
                 }
         }
 
+        fun removeAllNotificationsFromUser(userId: String) {
+            val databaseRef = FirebaseDatabase.getInstance()
+                .getReference("users/$userId/notifications")
+            databaseRef.removeValue()
+                .addOnSuccessListener {
+                    // Handle success
+                    Log.d(ContentValues.TAG, "All notifications deleted successfully")
+                }
+                .addOnFailureListener { e ->
+                    // Handle failure
+                    Log.e(ContentValues.TAG, "Failed to delete all notifications: ${e.message}")
+                }
+        }
 
+        fun removeNotificationFromDatabase(userId:String, notificationId: String) {
+
+            val databaseRef = FirebaseDatabase.getInstance()
+                .getReference("users/$userId/notifications/$notificationId")
+            databaseRef.removeValue()
+                .addOnSuccessListener {
+                    // Handle success
+                    Log.d(ContentValues.TAG, "Notification deleted successfully")
+                }
+                .addOnFailureListener { e ->
+                    // Handle failure
+                    Log.e(ContentValues.TAG, "Failed to delete notification: ${e.message}")
+                }
+
+
+        }
 
 
 

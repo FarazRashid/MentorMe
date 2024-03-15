@@ -1,3 +1,4 @@
+package com.muhammadfarazrashid.i2106595
 
 import android.content.ContentValues.TAG
 import android.content.SharedPreferences
@@ -16,7 +17,7 @@ object UserManager {
 
     // Singleton instance
     private var instance: UserManager? = null
-
+    @JvmStatic
     fun getInstance(): UserManager {
         if (instance == null) {
             instance = UserManager

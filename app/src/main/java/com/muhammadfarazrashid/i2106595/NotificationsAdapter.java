@@ -16,14 +16,14 @@ import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager;
 import java.util.List;
 import java.util.Objects;
 
-public class RecentSearchesAdapter extends RecyclerView.Adapter<RecentSearchesAdapter.ViewHolder> {
+public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsAdapter.ViewHolder> {
 
     private final List<String> recentSearchesList; // Change the type as per your data structure
     private final OnRemoveClickListener onRemoveClickListener;
 
     String viewType;
 
-    public RecentSearchesAdapter(List<String> recentSearchesList, OnRemoveClickListener onRemoveClickListener, String viewType) {
+    public NotificationsAdapter(List<String> recentSearchesList, OnRemoveClickListener onRemoveClickListener, String viewType) {
         this.recentSearchesList = recentSearchesList;
         this.onRemoveClickListener = onRemoveClickListener;
         this.viewType = viewType;

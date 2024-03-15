@@ -1,10 +1,10 @@
 package com.muhammadfarazrashid.i2106595
 
-import UserManager
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
+import com.muhammadfarazrashid.i2106595.dataclasses.NotificationsManager
 import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
@@ -12,6 +12,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.entrancepage)
+
+        NotificationsManager.createNotificationChannel(this)
 
         //if user logged in, go to home page
         if (UserManager.getInstance().getUserLoggedInSP(getSharedPreferences("USER_LOGIN", MODE_PRIVATE))) {

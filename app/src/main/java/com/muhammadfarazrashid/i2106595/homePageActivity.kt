@@ -12,6 +12,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.muhammadfarazrashid.i2106595.dataclasses.NotificationsManager
 
 class homePageActivity : AppCompatActivity() {
 
@@ -46,6 +47,7 @@ class homePageActivity : AppCompatActivity() {
         notifications.setOnClickListener {
             startActivity(Intent(this, NotificationsActivity::class.java))
         }
+
     }
 
 

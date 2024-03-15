@@ -1,6 +1,5 @@
 package com.muhammadfarazrashid.i2106595
 
-import UserManager
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle

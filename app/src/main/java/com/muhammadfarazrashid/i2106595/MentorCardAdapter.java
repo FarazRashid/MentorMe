@@ -1,5 +1,9 @@
 package com.muhammadfarazrashid.i2106595;
 
+import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager;
+import com.muhammadfarazrashid.i2106595.dataclasses.NotificationsManager;
+import com.muhammadfarazrashid.i2106595.UserManager;
+
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.Context;
@@ -21,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.muhammadfarazrashid.i2106595.dataclasses.NotificationsManager;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -91,10 +96,17 @@ public class MentorCardAdapter extends RecyclerView.Adapter<MentorCardAdapter.Vi
                     // Set red color for filled heart
                     holder.heartButton.setImageResource(R.drawable.filled_heart);
                     // Add mentor as favorite
-                    addFavoriteMentor(mentor.getId());
+                    addFavoriteMentor(mentor.getId());// Call sendNotification to display the notification
+                    NotificationsManager.showNotification(view.getContext(), "Mentor " +mentor.getName() + " has been added to your favorites");
+                    FirebaseManager firebaseManager = new FirebaseManager();
+
+                    firebaseManager.addNotificationToUser(UserManager.getInstance().getCurrentUser().getId(), "Mentor " +mentor.getName() + " has been added to your favorites", "Favourites");
                 } else {
                     holder.heartButton.setImageResource(R.drawable.heart);
                     // Remove mentor from favorites
+                    NotificationsManager.showNotification(view.getContext(), "Mentor " +mentor.getName() + " has been removed from your favorites");
+                    FirebaseManager firebaseManager = new FirebaseManager();
+                    firebaseManager.addNotificationToUser(UserManager.getInstance().getCurrentUser().getId(), "Mentor " +mentor.getName() + " has been added to your favorites", "Favourites");
                     removeFavoriteMentor(mentor.getId());
                 }
             }

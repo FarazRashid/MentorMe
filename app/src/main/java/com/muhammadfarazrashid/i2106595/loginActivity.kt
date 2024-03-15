@@ -1,6 +1,5 @@
 package com.muhammadfarazrashid.i2106595
 
-import UserManager
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.SharedPreferences
