@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +26,7 @@ class homePageActivity : AppCompatActivity() {
     private val recentMentors = ArrayList<Mentor>()
     private val educationMentors = ArrayList<Mentor>()
     private val badges = ArrayList<Badge>()
+    private lateinit var  nameText: TextView
 
     private val database: FirebaseDatabase = FirebaseDatabase.getInstance()
 
@@ -56,6 +58,8 @@ class homePageActivity : AppCompatActivity() {
         recentMentorsRecycler = findViewById(R.id.recentMentorsRecycler)
         educationMentorsRecycler = findViewById(R.id.educationMentorsRecycler)
         badgesRecycler = findViewById(R.id.badgesRecycler)
+        nameText = findViewById(R.id.nameText)
+        nameText.text= UserManager.getCurrentUser()?.name ?: "User"
     }
 
     private fun fetchAllMentors() {

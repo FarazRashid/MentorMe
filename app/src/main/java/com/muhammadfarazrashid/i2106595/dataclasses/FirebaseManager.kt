@@ -102,6 +102,30 @@ class FirebaseManager {
 
     }
 
+    fun addNotificationToOtherUserInMentorChat(
+        userId: String,
+        notification: String,
+        notificationType: String,
+    ) {
+            val database = FirebaseDatabase.getInstance()
+            val notificationRef =
+                database.getReference("Mentors").child(userId).child("notifications").push()
+
+            notificationRef.setValue(
+                mapOf(
+                    "notification" to notification,
+                    "notificationType" to notificationType,
+                )
+            )
+                .addOnSuccessListener {
+                    Log.d(ContentValues.TAG, "Notification added successfully")
+                }
+                .addOnFailureListener { e ->
+                    Log.e(ContentValues.TAG, "Failed to add notification: ${e.message}")
+                }
+
+    }
+
     fun removeNotificationFromUser(
         userId: String,
         notificationId: Int

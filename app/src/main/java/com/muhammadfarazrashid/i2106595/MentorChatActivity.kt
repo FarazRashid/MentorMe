@@ -5,6 +5,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -19,6 +20,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
@@ -26,6 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.akexorcist.screenshotdetection.ScreenshotDetectionDelegate
 import com.devlomi.record_view.OnRecordClickListener
 import com.devlomi.record_view.OnRecordListener
 import com.devlomi.record_view.RecordButton
@@ -38,6 +41,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
+import com.muhammadfarazrashid.i2106595.dataclasses.NotificationsManager
 import com.muhammadfarazrashid.i2106595.managers.photoTakerManager
 import com.squareup.picasso.Picasso
 import java.io.File
@@ -46,7 +50,7 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 
-class MentorChatActivity : AppCompatActivity() {
+class MentorChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.ScreenshotDetectionListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var chatAdapter: ChatAdapter
@@ -66,13 +70,23 @@ class MentorChatActivity : AppCompatActivity() {
     private var audioRecorder: AudioRecorder? = null
     private var recordFile: File? = null
 
+    private val screenshotDetectionDelegate = ScreenshotDetectionDelegate(this, this)
 
-    //create a request code in a bundle
+    override fun onStart() {
+        super.onStart()
+        screenshotDetectionDelegate.startScreenshotDetection()
+    }
 
+    override fun onStop() {
+        super.onStop()
+        screenshotDetectionDelegate.stopScreenshotDetection()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.mentorchat)
+        checkReadExternalStoragePermission()
 
         currentMentor = intent.getParcelableExtra<Mentor>("mentor")!!
         setMentorDetails(currentMentor)
@@ -99,12 +113,9 @@ class MentorChatActivity : AppCompatActivity() {
         setBottomNavigationListener()
         setAddMentorClickListener()
 
+
     }
 
-    companion object {
-        const val EXTRA_MESSAGE = "com.example.intent.MESSAGE"
-        const val REQUEST_CODE_PHOTO_ACTIVITY = 1
-    }
 
     private fun setMentorDetails(mentor: Mentor) {
         mentorName = findViewById(R.id.mentorName)
@@ -416,7 +427,7 @@ class MentorChatActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("MentorChatActivity", "onActivityResult: requestCode=$requestCode, resultCode=$resultCode")
-        if (requestCode == REQUEST_CODE_PHOTO_ACTIVITY && resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             // Check if the result is from the PhotoActivity
             val photoUri = data?.getStringExtra("photoUri")
             if (photoUri != null) {
@@ -581,7 +592,48 @@ class MentorChatActivity : AppCompatActivity() {
         })
     }
 
+    override fun onScreenCaptured(path: String) {
+        Log.d("MentorChatActivity", "Screenshot captured: $path")
+        Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+
+    }
+
+    override fun onScreenCapturedWithDeniedPermission() {
+        Log.d("MentorChatActivity", "Screenshot captured with denied permission")
+        requestReadExternalStoragePermission()
+        var firebaseManager = FirebaseManager()
+        firebaseManager.addNotificationToOtherUserInMentorChat(currentMentor.id, "Screenshot taken by ${UserManager.getCurrentUser()?.id}", "Screenshot taken")
+
+    }
+
+    companion object {
+        private const val REQUEST_CODE_READ_EXTERNAL_STORAGE_PERMISSION = 3009
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            REQUEST_CODE_READ_EXTERNAL_STORAGE_PERMISSION -> {
+                if (grantResults.getOrNull(0) == PackageManager.PERMISSION_DENIED) {
+                    showReadExternalStoragePermissionDeniedMessage()
+                }
+            }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
 
 
+    private fun checkReadExternalStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestReadExternalStoragePermission()
+        }
+    }
+
+    private fun requestReadExternalStoragePermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_READ_EXTERNAL_STORAGE_PERMISSION)
+    }
+
+    private fun showReadExternalStoragePermissionDeniedMessage() {
+        Toast.makeText(this, "Read external storage permission has denied", Toast.LENGTH_SHORT).show()
+    }
 
 }

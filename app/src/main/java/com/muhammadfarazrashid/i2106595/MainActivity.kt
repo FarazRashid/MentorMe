@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
 import com.muhammadfarazrashid.i2106595.dataclasses.NotificationsManager
 import kotlin.math.log
 
@@ -12,6 +13,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.entrancepage)
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
 
         NotificationsManager.createNotificationChannel(this)
 

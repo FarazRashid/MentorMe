@@ -70,8 +70,6 @@ class PhotoActivity : AppCompatActivity() {
 
         //check request code from intent
         val intent = intent
-        val message = intent.getStringExtra(MentorChatActivity.EXTRA_MESSAGE)
-        Log.d("requestCode", message.toString())
 
         if (!hasRequiredPermissions()) {
             ActivityCompat.requestPermissions(this, CAMERAX_PERMISSIONS, 0)
