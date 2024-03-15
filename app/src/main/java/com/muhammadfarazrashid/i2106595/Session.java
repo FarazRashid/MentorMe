@@ -3,37 +3,43 @@ package com.muhammadfarazrashid.i2106595;
 import android.graphics.drawable.Drawable;
 
 public class Session {
-    private Drawable imageDrawable; // Drawable for the session image
-    private String name;
-    private String date;
-    private String time;
-    private String position;
 
-    public Session(Drawable imageDrawable, String name, String date, String time, String position) {
-        this.imageDrawable = imageDrawable;
-        this.name = name;
-        this.date = date;
-        this.time = time;
-        this.position = position;
+
+    private String mentorId;
+
+    private String bookingDate;
+    private String bookingTime;
+
+    private Mentor mentor;
+
+
+
+    public Session(String bookingDate, String bookingTime, String mentorId) {
+        this.mentorId = mentorId;
+        this.bookingDate = bookingDate;
+        this.bookingTime = bookingTime;
     }
 
-    public Drawable getImageDrawable() {
-        return imageDrawable;
+    public void setMentor(Mentor mentor) {
+        this.mentor = mentor;
     }
 
-    public String getName() {
-        return name;
+    public Mentor getMentor() {
+        return mentor;
     }
+
+
+    public String getMentorId() {
+        return mentorId;
+    }
+
 
     public String getDate() {
-        return date;
+        return bookingDate;
     }
 
     public String getTime() {
-        return time;
+        return bookingTime;
     }
 
-    public String getPosition() {
-        return position;
-    }
 }

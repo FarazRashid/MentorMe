@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Picasso;
+
 public class SessionViewHolder extends RecyclerView.ViewHolder {
     ImageView sessionImage;
     TextView sessionName;
@@ -25,10 +27,10 @@ public class SessionViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Session session) {
-        sessionImage.setImageDrawable(session.getImageDrawable());
-        sessionName.setText(session.getName());
+        Picasso.get().load(session.getMentor().getprofilePictureUrl()).into(sessionImage);
+        sessionName.setText(session.getMentor().getName());
         sessionDate.setText(session.getDate());
         sessionTime.setText(session.getTime());
-        sessionPosition.setText(session.getPosition());
+        sessionPosition.setText(session.getMentor().getPosition());
     }
 }

@@ -4,7 +4,6 @@ package com.muhammadfarazrashid.i2106595
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-
 import android.widget.Button
 import android.widget.CalendarView
 import android.widget.ImageView
@@ -17,8 +16,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.childEvents
 import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
+import com.muhammadfarazrashid.i2106595.dataclasses.NotificationsManager.showNotification
 import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -216,6 +215,11 @@ class calendarPage : AppCompatActivity() {
             if(checkFiels()){
                 val intent = Intent(this, homePageActivity::class.java)
                 UserManager.getCurrentUser()?.let { it1 -> FirebaseManager.addBookingToUser(it1.id,selectedTime,dateString,currentMentor.id) }
+                showNotification(
+                    applicationContext,
+                    "Appointment Booked with ${currentMentor.name} for $dateString at $selectedTime",
+                )
+
                 startActivity(intent)
             }
         }
