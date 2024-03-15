@@ -507,6 +507,55 @@ class FirebaseManager {
 
         }
 
+        fun addBookingToUser(
+            userId: String,
+            bookingDate: String,
+            bookingTime: String,
+            mentorId:String
+        ) {
+            val database = FirebaseDatabase.getInstance()
+            val bookingRef = database.getReference("users").child(userId).child("bookings").push()
+
+            bookingRef.setValue(
+                mapOf(
+                    "bookingDate" to bookingDate,
+                    "bookingTime" to bookingTime,
+                    "mentorId" to mentorId
+                )
+            )
+                .addOnSuccessListener {
+                    Log.d(ContentValues.TAG, "Booking added successfully")
+                    addBookingToMentor(mentorId,bookingDate,bookingTime,userId)
+                }
+                .addOnFailureListener { e ->
+                    Log.e(ContentValues.TAG, "Failed to add booking: ${e.message}")
+                }
+        }
+
+        fun addBookingToMentor(
+            mentorId: String,
+            bookingDate: String,
+            bookingTime: String,
+            userId:String
+        ) {
+            val database = FirebaseDatabase.getInstance()
+            val bookingRef = database.getReference("Mentors").child(mentorId).child("bookings").push()
+
+            bookingRef.setValue(
+                mapOf(
+                    "bookingDate" to bookingDate,
+                    "bookingTime" to bookingTime,
+                    "userId" to userId
+                )
+            )
+                .addOnSuccessListener {
+                    Log.d(ContentValues.TAG, "Booking added successfully")
+                }
+                .addOnFailureListener { e ->
+                    Log.e(ContentValues.TAG, "Failed to add booking: ${e.message}")
+                }
+        }
+
 
 
     }

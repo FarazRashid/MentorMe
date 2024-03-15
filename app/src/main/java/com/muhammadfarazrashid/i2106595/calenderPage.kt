@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.util.Log
 
 import android.widget.Button
+import android.widget.CalendarView
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +18,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.childEvents
+import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
 import com.squareup.picasso.Picasso
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 class calendarPage : AppCompatActivity() {
@@ -26,6 +32,9 @@ class calendarPage : AppCompatActivity() {
     private lateinit var mentorName: TextView
     private lateinit var mentorImage: ImageView
     private lateinit var currentMentor: Mentor
+    private lateinit var calenderView: CalendarView
+    private var selectedTime: String = ""
+    private var dateString: String= ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +72,7 @@ class calendarPage : AppCompatActivity() {
             override fun onBadgeClick(position: Int) {
                 // Handle badge click
                 Log.d("CalendarPage", "Badge clicked at position: $position")
+                selectedTime= badges[position].name
             }
         })
     }
@@ -72,6 +82,7 @@ class calendarPage : AppCompatActivity() {
         badgesRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         mentorName= findViewById(R.id.mentorName)
         mentorImage = findViewById(R.id.imageView9)
+        calenderView = findViewById(R.id.calendarView)
 
     }
 
@@ -153,6 +164,19 @@ class calendarPage : AppCompatActivity() {
         }
     }
 
+    private fun checkFiels(): Boolean{
+        if(selectedTime.isEmpty()){
+            Toast.makeText(this, "Please select a time", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        //check if calender is selected
+
+        if(calenderView.date == 0L){
+            Toast.makeText(this, "Please select a date", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
+    }
 
 
     private fun setUpOnClickListeners()
@@ -173,8 +197,28 @@ class calendarPage : AppCompatActivity() {
             onBackPressed()
         }
 
-        findViewById<Button>(R.id.bookAnAppointmentButton).setOnClickListener {
-            startActivity(Intent(this, homePageActivity::class.java))
+        calenderView.setOnDateChangeListener { view, year, month, dayOfMonth ->
+            val calendar = Calendar.getInstance()
+            calendar.set(year, month, dayOfMonth)
+            val selectedDate = calendar.time
+            Log.d("CalendarPage", "Selected Date: $selectedDate")
+
+            // Convert selectedDate to a string if needed
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            dateString = dateFormat.format(selectedDate)
+            Log.d("CalendarPage", "Selected Date String: $dateString")
+
+            // Now you can use the selectedDate or dateString as needed
         }
+
+        findViewById<Button>(R.id.bookAnAppointmentButton).setOnClickListener {
+
+            if(checkFiels()){
+                val intent = Intent(this, homePageActivity::class.java)
+                UserManager.getCurrentUser()?.let { it1 -> FirebaseManager.addBookingToUser(it1.id,selectedTime,dateString,currentMentor.id) }
+                startActivity(intent)
+            }
+        }
+
     }
 }
