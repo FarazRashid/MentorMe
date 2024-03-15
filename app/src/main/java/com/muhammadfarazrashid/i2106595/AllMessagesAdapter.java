@@ -40,7 +40,26 @@ public class AllMessagesAdapter extends RecyclerView.Adapter<AllMessagesAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         AllMessagesChat message = chatMessages.get(position);
 
-        int unreadMessageCount = message.getUnreadMessages();
+        int unreadMessageCount=0;
+         message.getUnreadMessages(new AllMessagesChat.UnreadMessagesCallback() {
+            @Override
+            public void onUnreadMessagesCount(int unreadCount) {
+                // Update the unread message count
+                message.setUnreadMessages(unreadCount);
+                holder.unreadMessages.setText(unreadCount + " new message");
+
+                Log.d("AllMessagesChat", "Unread message count: " + unreadCount);
+
+                // Set text color based on the number of unread messages
+                if (unreadCount == 0) {
+                    holder.unreadMessages.setTextColor(ContextCompat.getColor(context, R.color.black));
+                } else {
+                    //make color red
+                    holder.unreadMessages.setTextColor(ContextCompat.getColor(context, R.color.red));
+                }
+            }
+        });
+
         holder.unreadMessages.setText(unreadMessageCount + " new message");
 
         // Set text color based on the number of unread messages

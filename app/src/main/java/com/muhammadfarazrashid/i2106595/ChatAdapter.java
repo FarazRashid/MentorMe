@@ -86,15 +86,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
                 }
             });
             if(!Objects.equals(chatMessages.get(position).getVideoImageUrl(), "")) {
-
-                holder.videoView.setVisibility(View.VISIBLE);
-                Uri uri = Uri.parse(chatMessages.get(position).getVideoImageUrl());
-                MediaController mediaController = new MediaController(holder.videoView.getContext());
-                mediaController.setAnchorView(holder.videoView);
-                holder.videoView.setMediaController(mediaController);
-                holder.videoView.setVideoURI(uri);
                 //on click start the video
-                Log.d("ChatAdapter", "onBindViewHolder: " + uri.toString());
 
                 holder.videoView.setOnClickListener(new View.OnClickListener() {
 

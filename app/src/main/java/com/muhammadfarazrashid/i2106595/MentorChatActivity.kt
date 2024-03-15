@@ -551,6 +551,12 @@ class MentorChatActivity : AppCompatActivity() {
                     val userId = messageSnapshot.child("userId").value as String
                     val messageId= messageSnapshot.key.toString()
                     val isCurrentUser = userId == currentUser
+
+                    //if message is not by current user set "isRead" to true
+                    if(!isCurrentUser){
+                        messageSnapshot.child("isRead").ref.setValue(true)
+                    }
+
                     var messageImageUrl=""
                     var messageVideoUrl=""
                     var messageAudioUrl=""

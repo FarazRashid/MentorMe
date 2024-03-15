@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -34,7 +34,7 @@
             app:playPauseBackgroundColor="#50C2C9"
             app:playPauseCornerRadius="100"
             app:playProgressbarColor="#ff7700"
-            app:progressTimeColor="#000"
+            app:progressTimeColor="@color/black"
             app:seekBarProgressColor="#000"
             app:seekBarThumbColor="#FFC107"
             app:shareBackgroundColor="#ff7700"

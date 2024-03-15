@@ -26,13 +26,6 @@ public class AllMessagesViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(AllMessagesChat chatMessage) {
         userNameTextView.setText(chatMessage.getUserName());
-        int unreadMessages = chatMessage.getUnreadMessages();
-        if (unreadMessages > 0) {
-            unreadMessagesTextView.setTextColor(Color.BLACK);
-            unreadMessagesTextView.setText(unreadMessages + " new message");
-        } else {
-            unreadMessagesTextView.setTextColor(Color.GRAY);
-            unreadMessagesTextView.setText("No new messages");
-        }
+
     }
 }

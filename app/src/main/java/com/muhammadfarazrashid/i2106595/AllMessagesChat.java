@@ -1,5 +1,11 @@
 package com.muhammadfarazrashid.i2106595;
 
+import android.util.Log;
+
+import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager;
+
+import java.util.List;
+
 public class AllMessagesChat {
 
     private Mentor mentor;
@@ -7,6 +13,8 @@ public class AllMessagesChat {
     private String userName;
     private int unreadMessages;
     private String otherUserImage;
+
+    private String chatId;
 
     public void setMentor(Mentor mentor){
         this.mentor = mentor;
@@ -21,6 +29,11 @@ public class AllMessagesChat {
         this.unreadMessages = unreadMessages;
 
         // Fetch mentor details asynchronously
+    }
+
+    public AllMessagesChat(String id, String chatId) {
+        this.id = id;
+        this.chatId = chatId;
     }
 
     public void setOtherUserImage(String otherUserImage) {
@@ -42,8 +55,22 @@ public class AllMessagesChat {
         this.userName = userName;
     }
 
-    public int getUnreadMessages() {
-        return unreadMessages;
+    public interface UnreadMessagesCallback {
+        void onUnreadMessagesCount(int unreadCount);
+    }
+
+    public void getUnreadMessages(UnreadMessagesCallback callback) {
+        FirebaseManager firebaseManager = new FirebaseManager();
+        Log.d("AllMessagesChat", "chatId: " + chatId);
+        firebaseManager.getUnreadChatMessagesCount("mentor_chats", chatId, unreadCount -> {
+            // Handle unreadCount here
+            callback.onUnreadMessagesCount(unreadCount);
+            return null;
+        });
+    }
+
+    public void setUnreadMessages(int unreadMessages){
+        this.unreadMessages = unreadMessages;
     }
 
     public String getOtherUserImage() {
