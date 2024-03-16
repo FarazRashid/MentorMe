@@ -152,6 +152,14 @@ public class MentorCardAdapter extends RecyclerView.Adapter<MentorCardAdapter.Vi
         });
     }
 
+   public void updateList(List<Mentor>mentors)
+   {
+         data.clear();
+         data.addAll(mentors);
+         notifyDataSetChanged();
+   }
+
+
     private void addFavoriteMentor(String mentorId) {
         // Get current user ID
         String userId = Objects.requireNonNull(auth.getCurrentUser()).getUid();

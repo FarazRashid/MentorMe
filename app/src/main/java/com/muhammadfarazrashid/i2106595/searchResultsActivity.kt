@@ -3,6 +3,7 @@ package com.muhammadfarazrashid.i2106595
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -15,101 +16,164 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.FirebaseDatabase
 
 class searchResultsActivity : AppCompatActivity() {
 
     private lateinit var searchResultsRecyclerView: RecyclerView
     private lateinit var searchResultsAdapter: MentorCardAdapter
     private lateinit var topMentors: ArrayList<Mentor>
-    private lateinit var badgesRecycler: RecyclerView
-    private lateinit var badges: ArrayList<Badge>
+    private lateinit var originalTopMentors: ArrayList<Mentor>
+    private var searchQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.searchresults)
 
-        // Initialize top mentors
-        topMentors = ArrayList()
-        topMentors.add(Mentor("Faraz Rashid", "Android Developer", "available", "$5000/hr"))
-        topMentors.add(Mentor("John Doe", "UX Designer", "unavailable", "$7000/hr"))
-        topMentors.add(Mentor("Jane Doe", "UI Designer", "available", "$6000/hr"))
-        topMentors.add(Mentor("John Smith", "Web Developer", "unavailable", "$8000/hr"))
-        topMentors.add(Mentor("Jane Smith", "Web Developer", "available", "$9000/hr"))
+        //get intent data
+        val intent = intent
+        searchQuery = intent.getStringExtra("search_query")
+        Log.d("searchResultsActivity", "Search query: $searchQuery")
+        initializeTopMentors()
+        setupFilterSpinner()
+        setupBottomNavigation()
+        setupAddMentorButton()
+        setupBackButton()
+        setupCardClickListener()
+    }
 
-        // Set up top mentors RecyclerView
+    //fetch mentors that have the search query in their name or position
+    private fun initializeTopMentors() {
+        var database = FirebaseDatabase.getInstance()
+        var myRef = database.getReference("Mentors")
+
+        myRef.get().addOnSuccessListener {
+            if (it.exists()) {
+                val mentorList = it.children
+                topMentors = ArrayList()
+                originalTopMentors = ArrayList()
+                for (mentor in mentorList) {
+                    val mentorData = mentor.getValue(Mentor::class.java)
+                    if (mentorData != null) {
+                        if (mentorData.name.contains(
+                                searchQuery.toString(),
+                                ignoreCase = true
+                            ) || mentorData.position.contains(
+                                searchQuery.toString(),
+                                ignoreCase = true
+                            )
+                        ) {
+                            topMentors.add(mentorData)
+                            originalTopMentors.add(mentorData)
+                        }
+                    }
+                }
+                setupSearchResultsRecyclerView()
+            }
+        }.addOnFailureListener {
+            Log.e("searchResultsActivity", "Error getting data", it)
+        }
+
+    }
+
+    private fun setupSearchResultsRecyclerView() {
         searchResultsRecyclerView = findViewById(R.id.searchResultsRecyclerView)
         searchResultsRecyclerView.layoutManager = LinearLayoutManager(this)
-
-        // Choose the layout resource ID based on the card type (horizontal or vertical)
-        val horizontalLayoutResourceId = R.layout.mentorcard
         val verticalLayoutResourceId = R.layout.verticalmentorcards
-
-        // Initialize the adapter with the chosen layout resource ID
         searchResultsAdapter = MentorCardAdapter(this, topMentors, verticalLayoutResourceId)
+        searchResultsAdapter.setOnItemClickListener { mentor ->
+            navigateToMentorAbout(mentor)
+        }
         searchResultsRecyclerView.adapter = searchResultsAdapter
+    }
 
-        // Initialize your Spinner and ArrayAdapter in your activity
-
-// Add items to the ArrayAdapter
-        val items = listOf("Filter", "Item 2", "Item 3")
-
-/// Initialize your Spinner and ArrayAdapter in your activity
+    private fun setupFilterSpinner() {
+        val items = listOf("Filter", "Available", "Not Available")
         val spinner: Spinner = findViewById(R.id.filterSpinner)
         val adapter = CustomSpinnerAdapter(this, items)
-
-// Set the ArrayAdapter on the Spinner
         spinner.adapter = adapter
 
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-
-        bottomNavigation.setOnNavigationItemReselectedListener { item ->
-            when (item.itemId) {
-                R.id.menu_search -> {
-                    val intent = Intent(this, searchPageActivity::class.java)
-                    startActivity(intent)
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                when (position) {
+                    0 -> {onNothingSelected(spinner)} // Filter option, do nothing
+                    1 -> filterMentors(true) // Available
+                    2 -> filterMentors(false) // Not Available
                 }
+            }
 
-                R.id.menu_home -> {
-                    val intent = Intent(this, homePageActivity::class.java)
-                    startActivity(intent)
-                }
-
-                R.id.menu_chat -> {
-                    val intent = Intent(this, mainChatActivity::class.java)
-                    startActivity(intent)
-                }
-
-                R.id.menu_profile -> {
-                    val intent = Intent(this, MyProfileActivity::class.java)
-                    startActivity(intent)
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                //if search results adapter has been initialized, update the list with the original list
+                if (::searchResultsAdapter.isInitialized) {
+                    searchResultsAdapter.updateList(originalTopMentors)
                 }
 
             }
-
         }
+    }
 
-        //click on add mentor button and go to add mentor page
+    private fun filterMentors(isAvailable: Boolean) {
+        val filteredMentors = if (isAvailable) {
+            topMentors.filter { it.availability == "Available" }
+        } else if(!isAvailable) {
+            topMentors.filter { it.availability == "Not Available" }
+        }else{
+            originalTopMentors
+        }
+        searchResultsAdapter.updateList(filteredMentors)
+    }
+
+    private fun setupBottomNavigation() {
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigation.setOnNavigationItemReselectedListener { item ->
+            val intent = when (item.itemId) {
+                R.id.menu_search -> Intent(this, searchPageActivity::class.java)
+                R.id.menu_home -> Intent(this, homePageActivity::class.java)
+                R.id.menu_chat -> Intent(this, mainChatActivity::class.java)
+                R.id.menu_profile -> Intent(this, MyProfileActivity::class.java)
+                else -> null
+            }
+            intent?.let {
+                startActivity(it)
+            }
+        }
+    }
+
+    private fun setupAddMentorButton() {
         val addMentor = findViewById<ImageView>(R.id.addMentorButton)
         addMentor.setOnClickListener {
             val intent = Intent(this, AddAMentor::class.java)
             startActivity(intent)
         }
+    }
 
+    private fun navigateToMentorAbout(mentor: Mentor) {
+        val intent = Intent(this, aboutMentorPage::class.java)
+        Log.d("searchPageActivity", "Navigating to aboutMentorPage with mentor: ${mentor.id}")
+        Log.d("searchActivity", "Navigating to aboutMentorPage with mentor: ${mentor.getprofilePictureUrl()}")
+        intent.putExtra("mentor", mentor) // Pass the mentor data to the aboutMentorPage
+        startActivity(intent)
+    }
+
+    private fun setupBackButton() {
         val imageView4 = findViewById<ImageView>(R.id.imageView10)
         imageView4.setOnClickListener {
             onBackPressed()
         }
-
-        //click on any card go to aboutmentorpage
-
-        searchResultsAdapter.setOnItemClickListener { position ->
-            // Handle item click event, e.g., open the aboutmentorpage activity
-            val intent = Intent(this, aboutMentorPage::class.java)
-            startActivity(intent)
-        }
-
-
     }
+
+
+    private fun setupCardClickListener() {
+        if (::searchResultsAdapter.isInitialized) {
+            searchResultsAdapter.setOnItemClickListener { position ->
+                val intent = Intent(this, aboutMentorPage::class.java)
+                startActivity(intent)
+            }
+        } else {
+            Log.e("searchResultsActivity", "searchResultsAdapter is not initialized")
+        }
+    }
+
 
 }
 
@@ -127,4 +191,3 @@ class CustomSpinnerAdapter(context: Context, items: List<String>) : ArrayAdapter
         return view
     }
 }
-

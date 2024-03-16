@@ -22,49 +22,42 @@ class searchPageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.searchpage)
 
-        // Initialize the RecyclerView
+        initializeRecentSearches()
+        initializeCategories()
+        setupSearchView()
+        setupBottomNavigation()
+        setupAddMentorButton()
+        setupBackButton()
+    }
+
+    private fun initializeRecentSearches() {
         recentSearchesRecycler = findViewById(R.id.recentSearchesRecycler)
-
-        // Create a list of recent searches (replace with your actual data)
         recentSearchesList.addAll(getSampleRecentSearches())
-
-        // Initialize the adapter with the list and set the click listener
         val onRemoveClickListener =
             OnRemoveClickListener { position -> recentSearchesAdapter.removeRecentSearch(position) }
-
         recentSearchesAdapter = RecentSearchesAdapter(recentSearchesList, onRemoveClickListener, "recentSearches")
-
-
-        // Set up the RecyclerView with the adapter
         recentSearchesRecycler.layoutManager = LinearLayoutManager(this)
         recentSearchesRecycler.adapter = recentSearchesAdapter
+    }
 
+    private fun initializeCategories() {
         categoriesRecycler = findViewById(R.id.categoriesRecycler)
-
-        // Create a list of categories (replace with your actual data)
         val categoriesList = getSampleCategories()
-
-        // Initialize the adapter with the list and set the click listener
         val onCategoryClickListener = object : CategoriesAdapter.OnCategoryClickListener {
             override fun onCategoryClick(position: Int) {
                 // Handle category click event, e.g., open a new activity
             }
         }
-
         categoriesAdapter = CategoriesAdapter(categoriesList, onCategoryClickListener)
-
-        // Set up the RecyclerView with the adapter
         categoriesRecycler.layoutManager = LinearLayoutManager(this)
         categoriesRecycler.adapter = categoriesAdapter
+    }
 
-
+    private fun setupSearchView() {
         val searchView = findViewById<SearchView>(R.id.searchView)
-
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                // Handle the search query submission
                 if (!query.isNullOrBlank()) {
-                    // Start a new activity with the search results or perform the desired action
                     val intent = Intent(this@searchPageActivity, searchResultsActivity::class.java)
                     intent.putExtra("search_query", query)
                     startActivity(intent)
@@ -73,57 +66,42 @@ class searchPageActivity : AppCompatActivity() {
                 return false
             }
             override fun onQueryTextChange(newText: String?): Boolean {
-                // Handle search query text change
                 return true
             }
         })
+    }
 
-
-
+    private fun setupBottomNavigation() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-
         bottomNavigation.setOnNavigationItemReselectedListener { item ->
-            when (item.itemId) {
-                R.id.menu_search -> {
-                    val intent = Intent(this, searchPageActivity::class.java)
-                    startActivity(intent)
-                }
-
-                R.id.menu_home -> {
-                    val intent = Intent(this, homePageActivity::class.java)
-                    startActivity(intent)
-                }
-
-                R.id.menu_chat -> {
-                    val intent = Intent(this, mainChatActivity::class.java)
-                    startActivity(intent)
-                }
-
-                R.id.menu_profile -> {
-                    val intent = Intent(this, MyProfileActivity::class.java)
-                    startActivity(intent)
-                }
-
+            val intent = when (item.itemId) {
+                R.id.menu_search -> Intent(this, searchPageActivity::class.java)
+                R.id.menu_home -> Intent(this, homePageActivity::class.java)
+                R.id.menu_chat -> Intent(this, mainChatActivity::class.java)
+                R.id.menu_profile -> Intent(this, MyProfileActivity::class.java)
+                else -> null
             }
-
+            intent?.let {
+                startActivity(it)
+            }
         }
+    }
 
-        //click on add mentor button and go to add mentor page
+    private fun setupAddMentorButton() {
         val addMentor = findViewById<ImageView>(R.id.addMentorButton)
         addMentor.setOnClickListener {
             val intent = Intent(this, AddAMentor::class.java)
             startActivity(intent)
         }
+    }
 
+    private fun setupBackButton() {
         val imageView4 = findViewById<ImageView>(R.id.imageView8)
         imageView4.setOnClickListener {
             onBackPressed()
         }
-
     }
 
-
-    // Replace this with your actual data source
     private fun getSampleRecentSearches(): List<String> {
         val recentSearches = mutableListOf<String>()
         recentSearches.add("Mentor 1")
@@ -133,17 +111,12 @@ class searchPageActivity : AppCompatActivity() {
         return recentSearches
     }
 
-        // Replace this with your actual data source
-        private fun getSampleCategories(): List<Category> {
-            val categories = mutableListOf<Category>()
-            categories.add(Category("Entrepreneurship", R.drawable.entrepeneur))
-            categories.add(Category("Self Improvement", R.drawable.selfimprovementicon))
-            categories.add(Category("Education", R.drawable.educationicon))
-            // Add more items as needed
-            return categories
-        }
-
-
-
+    private fun getSampleCategories(): List<Category> {
+        val categories = mutableListOf<Category>()
+        categories.add(Category("Entrepreneurship", R.drawable.entrepeneur))
+        categories.add(Category("Self Improvement", R.drawable.selfimprovementicon))
+        categories.add(Category("Education", R.drawable.educationicon))
+        // Add more items as needed
+        return categories
+    }
 }
-
