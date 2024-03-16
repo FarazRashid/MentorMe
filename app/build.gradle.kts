@@ -81,6 +81,8 @@ dependencies {
     implementation ("com.github.3llomi:RecordView:3.1.3")
     implementation ("com.github.JagarYousef:ChatVoicePlayer:1.0.7")
     implementation ("com.akexorcist:screenshot-detection:1.0.2")
+    implementation ("io.agora.rtc:full-sdk:4.3.0")
+
 
 
 

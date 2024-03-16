@@ -7,7 +7,7 @@
     tools:context=".PhotoActivity">
 
 
-    <VideoView
+    <FrameLayout
         android:id="@+id/photoImageView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -107,7 +107,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/photoImageView" />
 
-    <VideoView
+    <FrameLayout
         android:id="@+id/userVideo"
         android:layout_width="0dp"
         android:layout_height="0dp"
