@@ -79,13 +79,31 @@
                 android:background="@drawable/camera"
                 android:backgroundTint="@color/white" />
 
-            <Button
-                android:layout_marginEnd="5dp"
-                android:id="@+id/micButton"
-                android:layout_width="26dp"
-                android:layout_height="27dp"
-                android:background="@drawable/mic_svgrepo_com"
-                android:backgroundTint="@color/white" />
+            <com.devlomi.record_view.RecordView
+                android:id="@+id/record_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                app:cancel_text="CANCEL"
+                android:visibility="gone"
+                app:cancel_text_color="#ff0000"
+                app:cancel_text_margin_right="10dp"
+                app:counter_time_color="#ff0000"
+                app:slide_to_cancel_arrow="@drawable/recv_ic_arrow"
+                app:slide_to_cancel_arrow_color="#000000"
+                app:slide_to_cancel_bounds="10dp"
+                app:slide_to_cancel_margin_right="10dp"
+                app:slide_to_cancel_text="Slide To Cancel" />
+
+            <com.devlomi.record_view.RecordButton
+                android:id="@+id/recordButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#50C2C9"
+                android:scaleType="centerInside"
+                app:mic_icon="@drawable/recv_ic_mic_white"
+                app:scale_up_to="2.0"
+                app:send_icon="@drawable/recv_ic_send" />
 
             <Button
                 android:id="@+id/sendButton"
@@ -103,6 +121,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/upsidedownrectangle"
             android:paddingBottom="15dp"
+            android:elevation="15dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 

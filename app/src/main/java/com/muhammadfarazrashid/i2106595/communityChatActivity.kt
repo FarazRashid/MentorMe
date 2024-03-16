@@ -1,10 +1,15 @@
 package com.muhammadfarazrashid.i2106595
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -18,9 +23,16 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.akexorcist.screenshotdetection.ScreenshotDetectionDelegate
+import com.devlomi.record_view.OnRecordListener
+import com.devlomi.record_view.RecordButton
+import com.devlomi.record_view.RecordPermissionHandler
+import com.devlomi.record_view.RecordView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -31,8 +43,12 @@ import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
 import com.muhammadfarazrashid.i2106595.dataclasses.User
 import com.muhammadfarazrashid.i2106595.managers.photoTakerManager
 import com.squareup.picasso.Picasso
+import java.io.File
+import java.io.IOException
+import java.util.UUID
+import java.util.concurrent.TimeUnit
 
-class communityChatActivity : AppCompatActivity() {
+class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.ScreenshotDetectionListener {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var chatAdapter: ChatAdapter
@@ -40,7 +56,7 @@ class communityChatActivity : AppCompatActivity() {
     private lateinit var currentMentor: Mentor
     private lateinit var mentorImage: ImageView
     private lateinit var sendButton: Button
-    private lateinit var micButton: Button
+    private lateinit var recordButton: RecordButton
     private lateinit var messageField: EditText
     private lateinit var takePhoto: Button
     private lateinit var sendImage: Button
@@ -48,10 +64,29 @@ class communityChatActivity : AppCompatActivity() {
     private lateinit var listOfUsers: ArrayList<User>
     private var selectedMessageId: String? = null
     private lateinit var selectedImageUri: Uri
+    private lateinit var recordView: RecordView
+    private var audioRecorder: AudioRecorder? = null
+    private var recordFile: File? = null
+
+    private val screenshotDetectionDelegate = ScreenshotDetectionDelegate(this, this)
+
+    override fun onStart() {
+        super.onStart()
+        screenshotDetectionDelegate.startScreenshotDetection()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        screenshotDetectionDelegate.stopScreenshotDetection()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.communitychat)
+        checkReadExternalStoragePermission()
+
+        initRecording()
+
 
         recyclerView = findViewById(R.id.communityChatRecyclerView)
 
@@ -62,6 +97,142 @@ class communityChatActivity : AppCompatActivity() {
         setButtonClickListeners()
         setBottomNavigationListener()
         setAddMentorClickListener()
+    }
+
+    private fun initRecording(){
+
+        audioRecorder = AudioRecorder()
+        recordView = findViewById(R.id.record_view)
+        recordButton = findViewById(R.id.recordButton)
+        //   val btnChangeOnclick = findViewById<Button>(R.id.btn_change_onclick)
+
+        // To Enable Record Lock
+//        recordView.setLockEnabled(true);
+//        recordView.setRecordLockImageView(findViewById(R.id.record_lock));
+        //IMPORTANT
+        recordButton.setRecordView(recordView)
+
+        // if you want to click the button (in case if you want to make the record button a Send Button for example..)
+//        recordButton.setListenForRecord(false);
+
+        //ListenForRecord must be false ,otherwise onClick will not be called
+        recordButton.setOnRecordClickListener {
+            Toast.makeText(this@communityChatActivity, "RECORD BUTTON CLICKED", Toast.LENGTH_SHORT).show()
+            Log.d("RecordButton", "RECORD BUTTON CLICKED")
+        }
+
+
+        //Cancel Bounds is when the Slide To Cancel text gets before the timer . default is 8
+        recordView.cancelBounds = 8f
+        recordView.setSmallMicColor(Color.parseColor("#c2185b"))
+
+        //prevent recording under one Second
+        recordView.setLessThanSecondAllowed(false)
+        recordView.setSlideToCancelText("Slide To Cancel")
+        recordView.setOnRecordListener(object : OnRecordListener {
+            override fun onStart() {
+                onRecordSetupVisibilities()
+                recordFile = File(filesDir, UUID.randomUUID().toString() + ".3gp")
+                try {
+                    audioRecorder!!.start(recordFile!!.path)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                Log.d("RecordView", "onStart")
+                Toast.makeText(this@communityChatActivity, "OnStartRecord", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onCancel() {
+                stopRecording(true)
+                onFinishSetupVisibilities()
+                Toast.makeText(this@communityChatActivity, "onCancel", Toast.LENGTH_SHORT).show()
+                Log.d("RecordView", "onCancel")
+            }
+
+            override fun onFinish(recordTime: Long, limitReached: Boolean) {
+                stopRecording(false)
+                onFinishSetupVisibilities()
+                val time = getHumanTimeText(recordTime)
+                Toast.makeText(
+                    this@communityChatActivity,
+                    "onFinishRecord - Recorded Time is: " + time + " File saved at " + recordFile!!.path,
+                    Toast.LENGTH_SHORT
+                ).show()
+                FirebaseManager.sendImageToStorage(Uri.fromFile(recordFile), currentMentor.id, "community_chats", chatAdapter, "chat_audios")
+                Log.d("RecordView", "onFinish Limit Reached? $limitReached")
+                if (time != null) {
+                    Log.d("RecordTime", time)
+                }
+            }
+
+            override fun onLessThanSecond() {
+                stopRecording(true)
+                onFinishSetupVisibilities()
+                Toast.makeText(this@communityChatActivity, "OnLessThanSecond", Toast.LENGTH_SHORT).show()
+                Log.d("RecordView", "onLessThanSecond")
+            }
+
+            override fun onLock() {
+                onFinishSetupVisibilities()
+                Toast.makeText(this@communityChatActivity, "onLock", Toast.LENGTH_SHORT).show()
+                Log.d("RecordView", "onLock")
+            }
+        })
+        recordView.setOnBasketAnimationEndListener {
+            Log.d(
+                "RecordView",
+                "Basket Animation Finished"
+            )
+        }
+        recordView.setRecordPermissionHandler(RecordPermissionHandler {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                return@RecordPermissionHandler true
+            }
+            val recordPermissionAvailable = ContextCompat.checkSelfPermission(
+                this@communityChatActivity,
+                Manifest.permission.RECORD_AUDIO
+            ) == PermissionChecker.PERMISSION_GRANTED
+            if (recordPermissionAvailable) {
+                return@RecordPermissionHandler true
+            }
+            ActivityCompat.requestPermissions(
+                this@communityChatActivity, arrayOf(Manifest.permission.RECORD_AUDIO),
+                0
+            )
+            false
+        })
+    }
+
+    private fun stopRecording(deleteFile: Boolean) {
+        audioRecorder!!.stop()
+        if (recordFile != null && deleteFile) {
+            recordFile!!.delete()
+        }
+    }
+
+    private fun onRecordSetupVisibilities() {
+        recordView.visibility = View.VISIBLE
+        messageField.visibility = View.GONE
+        attachImage.visibility = View.GONE
+        sendImage.visibility = View.GONE
+
+    }
+
+    private fun onFinishSetupVisibilities() {
+        recordView.visibility = View.GONE
+        messageField.visibility = View.VISIBLE
+        attachImage.visibility = View.VISIBLE
+        sendImage.visibility = View.VISIBLE
+    }
+
+    @SuppressLint("DefaultLocale")
+    private fun getHumanTimeText(milliseconds: Long): String? {
+        return java.lang.String.format(
+            "%02d:%02d",
+            TimeUnit.MILLISECONDS.toMinutes(milliseconds),
+            TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
+                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds))
+        )
     }
 
     override fun onResume() {
@@ -87,7 +258,7 @@ class communityChatActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        micButton = findViewById(R.id.micButton)
+        recordButton = findViewById(R.id.recordButton)
         messageField = findViewById(R.id.reviewText)
         takePhoto = findViewById(R.id.takePhoto)
         sendImage = findViewById(R.id.sendImage)
@@ -133,7 +304,7 @@ class communityChatActivity : AppCompatActivity() {
                         else if(chatMessage.videoImageUrl.isNotEmpty())
                             FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats","chat_videos" ,currentMentor.id, chatAdapter)
                         else if(chatMessage.voiceMemoUrl.isNotEmpty())
-                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats","chat_audio" ,currentMentor.id, chatAdapter)
+                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats","chat_audios" ,currentMentor.id, chatAdapter)
                         else if(chatMessage.documentUrl.isNotEmpty())
                             FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats","chat_documents" ,currentMentor.id, chatAdapter)
                         true
@@ -234,7 +405,7 @@ class communityChatActivity : AppCompatActivity() {
             }
         }
 
-        micButton.setOnClickListener {
+        recordButton.setOnClickListener {
             // recordVoiceMessage()
         }
 
@@ -249,7 +420,7 @@ class communityChatActivity : AppCompatActivity() {
         }
 
         attachImage.setOnClickListener {
-            //attachImage()
+            attachFile()
         }
 
 
@@ -381,6 +552,12 @@ class communityChatActivity : AppCompatActivity() {
                     val userId = messageSnapshot.child("userId").value as String
                     val messageId= messageSnapshot.key.toString()
                     val isCurrentUser = userId == currentUser
+
+                    if(!isCurrentUser){
+                        messageSnapshot.child("isRead").ref.setValue(true)
+                    }
+
+
                     var messageImageUrl=""
                     var messageVideoUrl=""
                     var messageAudioUrl=""
@@ -410,6 +587,55 @@ class communityChatActivity : AppCompatActivity() {
                 Log.e("MentorChatActivity", "Failed to retrieve chat messages: ${databaseError.message}")
             }
         })
+    }
+
+    override fun onScreenCaptured(path: String) {
+        Log.d("MentorChatActivity", "Screenshot captured: $path")
+        Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
+
+    }
+
+    override fun onScreenCapturedWithDeniedPermission() {
+        Log.d("MentorChatActivity", "Screenshot captured with denied permission")
+        requestReadExternalStoragePermission()
+        var firebaseManager = FirebaseManager()
+        firebaseManager.addNotificationToOtherUserInMentorChat(currentMentor.id, "Mentors","Screenshot taken by ${UserManager.getCurrentUser()?.name}", "Screenshot taken")
+        //get list of user ids
+        val userIds = ArrayList<String>()
+        for(user in listOfUsers){
+            userIds.add(user.id)
+        }
+        firebaseManager.sendNotificationsToListOfUsers(userIds, "Screenshot taken by ${UserManager.getCurrentUser()?.name}", "Screenshot taken")
+    }
+
+    companion object {
+        private const val REQUEST_CODE_READ_EXTERNAL_STORAGE_PERMISSION = 3009
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when (requestCode) {
+            REQUEST_CODE_READ_EXTERNAL_STORAGE_PERMISSION -> {
+                if (grantResults.getOrNull(0) == PackageManager.PERMISSION_DENIED) {
+                    showReadExternalStoragePermissionDeniedMessage()
+                }
+            }
+            else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        }
+    }
+
+
+    private fun checkReadExternalStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestReadExternalStoragePermission()
+        }
+    }
+
+    private fun requestReadExternalStoragePermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_CODE_READ_EXTERNAL_STORAGE_PERMISSION)
+    }
+
+    private fun showReadExternalStoragePermissionDeniedMessage() {
+        Toast.makeText(this, "Read external storage permission has denied", Toast.LENGTH_SHORT).show()
     }
 
 

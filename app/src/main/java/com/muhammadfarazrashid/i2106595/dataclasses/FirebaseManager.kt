@@ -84,7 +84,8 @@ class FirebaseManager {
         notificationType: String,
     ) {
         val database = FirebaseDatabase.getInstance()
-        val notificationRef = database.getReference("users").child(userId).child("notifications").push()
+        val notificationRef =
+            database.getReference("users").child(userId).child("notifications").push()
 
         notificationRef.setValue(
             mapOf(
@@ -104,12 +105,13 @@ class FirebaseManager {
 
     fun addNotificationToOtherUserInMentorChat(
         userId: String,
+        user_type: String,
         notification: String,
         notificationType: String,
     ) {
             val database = FirebaseDatabase.getInstance()
             val notificationRef =
-                database.getReference("Mentors").child(userId).child("notifications").push()
+                database.getReference(user_type).child(userId).child("notifications").push()
 
             notificationRef.setValue(
                 mapOf(
@@ -124,6 +126,16 @@ class FirebaseManager {
                     Log.e(ContentValues.TAG, "Failed to add notification: ${e.message}")
                 }
 
+    }
+
+    fun sendNotificationsToListOfUsers(
+        userIds: List<String>,
+        notification: String,
+        notificationType: String,
+    ) {
+        userIds.forEach { userId ->
+            addNotificationToUser(userId, notification, notificationType)
+        }
     }
 
     fun removeNotificationFromUser(
