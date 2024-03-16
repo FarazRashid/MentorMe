@@ -34,6 +34,7 @@ import com.devlomi.record_view.RecordButton
 import com.devlomi.record_view.RecordPermissionHandler
 import com.devlomi.record_view.RecordView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -45,6 +46,7 @@ import com.muhammadfarazrashid.i2106595.managers.photoTakerManager
 import com.squareup.picasso.Picasso
 import java.io.File
 import java.io.IOException
+import java.sql.Struct
 import java.util.UUID
 import java.util.concurrent.TimeUnit
 
@@ -307,6 +309,8 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
                             FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats","chat_audios" ,currentMentor.id, chatAdapter)
                         else if(chatMessage.documentUrl.isNotEmpty())
                             FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats","chat_documents" ,currentMentor.id, chatAdapter)
+                        else
+                            FirebaseManager.deleteMessageInDatabase(chatMessage.id, "community_chats","chat_messages" ,currentMentor.id, chatAdapter)
                         true
                     }
                     else -> false
@@ -543,44 +547,60 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
             Log.d("MentorChatActivity4", "User = ${user.profilePictureUrl}")
         }
 
-        chatRef?.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                for (messageSnapshot in dataSnapshot.children) {
-                    val message = messageSnapshot.child("message").value as String
-                    val time = messageSnapshot.child("time").value as String
-                    val date = messageSnapshot.child("date").value as String
-                    val userId = messageSnapshot.child("userId").value as String
-                    val messageId= messageSnapshot.key.toString()
-                    val isCurrentUser = userId == currentUser
+        chatRef?.addChildEventListener(object : ChildEventListener {
+            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                val message = dataSnapshot.child("message").value as String
+                val time = dataSnapshot.child("time").value as String
+                val date = dataSnapshot.child("date").value as String
+                val userId = dataSnapshot.child("userId").value as String
+                val messageId= dataSnapshot.key.toString()
+                val isCurrentUser = userId == currentUser
 
-                    if(!isCurrentUser){
-                        messageSnapshot.child("isRead").ref.setValue(true)
-                    }
-
-
-                    var messageImageUrl=""
-                    var messageVideoUrl=""
-                    var messageAudioUrl=""
-                    var messageDocumentUrl=""
-                    if(messageSnapshot.child("messageImageUrl").exists())
-                        messageImageUrl= messageSnapshot.child("messageImageUrl").value as String
-                    if(messageSnapshot.child("messageVideoUrl").exists())
-                        messageVideoUrl= messageSnapshot.child("messageVideoUrl").value as String
-                    if(messageSnapshot.child("messageAudioUrl").exists())
-                        messageAudioUrl= messageSnapshot.child("messageAudioUrl").value as String
-                    if(messageDocumentUrl.isNotEmpty())
-                        messageDocumentUrl= messageSnapshot.child("messageDocumentUrl").value as String
-
-                    if(!isCurrentUser&& userId!=currentMentor.id){
-                        val user = listOfUsers.find { it.id==userId }
-                        if(user!=null){
-                            chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, user.profilePictureUrl,messageImageUrl,messageAudioUrl,messageVideoUrl,messageDocumentUrl))
-                        }
-                    }
-                    else
-                        chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, mentorImageUrl,messageImageUrl,messageVideoUrl,messageAudioUrl,messageDocumentUrl))
+                if(!isCurrentUser){
+                    dataSnapshot.child("isRead").ref.setValue(true)
                 }
+                Log.d("MentorChatActivity5", "User = $message")
 
+                var messageImageUrl=""
+                var messageVideoUrl=""
+                var messageAudioUrl=""
+                var messageDocumentUrl=""
+                if(dataSnapshot.child("messageImageUrl").exists())
+                    messageImageUrl= dataSnapshot.child("messageImageUrl").value as String
+                if(dataSnapshot.child("messageVideoUrl").exists())
+                    messageVideoUrl= dataSnapshot.child("messageVideoUrl").value as String
+                if(dataSnapshot.child("messageAudioUrl").exists())
+                    messageAudioUrl= dataSnapshot.child("messageAudioUrl").value as String
+                if(dataSnapshot.child("messageDocumentUrl").exists())
+                    messageDocumentUrl= dataSnapshot.child("messageDocumentUrl").value as String
+
+                if(!isCurrentUser&& userId!=currentMentor.id){
+                    Log.d("MentorChatActivity6", "User = $userId")
+                    val user = listOfUsers.find { it.id==userId }
+                    if(user!=null){
+                        chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, user.profilePictureUrl,messageImageUrl,messageVideoUrl,messageAudioUrl,messageDocumentUrl))
+                    }
+                }
+                else
+                    chatAdapter.addMessage(ChatMessage(messageId,message, time, isCurrentUser, mentorImageUrl,messageImageUrl,messageVideoUrl,messageAudioUrl,messageDocumentUrl))
+
+                scrollToBottom()
+            }
+
+            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                chatAdapter.editMessage(dataSnapshot.key.toString(), dataSnapshot.child("message").value as String)
+
+            }
+
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+                val userId = dataSnapshot.child("userId").value as String
+                if((userId!= UserManager.getCurrentUser()?.id ?: "") )
+                    chatAdapter.removeMessage(dataSnapshot.key.toString())
+
+            }
+
+            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                // Handle child moved event if needed
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -588,6 +608,7 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
             }
         })
     }
+
 
     override fun onScreenCaptured(path: String) {
         Log.d("MentorChatActivity", "Screenshot captured: $path")
@@ -637,6 +658,15 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
     private fun showReadExternalStoragePermissionDeniedMessage() {
         Toast.makeText(this, "Read external storage permission has denied", Toast.LENGTH_SHORT).show()
     }
+
+    private fun scrollToBottom() {
+        recyclerView.post {
+            // Scroll to the last item in the adapter
+            recyclerView.smoothScrollToPosition(chatAdapter.itemCount - 1)
+        }
+    }
+
+
 
 
 }

@@ -184,9 +184,7 @@ class calendarPage : AppCompatActivity() {
     private fun setUpOnClickListeners()
     {
         findViewById<ImageView>(R.id.chatButton).setOnClickListener {
-            val intent = Intent(this, MentorChatActivity::class.java)
-            intent.putExtra("mentor", currentMentor)
-            startActivity(intent)
+            navigateToChatPage(currentMentor)
         }
 
         findViewById<ImageView>(R.id.phoneButton).setOnClickListener {

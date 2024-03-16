@@ -156,17 +156,56 @@ class PhoneCallActivity : AppCompatActivity() {
             leaveChannel()
             onBackPressed()
         }
+        var isMuted = false
 
         muteButton.setOnClickListener {
             // Mute the call
+
+            if (::agoraEngine.isInitialized) {
+                if (isMuted) {
+                    // Disable video
+                    agoraEngine.muteLocalAudioStream(true)
+
+                    showMessage("Audio turned off")
+                } else {
+                    // Enable video
+                    agoraEngine.muteLocalAudioStream(false)
+                    //parse green color
+
+                    showMessage("Audio turned on")
+                }
+                // Toggle the state of video enabled
+                isMuted = !isMuted
+            } else {
+                showMessage("RtcEngine is not initialized")
+            }
         }
 
         pauseButton.setOnClickListener {
             // Pause the call
         }
-
+        var isSpeaker:Boolean= false
         speakerButton.setOnClickListener {
-            // Turn off speaker
+            //switch between speaker and earpiece
+
+            if (::agoraEngine.isInitialized) {
+                if (isSpeaker) {
+                    // Disable video
+                    agoraEngine.setEnableSpeakerphone(false)
+                    showMessage("Speaker turned off")
+                } else {
+                    // Enable video
+                    agoraEngine.setEnableSpeakerphone(true)
+                    //parse green color
+                    speakerButton.setBackgroundColor(resources.getColor(R.color.red))
+                    showMessage("Speaker turned on")
+                }
+                // Toggle the state of video enabled
+                isSpeaker = !isSpeaker
+            } else {
+                showMessage("RtcEngine is not initialized")
+            }
+
         }
     }
 

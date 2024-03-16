@@ -58,8 +58,13 @@ class VideoCallActivity : AppCompatActivity() {
         override fun onUserOffline(uid: Int, reason: Int) {
             super.onUserOffline(uid, reason)
             showMessage("Remote user offline $uid $reason")
-            runOnUiThread { remoteSurfaceView!!.visibility = View.GONE }
+            runOnUiThread {
+                if (remoteSurfaceView != null) {
+                    remoteSurfaceView.visibility = View.GONE
+                }
+            }
         }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,20 +134,22 @@ class VideoCallActivity : AppCompatActivity() {
     // Kotlin
     private fun setUpRemoteVideo(uid: Int) {
         otherUserVideo = findViewById(R.id.photoImageView)
-        val remoteFrame = RtcEngine.CreateRendererView(baseContext)
-        remoteFrame.setZOrderMediaOverlay(true)
-        otherUserVideo.addView(remoteFrame)
-        agoraEngine!!.setupRemoteVideo(VideoCanvas(remoteFrame, VideoCanvas.RENDER_MODE_FIT, uid))
+        val remoteSurfaceView = RtcEngine.CreateRendererView(this)
+        remoteSurfaceView.setZOrderMediaOverlay(true)
+        otherUserVideo.addView(remoteSurfaceView)
+        agoraEngine.setupRemoteVideo(VideoCanvas(remoteSurfaceView, VideoCanvas.RENDER_MODE_FIT, uid))
     }
 
+
     private fun setUpLocalVideo() {
-        val remoteSurfaceView = SurfaceView(userVideo.context)
-        remoteSurfaceView.setZOrderMediaOverlay(true)
-        userVideo.addView(remoteSurfaceView)
-        val videoCanvas = VideoCanvas(userVideo, VideoCanvas.RENDER_MODE_FIT, 0)
+        val localSurfaceView = RtcEngine.CreateRendererView(this)
+        localSurfaceView.setZOrderMediaOverlay(true)
+        userVideo.addView(localSurfaceView)
+        val videoCanvas = VideoCanvas(localSurfaceView, VideoCanvas.RENDER_MODE_FIT, 0)
         agoraEngine.setupLocalVideo(videoCanvas)
         agoraEngine.startPreview()
     }
+
 
     open fun joinChannel(view: View) {
         // Ensure that necessary Android permissions have been granted
@@ -197,13 +204,43 @@ class VideoCallActivity : AppCompatActivity() {
     }
 
     private fun setButtonOnClickListeners() {
-        endCallButton.setOnClickListener { onBackPressed() }
+        endCallButton.setOnClickListener { leaveChannel()
+            onBackPressed() }
         turnCameraButton.setOnClickListener {
-        /* Turn camera logic */ }
-        turnOffVideoButton.setOnClickListener { leaveChannel() }
-        galleryButton.setOnClickListener { /* Open gallery logic */ }
-    }
 
+            if (::agoraEngine.isInitialized) {
+                agoraEngine.switchCamera()
+
+            } else {
+               showMessage("RtcEngine is not initialized")
+            }
+            turnOffVideoButton.setOnClickListener { leaveChannel() }
+            galleryButton.setOnClickListener { /* Open gallery logic */ }
+        }
+         var isVideoEnabled = true // Track if video is currently enabled
+
+        turnOffVideoButton.setOnClickListener {
+            if (::agoraEngine.isInitialized) {
+                if (isVideoEnabled) {
+                    // Disable video
+                    agoraEngine.muteLocalVideoStream(true)
+
+                    showMessage("Video turned off")
+                } else {
+                    // Enable video
+                    agoraEngine.muteLocalVideoStream(false)
+                    //parse green color
+
+                    showMessage("Video turned on")
+                }
+                // Toggle the state of video enabled
+                isVideoEnabled = !isVideoEnabled
+            } else {
+                showMessage("RtcEngine is not initialized")
+            }
+        }
+
+    }
     private fun checkSelfPermission(): Boolean {
         for (permission in REQUESTED_PERMISSIONS) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {

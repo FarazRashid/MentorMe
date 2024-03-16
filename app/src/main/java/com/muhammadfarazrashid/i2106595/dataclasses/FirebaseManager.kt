@@ -231,18 +231,6 @@ class FirebaseManager {
                         .addOnSuccessListener {
                             Log.d(ContentValues.TAG, "Image saved successfully")
                             Log.d(ContentValues.TAG, "Image: ${chatRef.key}, Time: ")
-                            chatAdapter.addMessage(
-                                ChatMessage(
-                                    chatRef.key.toString(),
-                                    "",
-                                    "",
-                                    true,
-                                    mentorImageUrl,
-                                    selectedImageUri.toString(),
-                                    "",
-                                    ""
-                                )
-                            )
 
                         }
                         .addOnFailureListener { e ->
@@ -266,19 +254,8 @@ class FirebaseManager {
                         .addOnSuccessListener {
                             Log.d(ContentValues.TAG, "File saved successfully")
                             Log.d(ContentValues.TAG, "File: ${chatRef.key}, Time: ")
-                            chatAdapter.addMessage(
-                                ChatMessage(
-                                    chatRef.key.toString(),
-                                    "",
-                                    "",
-                                    true,
-                                    mentorImageUrl,
-                                    "",
-                                    selectedImageUri.toString(),
-                                    "",
-                                    ""
-                                )
-                            )
+
+
 
                         }
                         .addOnFailureListener { e ->
@@ -303,19 +280,7 @@ class FirebaseManager {
                             Log.d(ContentValues.TAG, "File saved successfully")
                             Log.d(ContentValues.TAG, "File: ${chatRef.key}, Time: ")
                             Log.d(ContentValues.TAG, "File: ${selectedImageUri.toString()}, Time: ")
-                            chatAdapter.addMessage(
-                                ChatMessage(
-                                    chatRef.key.toString(),
-                                    "",
-                                    "",
-                                    true,
-                                    mentorImageUrl,
-                                    "",
-                                    "",
-                                    selectedImageUri.toString(),
-                                    ""
-                                )
-                            )
+
 
                         }
                         .addOnFailureListener { e ->
@@ -339,19 +304,7 @@ class FirebaseManager {
                         .addOnSuccessListener {
                             Log.d(ContentValues.TAG, "File saved successfully")
                             Log.d(ContentValues.TAG, "File: ${chatRef.key}, Time: ")
-                            chatAdapter.addMessage(
-                                ChatMessage(
-                                    chatRef.key.toString(),
-                                    "",
-                                    "",
-                                    true,
-                                    mentorImageUrl,
-                                    "",
-                                    "",
-                                    "",
-                                    selectedImageUri.toString()
-                                )
-                            )
+
 
                         }
                         .addOnFailureListener { e ->
@@ -395,16 +348,6 @@ class FirebaseManager {
                         Log.d(ContentValues.TAG, "Message: ${chatRef.key}, Time: $time")
 
 
-                        chatAdapter.addMessage(
-                            ChatMessage(
-                                chatRef.key.toString(),
-                                message,
-                                time,
-                                true,
-                                ""
-                            )
-                        )
-
                     }
                     .addOnFailureListener { e ->
                         Log.e(ContentValues.TAG, "Failed to save message: ${e.message}")
@@ -431,27 +374,29 @@ class FirebaseManager {
                     // Handle success
                     Log.d(ContentValues.TAG, "Message deleted successfully")
                     //if message has an image we will delete the image from storage too
-                    Log.d(
-                        "Deleting Message In Database",
-                        "Image URL: ${chatAdapter.getMessage(messageId).videoImageUrl}"
-                    )
+
                     if (chatAdapter.getMessage(messageId).messageImageUrl.isNotEmpty() || chatAdapter.getMessage(
                             messageId
                         ).videoImageUrl.isNotEmpty() || chatAdapter.getMessage(messageId).voiceMemoUrl.isNotEmpty() || chatAdapter.getMessage(
                             messageId
                         ).documentUrl.isNotEmpty()
                     ) {
-                        val storage = FirebaseStorage.getInstance()
-                        val currentUser = UserManager.getCurrentUser()?.id
-                        val storageRef = currentUser?.let {
-                            storage.reference.child(fileType).child(it).child(messageId)
-                        }
-                        Log.d("Deleting Message In Database", "Image URL: ${storageRef.toString()}")
-                        if (storageRef != null) {
-                            storageRef.delete().addOnSuccessListener {
-                                Log.d(ContentValues.TAG, "Image deleted successfully")
-                            }.addOnFailureListener { e ->
-                                Log.e(ContentValues.TAG, "Failed to delete image: ${e.message}")
+                        if (fileType != "chat_messages") {
+                            val storage = FirebaseStorage.getInstance()
+                            val currentUser = UserManager.getCurrentUser()?.id
+                            val storageRef = currentUser?.let {
+                                storage.reference.child(fileType).child(it).child(messageId)
+                            }
+                            Log.d(
+                                "Deleting Message In Database",
+                                "Image URL: ${storageRef.toString()}"
+                            )
+                            if (storageRef != null) {
+                                storageRef.delete().addOnSuccessListener {
+                                    Log.d(ContentValues.TAG, "Image deleted successfully")
+                                }.addOnFailureListener { e ->
+                                    Log.e(ContentValues.TAG, "Failed to delete image: ${e.message}")
+                                }
                             }
                         }
                     }
@@ -480,7 +425,6 @@ class FirebaseManager {
                     // Handle success
                     Log.d(ContentValues.TAG, "Message edited successfully")
                     //update adapter
-                    chatAdapter.editMessage(messageId, newMessage)
                 }
                 .addOnFailureListener { e ->
                     // Handle failure
