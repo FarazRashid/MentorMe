@@ -12,11 +12,16 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.helper.widget.MotionEffect
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class searchResultsActivity : AppCompatActivity() {
 
@@ -34,7 +39,7 @@ class searchResultsActivity : AppCompatActivity() {
         val intent = intent
         searchQuery = intent.getStringExtra("search_query")
         Log.d("searchResultsActivity", "Search query: $searchQuery")
-        initializeTopMentors()
+        fetchUserFavorites()
         setupFilterSpinner()
         setupBottomNavigation()
         setupAddMentorButton()
@@ -42,8 +47,29 @@ class searchResultsActivity : AppCompatActivity() {
         setupCardClickListener()
     }
 
+    private fun fetchUserFavorites() {
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        val favoritesRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("favorites")
+        favoritesRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val favoriteMentorIds = mutableListOf<String>()
+                for (mentorSnapshot in snapshot.children) {
+                    val mentorId = mentorSnapshot.key
+                    mentorId?.let { favoriteMentorIds.add(it) }
+                    Log.d(MotionEffect.TAG, "Fetched favorite mentor ID: $mentorId")
+                }
+                // After fetching favorite mentor IDs, fetch mentor objects
+                initializeTopMentors(favoriteMentorIds)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(MotionEffect.TAG, "Failed to fetch user favorites: " + error.message)
+            }
+        })
+    }
+
     //fetch mentors that have the search query in their name or position
-    private fun initializeTopMentors() {
+    private fun initializeTopMentors(favoriteMentorIds: List<String>) {
         var database = FirebaseDatabase.getInstance()
         var myRef = database.getReference("Mentors")
 
@@ -55,6 +81,7 @@ class searchResultsActivity : AppCompatActivity() {
                 for (mentor in mentorList) {
                     val mentorData = mentor.getValue(Mentor::class.java)
                     if (mentorData != null) {
+                        val mentorKey = mentor.key // Get the key of the DataSnapshot
                         if (mentorData.name.contains(
                                 searchQuery.toString(),
                                 ignoreCase = true
@@ -63,6 +90,11 @@ class searchResultsActivity : AppCompatActivity() {
                                 ignoreCase = true
                             )
                         ) {
+                            Log.d("searchResultsActivity", "Mentor $mentorKey matches search query")
+                            if (favoriteMentorIds.contains(mentorKey)) {
+                                mentorData.isFavorite = true
+                                Log.d("searchResultsActivity", "Mentor $mentorKey is a favorite")
+                            }
                             topMentors.add(mentorData)
                             originalTopMentors.add(mentorData)
                         }
