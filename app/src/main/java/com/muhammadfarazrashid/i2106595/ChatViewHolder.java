@@ -84,6 +84,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
             if (!Objects.equals(chatMessage.getVoiceMemoUrl(), "")) {
                 voicePlayerView.setAudio(chatMessage.getVoiceMemoUrl());
+                voicePlayerView.setEnableVirtualizer(true);
             }
 
             Log.d("ChatViewHolder", "bind: " + chatMessage.getVoiceMemoUrl());
@@ -94,6 +95,8 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         {
             if (!Objects.equals(chatMessage.getVoiceMemoUrl(), "")) {
                 voicePlayerView.setAudio(chatMessage.getVoiceMemoUrl());
+                voicePlayerView.setEnableVirtualizer(true);
+
             }
 
             Log.d("ChatViewHolder", "bind: " + chatMessage.getVoiceMemoUrl());

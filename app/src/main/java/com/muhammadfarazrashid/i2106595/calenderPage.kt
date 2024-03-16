@@ -30,6 +30,7 @@ class calendarPage : AppCompatActivity() {
     private lateinit var badgeAdapter: BadgeAdapter
     private lateinit var mentorName: TextView
     private lateinit var mentorImage: ImageView
+    private lateinit var salary: TextView
     private lateinit var currentMentor: Mentor
     private lateinit var calenderView: CalendarView
     private var selectedTime: String = ""
@@ -53,6 +54,7 @@ class calendarPage : AppCompatActivity() {
         if (mentor.getprofilePictureUrl().isNotEmpty()) {
             Picasso.get().load(mentor.getprofilePictureUrl()).into(mentorImage)
         }
+        salary.text = mentor.salary
     }
 
     private fun setUpAvailability() {
@@ -82,6 +84,7 @@ class calendarPage : AppCompatActivity() {
         mentorName= findViewById(R.id.mentorName)
         mentorImage = findViewById(R.id.imageView9)
         calenderView = findViewById(R.id.calendarView)
+        salary = findViewById(R.id.salary)
 
     }
 
@@ -181,15 +184,21 @@ class calendarPage : AppCompatActivity() {
     private fun setUpOnClickListeners()
     {
         findViewById<ImageView>(R.id.chatButton).setOnClickListener {
-            navigateToChatPage(currentMentor)
+            val intent = Intent(this, MentorChatActivity::class.java)
+            intent.putExtra("mentor", currentMentor)
+            startActivity(intent)
         }
 
         findViewById<ImageView>(R.id.phoneButton).setOnClickListener {
-            startActivity(Intent(this, PhoneCallActivity::class.java))
+            val intent = Intent(this, PhoneCallActivity::class.java)
+            intent.putExtra("mentor", currentMentor)
+            startActivity(intent)
         }
 
         findViewById<ImageView>(R.id.cameraButton).setOnClickListener {
-            startActivity(Intent(this, VideoCallActivity::class.java))
+            val intent = Intent(this, VideoCallActivity::class.java)
+            intent.putExtra("mentor", currentMentor)
+            startActivity(intent)
         }
 
         findViewById<ImageView>(R.id.imageView4).setOnClickListener {

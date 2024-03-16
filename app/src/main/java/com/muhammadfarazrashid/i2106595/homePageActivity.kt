@@ -118,11 +118,16 @@ class homePageActivity : AppCompatActivity() {
     }
 
     private fun initBadges() {
-        badges.add(Badge("Category 1", false))
-        badges.add(Badge("Category 2", false))
-        badges.add(Badge("Category 3", true)) // This badge is selected
-        badges.add(Badge("Category 4", false))
-        badges.add(Badge("Category 5", false))
+        badges.add(Badge("All", false))
+        badges.add(Badge("Education", false))
+        badges.add(Badge("Tech", true)) // This badge is selected
+        badges.add(Badge("Finance", false))
+        badges.add(Badge("Health", false))
+        badges.add(Badge("Business", false))
+        badges.add(Badge("Art", false))
+        badges.add(Badge("Science", false))
+        badges.add(Badge("Sports", false))
+
 
         badgesRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         badgesRecycler.adapter = BadgeAdapter(badges).apply {

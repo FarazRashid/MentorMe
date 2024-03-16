@@ -31,7 +31,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/otherUserImage"
             app:layout_constraintTop_toTopOf="parent"
-            app:playPauseBackgroundColor="#50C2C9"
+            app:playPauseBackgroundColor="#b3b3b3"
             app:playPauseCornerRadius="100"
             app:playProgressbarColor="#ff7700"
             app:progressTimeColor="@color/black"
@@ -43,10 +43,13 @@
             app:showShareButton="false"
             app:showTiming="true"
             app:timingBackgroundColor="@color/white"
-            app:viewBackground="#DEF8F8"
+            app:viewBackground="#50C2C9"
             app:viewCornerRadius="100"
             app:visualizationNotPlayedColor="#727171"
-            app:visualizationPlayedColor="#ff7700" />
+            app:visualizationPlayedColor="#ff7700"
+            app:rippleColor="#757575"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

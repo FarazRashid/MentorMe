@@ -479,11 +479,15 @@ class MentorChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.Scre
         }
 
         findViewById<Button>(R.id.callButton).setOnClickListener {
-            startActivity(Intent(this, PhoneCallActivity::class.java))
+            val intent = Intent(this, PhoneCallActivity::class.java)
+            intent.putExtra("mentor", currentMentor)
+            startActivity(intent)
         }
 
         findViewById<Button>(R.id.videoButton).setOnClickListener {
-            startActivity(Intent(this, VideoCallActivity::class.java))
+            val intent = Intent(this, VideoCallActivity::class.java)
+            intent.putExtra("mentor", currentMentor)
+            startActivity(intent)
         }
 
         findViewById<Button>(R.id.backbutton).setOnClickListener {
