@@ -15,12 +15,15 @@ import com.google.firebase.auth.FirebaseAuth
 class loginActivity : AppCompatActivity() {
 
     private  var mAuth : FirebaseAuth = FirebaseAuth.getInstance()
-
+    private lateinit var email:TextView
+    private lateinit var password:TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_page)
 
         val signupText: TextView = findViewById(R.id.textView11)
+        email = findViewById(R.id.userEmail)
+        password = findViewById(R.id.userPassword)
 
         // Set OnClickListener for the signup text
         signupText.setOnClickListener {
@@ -43,16 +46,18 @@ class loginActivity : AppCompatActivity() {
         }
     }
 
-    fun verifyTextFields() : Boolean
-    {
-        if(findViewById<TextView>(R.id.userEmail).text.toString().isEmpty())
-        {
-            findViewById<TextView>(R.id.userEmail).error = "Please enter your email"
+    fun verifyTextFields(): Boolean {
+
+
+        if (email.text.toString().isEmpty()) {
+            email.error = "Please enter your email"
+            email.requestFocus()
             return false
         }
-        if(findViewById<TextView>(R.id.userPassword).text.toString().isEmpty())
-        {
-            findViewById<TextView>(R.id.userPassword).error = "Please enter your password"
+
+        if (password.text.toString().isEmpty()) {
+            password.error = "Please enter your password"
+            password.requestFocus()
             return false
         }
 
