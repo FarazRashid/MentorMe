@@ -20,7 +20,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
@@ -29,7 +28,6 @@ import androidx.core.content.PermissionChecker
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.akexorcist.screenshotdetection.ScreenshotDetectionDelegate
-import com.devlomi.record_view.OnRecordClickListener
 import com.devlomi.record_view.OnRecordListener
 import com.devlomi.record_view.RecordButton
 import com.devlomi.record_view.RecordPermissionHandler
@@ -39,10 +37,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.storage.FirebaseStorage
 import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
-import com.muhammadfarazrashid.i2106595.dataclasses.NotificationsManager
 import com.muhammadfarazrashid.i2106595.managers.photoTakerManager
 import com.squareup.picasso.Picasso
 import java.io.File
@@ -71,6 +66,7 @@ class MentorChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.Scre
     private var audioRecorder: AudioRecorder? = null
     private var recordFile: File? = null
 
+
     private val screenshotDetectionDelegate = ScreenshotDetectionDelegate(this, this)
 
     override fun onStart() {
@@ -85,7 +81,6 @@ class MentorChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.Scre
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.mentorchat)
         checkReadExternalStoragePermission()
 

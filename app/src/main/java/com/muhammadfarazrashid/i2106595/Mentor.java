@@ -27,6 +27,7 @@ public class Mentor implements Parcelable {
 
     private String profilePictureUrl="";
 
+
     public Mentor(String id, String name, String position, String availability, String salary, String description) {
         this.id = id;
         this.name = name;

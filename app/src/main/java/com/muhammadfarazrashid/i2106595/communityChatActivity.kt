@@ -106,18 +106,10 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
         audioRecorder = AudioRecorder()
         recordView = findViewById(R.id.record_view)
         recordButton = findViewById(R.id.recordButton)
-        //   val btnChangeOnclick = findViewById<Button>(R.id.btn_change_onclick)
-
-        // To Enable Record Lock
-//        recordView.setLockEnabled(true);
-//        recordView.setRecordLockImageView(findViewById(R.id.record_lock));
-        //IMPORTANT
+        
         recordButton.setRecordView(recordView)
 
-        // if you want to click the button (in case if you want to make the record button a Send Button for example..)
-//        recordButton.setListenForRecord(false);
 
-        //ListenForRecord must be false ,otherwise onClick will not be called
         recordButton.setOnRecordClickListener {
             Toast.makeText(this@communityChatActivity, "RECORD BUTTON CLICKED", Toast.LENGTH_SHORT).show()
             Log.d("RecordButton", "RECORD BUTTON CLICKED")
