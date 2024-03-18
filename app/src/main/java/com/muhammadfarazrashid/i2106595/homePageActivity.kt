@@ -21,6 +21,7 @@ class homePageActivity : AppCompatActivity() {
     private lateinit var recentMentorsRecycler: RecyclerView
     private lateinit var educationMentorsRecycler: RecyclerView
     private lateinit var badgesRecycler: RecyclerView
+    private lateinit var notifications:ImageView
 
     private val topMentors = ArrayList<Mentor>()
     private val recentMentors = ArrayList<Mentor>()
@@ -45,7 +46,6 @@ class homePageActivity : AppCompatActivity() {
             startActivity(Intent(this, AddAMentor::class.java))
         }
 
-        val notifications = findViewById<ImageView>(R.id.bellIcon)
         notifications.setOnClickListener {
             startActivity(Intent(this, NotificationsActivity::class.java))
         }
@@ -60,6 +60,7 @@ class homePageActivity : AppCompatActivity() {
         badgesRecycler = findViewById(R.id.badgesRecycler)
         nameText = findViewById(R.id.nameText)
         nameText.text= UserManager.getCurrentUser()?.name ?: "User"
+        notifications=findViewById(R.id.bellIcon)
     }
 
     private fun fetchAllMentors() {

@@ -31,7 +31,7 @@ class mainChatActivity : AppCompatActivity() {
         initializeBottomNavigationListener()
         initializeAddMentorButton()
 
-        getUserMentorChatIdsList()
+        fetchMentorChats()
         fetchCommunityChats()
 
         initializeBackButton()
@@ -59,41 +59,15 @@ class mainChatActivity : AppCompatActivity() {
         }
     }
 
-    fun getUserMentorChatIdsList() {
-        val mentorChats = mutableListOf<String>()
-        val currentUser = UserManager.getCurrentUser()?.id
-        val myDatabase =
-            FirebaseDatabase.getInstance().getReference("users/$currentUser/chats/mentor_chats")
-        val mentorChatIds = mutableListOf<String>()
-        // Read data from Firebase Realtime Database
-        myDatabase.get().addOnSuccessListener { dataSnapshot ->
-            for (childSnapshot in dataSnapshot.children) {
-                // Get mentor ID from each child and add it to the mentorItems list
-                val mentorId = childSnapshot.key as? String
-                mentorId?.let {
-                    Log.d("FetchMentorChats", "Mentor ID: $it")
-                    mentorChatIds.add(it)
-                }
-            }
-            fetchMentorChats(mentorChatIds)
-        }
-            .addOnFailureListener { databaseError ->
-                // Handle database error
-                Log.e(
-                    "FetchMentorChats",
-                    "Error fetching mentor chats: ${databaseError.message}"
-                )
-            }
-    }
 
 
-    private fun fetchMentorChats(chatIds: List<String>) {
+
+    private fun fetchMentorChats() {
         val mentorChats = mutableListOf<AllMessagesChat>()
         val currentUser = UserManager.getCurrentUser()?.id
         val myDatabase = FirebaseDatabase.getInstance().getReference("users/$currentUser/chats/mentor_chats")
 
-        for (chatId in chatIds)
-            Log.d("FetchMentorChats", "Chat ID: $chatId")
+
 
         // Read data from Firebase Realtime Database
         myDatabase.addChildEventListener(object : ChildEventListener {
@@ -127,13 +101,6 @@ class mainChatActivity : AppCompatActivity() {
     }
 
 
-    private fun initializeAllMessagesRecyclerView(MentorItems: MutableList<AllMessagesChat>) {
-        allMessagesRecyclerView = findViewById(R.id.allMessagesRecycler)
-        allMessagesRecyclerView.layoutManager = LinearLayoutManager(this)
-
-        allMessagesAdapter = AllMessagesAdapter(MentorItems)
-        allMessagesRecyclerView.adapter = allMessagesAdapter
-    }
 
 
     private fun fetchCommunityChats() {
@@ -173,9 +140,17 @@ class mainChatActivity : AppCompatActivity() {
         })
     }
 
+    private fun initializeAllMessagesRecyclerView(MentorItems: MutableList<AllMessagesChat>) {
+        allMessagesRecyclerView = findViewById(R.id.allMessagesRecycler)
+        allMessagesRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        allMessagesAdapter = AllMessagesAdapter(MentorItems)
+        allMessagesRecyclerView.adapter = allMessagesAdapter
+    }
+
 
     private fun initializeMentorRecyclerView(mentorItems: List<MentorItem>) {
-        mentorRecyclerView = findViewById<RecyclerView>(R.id.communityRecyclerView)
+        mentorRecyclerView = findViewById(R.id.communityRecyclerView)
         mentorRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         mentorAdapter = MentorAdapter(mentorItems)

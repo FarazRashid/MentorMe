@@ -11,6 +11,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
+import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
 
 class loginActivity : AppCompatActivity() {
 
@@ -84,9 +86,23 @@ class loginActivity : AppCompatActivity() {
 
                     userManager.fetchAndSetCurrentUser(user?.email.toString())
                     {
-                        //add logged in boolean to shared preferences
-                        startActivity(intent)
-                        finish()
+                        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                            if (!task.isSuccessful) {
+                                return@addOnCompleteListener
+                            }
+
+                            // Get new FCM registration token
+                            val token = task.result
+
+                            // Log and toast
+                            val msg = token
+                            Log.d("MyToken", msg)
+                            FirebaseManager.addFcmTokenToUser(UserManager.getCurrentUser()?.id.toString(), "users", token)
+                            UserManager.getCurrentUser()?.fcmToken = token.toString()
+                            startActivity(intent)
+                            finish()
+                        }
+
                     }
                 } else {
 

@@ -12,8 +12,14 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.muhammadfarazrashid.i2106595.ChatAdapter
 import com.muhammadfarazrashid.i2106595.ChatMessage
+import com.muhammadfarazrashid.i2106595.Mentor
 import com.muhammadfarazrashid.i2106595.UserManager
-
+import io.agora.rtc2.Constants.MediaType
+import org.json.JSONObject
+import okhttp3.*
+import java.io.IOException
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.Headers.Companion.toHeaders
 class FirebaseManager {
 
 
@@ -102,6 +108,9 @@ class FirebaseManager {
 
 
     }
+
+
+
 
     fun addNotificationToOtherUserInMentorChat(
         userId: String,
@@ -510,6 +519,91 @@ class FirebaseManager {
                 .addOnFailureListener { e ->
                     Log.e(ContentValues.TAG, "Failed to add booking: ${e.message}")
                 }
+        }
+
+        fun addFcmTokenToUser(
+            userId: String,
+            userType: String,
+            fcmToken: String
+        ) {
+            val database = FirebaseDatabase.getInstance()
+            val fcmTokenRef = database.getReference(userType).child(userId).child("fcmToken")
+
+            fcmTokenRef.setValue(fcmToken)
+                .addOnSuccessListener {
+                    Log.d(ContentValues.TAG, "FCM token added successfully")
+                }
+                .addOnFailureListener { e ->
+                    Log.e(ContentValues.TAG, "Failed to add FCM token: ${e.message}")
+                }
+        }
+
+        fun fetchMentor(
+            mentorId: String,
+            callback: (mentor: Mentor?) -> Unit
+        ) {
+            val database = FirebaseDatabase.getInstance()
+            val mentorRef = database.getReference("Mentors").child(mentorId)
+
+            mentorRef.get().addOnSuccessListener { dataSnapshot ->
+                val mentor = dataSnapshot.getValue(Mentor::class.java)
+                if (mentor != null) {
+                    callback(mentor)
+                } else {
+                    callback(null)
+                }
+            }
+                .addOnFailureListener { databaseError ->
+                    Log.e(ContentValues.TAG, "Error fetching mentor: ${databaseError.message}")
+                    callback(null)
+                }
+        }
+
+        fun sendNotification(senderName:String, message: String, chatId: String,otherUserToken:String,chatType:String, otherUserId:String)
+        {
+            //userId, chatType, chatId, message, otherusertoken
+            UserManager.getCurrentUser()?.id?.let { it1 ->
+                val jsonObject = JSONObject()
+                val jsonNotificationObject=JSONObject()
+                val jsonDataObject=JSONObject()
+                jsonNotificationObject.put("title",senderName )
+                jsonNotificationObject.put("body", message)
+
+                jsonDataObject.put("userId",otherUserId )
+                jsonDataObject.put("chatType", chatType)
+                jsonDataObject.put("chatId", chatId)
+
+                jsonObject.put("notification", jsonNotificationObject)
+                jsonObject.put("data", jsonDataObject)
+                jsonObject.put("to", otherUserToken)
+
+                callApi(jsonObject)
+
+            }
+
+
+        }
+
+        fun callApi(jsonObject: JSONObject) {
+            val JSON: okhttp3.MediaType = "application/json; charset=utf-8".toMediaType()
+            val client = OkHttpClient()
+            val url = "https://fcm.googleapis.com/fcm/send"
+            val body: RequestBody = RequestBody.create(JSON, jsonObject.toString())
+            val request: Request = Request.Builder()
+                .url(url)
+                .post(body)
+                .header("Authorization", "Bearer AAAAP4pCMRk:APA91bHgnvBenLUOLfGYbKTuXRjn6OvUIerJ0RHP92DoEUNqQa49Lrg55qkw-zqGpqwVn7k-AWTGiYdz-AlpoCtoYNgRbuzctPAv5ESP7rZPn3fyv-PsPzPESbSmKHaSjZj1rvWYS0RG")
+                .build()
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    // Handle failure
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    // Handle response
+                }
+            })
+
         }
 
 

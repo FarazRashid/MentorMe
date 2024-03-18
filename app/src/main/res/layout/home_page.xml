@@ -50,18 +50,16 @@
             android:id="@+id/bellIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="208dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
             android:background="@drawable/nontransparentcircle"
             android:backgroundTint="#1D767C"
             android:clipToOutline="true"
             android:elevation="155dp"
             android:padding="5dp"
             android:translationZ="155dp"
-            app:layout_constraintBottom_toTopOf="@+id/readyForMentorshipText"
-            app:layout_constraintEnd_toEndOf="@+id/topMentorsViewAllText"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/nameText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/nameText"
             app:srcCompat="@drawable/notification" />
 
         <TextView

@@ -54,6 +54,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database:20.3.1")
     implementation("com.google.firebase:firebase-auth:22.3.1")
     implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
@@ -83,8 +84,11 @@ dependencies {
     implementation ("com.akexorcist:screenshot-detection:1.0.2")
     implementation ("io.agora.rtc:full-sdk:4.3.0")
 
-
-
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    val activity_version = "1.8.2"
+    implementation("androidx.activity:activity:$activity_version")
+    implementation("androidx.activity:activity-ktx:$activity_version")
+    implementation("androidx.fragment:fragment:1.6.2")
 
 
 }

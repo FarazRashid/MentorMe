@@ -326,7 +326,17 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
                 selectedMessageId = null
             } else {
                 // Add a new message to the database
+                val currentUserName=UserManager.getCurrentUser()?.name
                 FirebaseManager.saveMessageToDatabase(message, currentTime, "community_chats",currentMentor.id , chatAdapter)
+
+                for (user in listOfUsers){
+                    Log.d("SendingNotification","Sending notification to ${user.name} with token ${user.fcmToken}")
+                    if (currentUserName != null && user.fcmToken != "") {
+                        FirebaseManager.sendNotification(currentUserName,message,currentMentor.id,user.fcmToken,"community_chats",user.name)
+                        Log.d("SendingNotification","Sending notification to ${user.name} with token ${user.fcmToken}")
+
+                    }
+                }
 
             }
             // Clear the message field
@@ -503,21 +513,26 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
                     if(userIds.contains(userId)){
                         val name = messageSnapshot.child("name").value as String
                         val email = messageSnapshot.child("email").value as String
+                        val fcmToken:String
+                        fcmToken= messageSnapshot.child("fcmToken").value as String
+                        Log.d("MentorChatActivityTOKEN", "Value = ${fcmToken}")
+
+
                         if(messageSnapshot.child("profilePictureUrl").value==null){
                             val profilePictureUrl = ""
-                            val user = User(userId, name, email,"","","","", profilePictureUrl,"")
+                            val user = User(userId, name, email,"","","","", profilePictureUrl,"",fcmToken)
                             users.add(user)
                         }
                         else{
                             val profilePictureUrl = messageSnapshot.child("profilePictureUrl").value as String
-                            val user = User(userId, name, email,"","","","", profilePictureUrl,"")
+                            val user = User(userId, name, email,"","","","", profilePictureUrl,"",fcmToken)
                             users.add(user)
                         }
 
                     }
                 }
                 for(user in users){
-                    Log.d("MentorChatActivity3", "User = ${user.name}")
+                    Log.d("MentorChatActivity3", "UserTOKEN = ${user.fcmToken}")
                 }
 
                 fetchUserMessages(currentMentor.getprofilePictureUrl())
@@ -619,6 +634,10 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
             userIds.add(user.id)
         }
         firebaseManager.sendNotificationsToListOfUsers(userIds, "Screenshot taken by ${UserManager.getCurrentUser()?.name}", "Screenshot taken")
+
+        for(user in listOfUsers){
+            FirebaseManager.sendNotification(UserManager.getCurrentUser()?.name.toString(),"Screenshot taken",currentMentor.id,user.fcmToken,"community_chats",user.name)
+        }
     }
 
     companion object {
