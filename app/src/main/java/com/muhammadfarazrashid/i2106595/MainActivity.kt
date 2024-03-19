@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity() {
 
         //create notification channel
 
-        var token:String=""
 
         if(UserManager.getInstance().getUserLoggedInSP(getSharedPreferences("USER_LOGIN", MODE_PRIVATE)) && getIntent().getExtras()!=null){
             var userId = getIntent().getExtras()?.getString("userId")
@@ -62,10 +61,9 @@ class MainActivity : AppCompatActivity() {
                             this@MainActivity,
                             communityChatActivity::class.java
                         )
-                        val intentMain=Intent(this@MainActivity,communityChatActivity::class.java)
+                        val intentMain=Intent(this@MainActivity,mainChatActivity::class.java)
                         intentMain.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                         startActivity(intentMain)
-
                         intent.putExtra("mentor", fetchedMentor)
                         startActivity(intent)
 

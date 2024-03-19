@@ -607,7 +607,6 @@ class MentorChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.Scre
 
     override fun onScreenCaptured(path: String) {
         Log.d("MentorChatActivity", "Screenshot captured: $path")
-        Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
 
     }
 

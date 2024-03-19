@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Message
 import android.provider.MediaStore
 import android.util.Log
 import android.view.ContextThemeWrapper
@@ -153,6 +154,10 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
                     Toast.LENGTH_SHORT
                 ).show()
                 FirebaseManager.sendImageToStorage(Uri.fromFile(recordFile), currentMentor.id, "community_chats", chatAdapter, "chat_audios")
+                for(user in listOfUsers){
+                    if(user.fcmToken!="")
+                        FirebaseManager.sendNotification(UserManager.getCurrentUser()?.name.toString(),"Voice memo sent",currentMentor.id,user.fcmToken,"community_chats",user.name)
+                }
                 Log.d("RecordView", "onFinish Limit Reached? $limitReached")
                 if (time != null) {
                     Log.d("RecordTime", time)
@@ -315,6 +320,7 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
 
 
 
+
     private fun sendMessage() {
         val message = messageField.text.toString()
         val currentTime = java.text.SimpleDateFormat("HH:mm a").format(java.util.Date())
@@ -332,6 +338,7 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
                 for (user in listOfUsers){
                     Log.d("SendingNotification","Sending notification to ${user.name} with token ${user.fcmToken}")
                     if (currentUserName != null && user.fcmToken != "") {
+
                         FirebaseManager.sendNotification(currentUserName,message,currentMentor.id,user.fcmToken,"community_chats",user.name)
                         Log.d("SendingNotification","Sending notification to ${user.name} with token ${user.fcmToken}")
 
@@ -349,6 +356,10 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
             selectedImageUri = result.data?.data ?: return@registerForActivityResult
             // Send the image to the chat
             FirebaseManager.sendImageToStorage(selectedImageUri, currentMentor.id, "community_chats",chatAdapter,"chat_images")
+            for(user in listOfUsers){
+                if(user.fcmToken!="")
+                    FirebaseManager.sendNotification(UserManager.getCurrentUser()?.name.toString(),"Image sent",currentMentor.id,user.fcmToken,"community_chats",user.name)
+            }
         }
     }
     private fun sendImage(){
@@ -667,7 +678,7 @@ class communityChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.S
     }
 
     private fun showReadExternalStoragePermissionDeniedMessage() {
-        Toast.makeText(this, "Read external storage permission has denied", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this, "Read external storage permission has denied", Toast.LENGTH_SHORT)
     }
 
     private fun scrollToBottom() {
