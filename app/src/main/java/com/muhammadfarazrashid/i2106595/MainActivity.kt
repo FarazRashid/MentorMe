@@ -7,6 +7,7 @@ import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.muhammadfarazrashid.i2106595.Mentor.OnMentorListener
+import com.muhammadfarazrashid.i2106595.dataclasses.NotificationsManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -82,17 +83,8 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-//        MyFirebaseMessagingService.askNotificationPermission(this, object : PermissionCallback {
-//            override fun onPermissionResult(isGranted: Boolean) {
-//                if (isGranted) {
-//
-//
-//                } else {
-//                    // FCM SDK (and your app) cannot post notifications.
-//                }
-//            }
-//        })
-
+        //create notification channel
+        NotificationsManager.getInstance().createNotificationChannel(this)
 
         //if user logged in, go to home page
         if (UserManager.getInstance().getUserLoggedInSP(getSharedPreferences("USER_LOGIN", MODE_PRIVATE))) {

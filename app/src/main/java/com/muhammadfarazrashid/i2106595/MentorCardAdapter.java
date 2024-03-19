@@ -168,6 +168,8 @@ public class MentorCardAdapter extends RecyclerView.Adapter<MentorCardAdapter.Vi
         favoritesRef.setValue(true)
                 .addOnSuccessListener((OnSuccessListener<Void>) aVoid -> Log.d(TAG, "Favorite mentor added: " + mentorId))
                 .addOnFailureListener((OnFailureListener) e -> Log.e(TAG, "Failed to add favorite mentor: " + e.getMessage()));
+        //get mentor name using chat adapater
+
     }
 
     // Remove favorite mentor for the current user

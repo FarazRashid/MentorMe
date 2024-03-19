@@ -94,7 +94,8 @@ class NotificationsActivity : AppCompatActivity() {
 
     private fun setupNotificationsRecyclerView() {
         notificationsAdapter = RecentSearchesAdapter(notificationsList, onRemoveClickListener, "notifications")
-        notificationsRecycler.layoutManager = LinearLayoutManager(this)
+        //set up recycler view from the opposite stacking order
+        notificationsRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, true)
         notificationsRecycler.adapter = notificationsAdapter
     }
 
