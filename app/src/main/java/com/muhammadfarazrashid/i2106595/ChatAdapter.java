@@ -88,17 +88,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolder> {
             if(!Objects.equals(chatMessages.get(position).getVideoImageUrl(), "")) {
                 //on click start the video
 
-                holder.videoView.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View view) {
-                        if (holder.videoView.isPlaying()) {
-                            holder.videoView.pause();
-                        } else {
-                            holder.videoView.start();
-                        }
-                    }
-                });
+//                holder.videoView.setOnClickListener(new View.OnClickListener() {
+//
+//                    @Override
+//                    public void onClick(View view) {
+//                        if (holder.videoView.isPlaying()) {
+//                            holder.videoView.pause();
+//                        } else {
+//                            holder.videoView.start();
+//                        }
+//                    }
+//                });
 
 
             }

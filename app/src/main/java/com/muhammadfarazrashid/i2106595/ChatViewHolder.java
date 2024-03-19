@@ -1,5 +1,7 @@
 package com.muhammadfarazrashid.i2106595;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
@@ -9,9 +11,17 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.util.UnstableApi;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.SimpleExoPlayer;
+import androidx.media3.ui.AspectRatioFrameLayout;
+import androidx.media3.ui.PlayerView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.Objects;
 
@@ -26,7 +36,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
     private ImageView messageImageView;
 
-    public VideoView videoView;
+    public PlayerView videoView;
 
     private VoicePlayerView voicePlayerView;
 
@@ -40,7 +50,7 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
         voicePlayerView = itemView.findViewById(R.id.voicePlayerView);
     }
 
-    public void bind(ChatMessage chatMessage, String type){
+    @OptIn(markerClass = UnstableApi.class) public void bind(ChatMessage chatMessage, String type){
 
         if(Objects.equals(type, "message")) {
 
@@ -63,16 +73,40 @@ public class ChatViewHolder extends RecyclerView.ViewHolder {
 
             if (!Objects.equals(chatMessage.getMessageImageUrl(), "")) {
                 messageImageView.setVisibility(View.VISIBLE);
+                messageTextView.setVisibility(View.GONE);
+
+
+
+                // Load the image using Picasso
                 Picasso.get().load(chatMessage.getMessageImageUrl()).into(messageImageView);
-            } else if (messageImageView != null) {
+
+            }else {
                 messageImageView.setVisibility(View.GONE);
+                messageTextView.setVisibility(View.VISIBLE);
             }
+
 
             if (!Objects.equals(chatMessage.getVideoImageUrl(), "")) {
                 videoView.setVisibility(View.VISIBLE);
-                videoView.setVideoURI(Uri.parse(chatMessage.getVideoImageUrl()));
-                videoView.setMediaController(new MediaController(itemView.getContext()));
-                videoView.start();
+                messageTextView.setVisibility(View.GONE);
+
+                SimpleExoPlayer exoPlayer = new SimpleExoPlayer.Builder(videoView.getContext()).build();
+                MediaItem mediaItem = MediaItem.fromUri(Uri.parse(chatMessage.getVideoImageUrl()));
+                exoPlayer.setMediaItem(mediaItem);
+
+
+                // Set brightness
+                videoView.setKeepScreenOn(true);
+
+                videoView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FILL);
+
+                // Prepare the player
+                exoPlayer.prepare();
+
+                // Bind the player to the PlayerView
+                videoView.setPlayer(exoPlayer);
+
+
             } else if (videoView != null) {
                 videoView.setVisibility(View.GONE);
             }

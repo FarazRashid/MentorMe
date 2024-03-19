@@ -50,6 +50,19 @@
             app:rippleColor="#757575"
             />
 
+        <TextView
+            android:id="@+id/userChatTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#A2E6DF"
+            android:text="10:32"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintTop_toBottomOf="@id/voicePlayerView"
+            app:layout_constraintLeft_toLeftOf="@id/voicePlayerView"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

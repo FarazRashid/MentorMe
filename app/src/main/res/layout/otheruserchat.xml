@@ -13,15 +13,14 @@
         android:padding="5dp"
         android:layout_height="wrap_content">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/otherUserImage"
-        android:layout_width="79dp"
-        android:layout_height="73dp"
-        android:background="@drawable/circle"
-        android:backgroundTint="#00000000"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        tools:layout_editor_absoluteY="0dp" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/otherUserImage"
+            android:layout_width="79dp"
+            android:layout_height="73dp"
+            android:background="@drawable/circle"
+            android:backgroundTint="#00000000"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/userChatMessage"
@@ -41,8 +40,8 @@
 
         <ImageView
             android:id="@+id/messageImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:padding="5dp"
             android:background="@drawable/rounded_details"
             android:backgroundTint="@color/white"
@@ -50,7 +49,7 @@
             app:layout_constraintLeft_toLeftOf="@id/userChatMessage"
             app:layout_constraintTop_toBottomOf="@id/userChatMessage" />
 
-        <VideoView
+        <androidx.media3.ui.PlayerView
             android:id="@+id/messageVideoView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,17 +59,17 @@
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/userChatMessage" />
-    <TextView
-        android:id="@+id/userChatTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:backgroundTint="#A2E6DF"
-        android:text="10:32"
-        android:textColor="@color/black"
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/otherUserImage"
-        app:layout_constraintTop_toBottomOf="@id/messageImageView" />
+
+        <TextView
+            android:id="@+id/userChatTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#A2E6DF"
+            android:text="10:32"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/otherUserImage"
+            app:layout_constraintTop_toBottomOf="@+id/otherUserImage" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

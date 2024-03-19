@@ -90,5 +90,11 @@ dependencies {
     implementation("androidx.activity:activity-ktx:$activity_version")
     implementation("androidx.fragment:fragment:1.6.2")
 
+    implementation("androidx.media3:media3-exoplayer:1.3.0")
+    implementation("androidx.media3:media3-exoplayer-dash:1.3.0")
+    implementation("androidx.media3:media3-ui:1.3.0")
+    implementation ("com.github.chrisbanes:PhotoView:2.0.0")
+
+
 
 }

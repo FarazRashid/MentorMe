@@ -376,6 +376,12 @@ class FirebaseManager {
         ) {
             // Delete the message from the database using Firebase
             // Example code:
+            val messageImageUrl=chatAdapter.getMessage(messageId).messageImageUrl
+            val messageVideoUrl=chatAdapter.getMessage(messageId).videoImageUrl
+            val messageVoiceMemoUrl=chatAdapter.getMessage(messageId).voiceMemoUrl
+            val messageDocumentUrl=chatAdapter.getMessage(messageId).documentUrl
+
+
             val databaseRef = FirebaseDatabase.getInstance()
                 .getReference("chat/$chat_type/$chatId/messages/$messageId")
             databaseRef.removeValue()
@@ -384,11 +390,7 @@ class FirebaseManager {
                     Log.d(ContentValues.TAG, "Message deleted successfully")
                     //if message has an image we will delete the image from storage too
 
-                    if (chatAdapter.getMessage(messageId).messageImageUrl.isNotEmpty() || chatAdapter.getMessage(
-                            messageId
-                        ).videoImageUrl.isNotEmpty() || chatAdapter.getMessage(messageId).voiceMemoUrl.isNotEmpty() || chatAdapter.getMessage(
-                            messageId
-                        ).documentUrl.isNotEmpty()
+                    if (messageImageUrl!="" || messageVideoUrl!="" || messageVoiceMemoUrl!="" || messageDocumentUrl!=""
                     ) {
                         if (fileType != "chat_messages") {
                             val storage = FirebaseStorage.getInstance()
@@ -410,7 +412,6 @@ class FirebaseManager {
                         }
                     }
                     //remove from adapter
-                    chatAdapter.removeMessage(messageId)
                 }
                 .addOnFailureListener { e ->
                     // Handle failure
