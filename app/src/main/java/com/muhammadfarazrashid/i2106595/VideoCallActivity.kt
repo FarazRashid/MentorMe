@@ -36,7 +36,7 @@ class VideoCallActivity : AppCompatActivity() {
     private val appId: String = "bc8acf945f744259bf2e3abd5226087b"
     private var channelName: String = "mentorCall"
     private val uid: Int = 0
-    private val token: String = "007eJxTYJgQut734KmXgYpT8hPiLJ7nLbf9IO/d6fZ5z9KtYf2Mhm4KDEnJFonJaZYmpmnmJiZGppZJaUapxolJKaZGRmYGFuZJJ3Z9TW0IZGQ4emExEyMDBIL4XAy5qXkl+UXOiTk5DAwAZEMjmQ=="
+    private val token: String = "007eJxTYNA39TnSVKKlvf/gfxWhIJata5q/Gpe++5R+5t4c8+nFx/oUGJKSLRKT0yxNTNPMTUyMTC2T0oxSjROTUkyNjMwMLMyT1GX+pDYEMjJUZP5gYmSAQBCfiyE3Na8kv8g5MSeHgQEAUvgi5w=="
     private val localSurfaceView: SurfaceView? = null
     private val remoteSurfaceView: SurfaceView? = null
     private lateinit var timer: CountDownTimer
@@ -135,7 +135,6 @@ class VideoCallActivity : AppCompatActivity() {
     private fun setUpRemoteVideo(uid: Int) {
         otherUserVideo = findViewById(R.id.photoImageView)
         val remoteSurfaceView = RtcEngine.CreateRendererView(this)
-        remoteSurfaceView.setZOrderMediaOverlay(true)
         otherUserVideo.addView(remoteSurfaceView)
         agoraEngine.setupRemoteVideo(VideoCanvas(remoteSurfaceView, VideoCanvas.RENDER_MODE_FIT, uid))
     }
