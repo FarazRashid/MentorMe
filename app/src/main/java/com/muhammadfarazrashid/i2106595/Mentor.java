@@ -66,6 +66,18 @@ public class Mentor implements Parcelable {
         this.isFavorite = isFavorite;
     }
 
+    public Mentor(String id, String name, String position, String availability, String salary, String description, String profilePictureUrl, Boolean isFavorite, int rating) {
+        this.id = id;
+        this.name = name;
+        this.position = position;
+        this.availability = availability;
+        this.salary = salary;
+        this.description = description;
+        this.profilePictureUrl = profilePictureUrl;
+        this.isFavorite = isFavorite;
+        this.rating = rating;
+    }
+
     public String getprofilePictureUrl() {
         return profilePictureUrl;
     }
@@ -87,6 +99,7 @@ public class Mentor implements Parcelable {
         salary = in.readString();
         description = in.readString();
         isFavorite = in.readByte() != 0;
+        rating = in.readInt();
     }
 
     public static final Creator<Mentor> CREATOR = new Creator<Mentor>() {
@@ -100,7 +113,8 @@ public class Mentor implements Parcelable {
                     in.readString(),
                     in.readString(),
                     in.readString(),
-                    in.readByte() != 0
+                    in.readByte() != 0,
+                    in.readInt()
             );
         }
 
@@ -230,5 +244,6 @@ public class Mentor implements Parcelable {
         dest.writeString(description);
         dest.writeString(profilePictureUrl);
         dest.writeByte((byte) (isFavorite ? 1 : 0));
+        dest.writeInt(rating);
     }
 }

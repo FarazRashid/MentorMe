@@ -73,6 +73,15 @@ class homePageActivity : AppCompatActivity() {
                     mentor?.let {
                         // Set the id for each mentor based on the key of the child node
                         it.id = mentorSnapshot.key
+
+                        it.rating = if (mentorSnapshot.child("currentRating").value is Long) {
+                            (mentorSnapshot.child("currentRating").value as Long).toInt()
+                        } else {
+                            mentorSnapshot.child("currentRating").value as? Int ?: 0
+                        }
+
+                        Log.d("MentorRating", "Mentor rating: ${it.rating}")
+
                         mentors.add(it)
                     }
                 }
@@ -114,6 +123,7 @@ class homePageActivity : AppCompatActivity() {
         val intent = Intent(this, aboutMentorPage::class.java)
         Log.d("homePageActivity", "Navigating to aboutMentorPage with mentor: ${mentor.id}")
         Log.d("homePageActivity", "Navigating to aboutMentorPage with mentor: ${mentor.getprofilePictureUrl()}")
+        Log.d("homePageActivity", "Navigating to aboutMentorPage with mentor: ${mentor.rating}")
         intent.putExtra("mentor", mentor) // Pass the mentor data to the aboutMentorPage
         startActivity(intent)
     }

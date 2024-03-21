@@ -42,8 +42,11 @@ import com.muhammadfarazrashid.i2106595.managers.photoTakerManager
 import com.squareup.picasso.Picasso
 import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.UUID
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
 
 
 class MentorChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.ScreenshotDetectionListener {
@@ -304,6 +307,32 @@ class MentorChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.Scre
 
     private fun showPopupMenu(chatMessage: ChatMessage, view: View?)
     {
+
+        if(!chatMessage.isUser)
+            return
+
+        val currentTime = SimpleDateFormat("HH:mm a").format(Date())
+        val messageTime = chatMessage.time // Assuming chatMessage.time is the time of the message
+
+        val sdf = SimpleDateFormat("HH:mm a")
+        val currentTimeDate = sdf.parse(currentTime)
+        val messageTimeDate = sdf.parse(messageTime)
+
+        // Calculate time difference in milliseconds
+        val timeDifferenceMillis = abs(currentTimeDate.time - messageTimeDate.time)
+
+        // Convert time difference to minutes
+        val timeDifferenceMinutes = timeDifferenceMillis / (1000 * 60)
+
+        // Check if the time difference is less than 5 minutes
+        if (timeDifferenceMinutes > 5) {
+            // Do not allow editing or deleting the message
+            return
+        }
+
+        Log.d("MentorActivityMessageTime", chatMessage.time)
+
+
         view?.let {
             val contextWrapper = ContextThemeWrapper(this, R.style.MyMenuItemStyle)
             val popupMenu = PopupMenu(contextWrapper, it)
@@ -311,9 +340,6 @@ class MentorChatActivity : AppCompatActivity(), ScreenshotDetectionDelegate.Scre
             popupMenu.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.editItem -> {
-                        // Handle edit message
-                        // val editMessageDialog = EditMessageDialog(chatMessage.message, chatMessage.id, this)
-                        // editMessageDialog.show(supportFragmentManager, "EditMessageDialog")
                         messageField.setText(chatMessage.message)
                         selectedMessageId = chatMessage.id
 

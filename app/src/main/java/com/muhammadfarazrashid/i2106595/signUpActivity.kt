@@ -19,6 +19,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.messaging.FirebaseMessaging
+import com.muhammadfarazrashid.i2106595.dataclasses.FirebaseManager
 import com.muhammadfarazrashid.i2106595.dataclasses.User
 import java.util.Collections
 import java.util.Locale
@@ -279,7 +281,26 @@ class signUpActivity : AppCompatActivity() {
         mAuth.createUserWithEmailAndPassword(user.email, user.password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val user = mAuth.currentUser
+                    val user1 = mAuth.currentUser
+                    UserManager.setCurrentUser(user)
+                    FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                        if (!task.isSuccessful) {
+                            return@addOnCompleteListener
+                        }
+
+                        // Get new FCM registration token
+                        val token = task.result
+
+                        // Log and toast
+                        val msg = token
+                        Log.d("MyToken", msg)
+                        FirebaseManager.addFcmTokenToUser(UserManager.getCurrentUser()?.id.toString(), "users", token)
+                        UserManager.saveUserLoggedInSP(true, getSharedPreferences("USER_LOGIN", MODE_PRIVATE))
+                        UserManager.saveUserEmailSP(user.email, getSharedPreferences("USER_LOGIN", MODE_PRIVATE))
+                        UserManager.getCurrentUser()?.fcmToken = token.toString()
+                        navigateToProfile()
+                    }
+
 
                 } else {
                     Log.e(TAG, "Error creating user: ${task.exception?.message}")
@@ -311,10 +332,7 @@ class signUpActivity : AppCompatActivity() {
                     .addOnSuccessListener {
                         Log.d(TAG, "User data saved successfully")
                         saveUserAuthentication(user)
-                        UserManager.getInstance().fetchAndSetCurrentUser(user.email)
-                        {
-                            navigateToProfile()
-                        }
+
                     }
                     .addOnFailureListener { e ->
                         Log.e(TAG, "Error saving user data: ${e.message}")

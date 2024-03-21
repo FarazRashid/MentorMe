@@ -20,6 +20,7 @@ class aboutMentorPage : AppCompatActivity() {
     private lateinit var aboutMe: TextView
     private lateinit var mentorImageView: ImageView
     private lateinit var currentMentor: Mentor
+    private lateinit var rating: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +52,7 @@ class aboutMentorPage : AppCompatActivity() {
         mentorPosition = findViewById(R.id.position)
         aboutMe = findViewById(R.id.aboutMe)
         mentorImageView = findViewById(R.id.imageView9)
+        rating = findViewById(R.id.rating)
     }
 
     private fun setMentorDetails(mentor: Mentor) {
@@ -58,6 +60,14 @@ class aboutMentorPage : AppCompatActivity() {
         mentorPosition.text = mentor.position
         aboutMe.text = mentor.description
         currentMentor = mentor
+
+        Log.d("AboutMentorPage", "Mentor Rating: ${mentor.rating}")
+
+        if (mentor.rating != null) {
+            rating.text = mentor.rating.toString()
+        } else {
+            rating.text = "0 (No Reviews So Far)"
+        }
 
 
         if (mentor.getprofilePictureUrl().isNotEmpty()) {
