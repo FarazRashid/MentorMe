@@ -10,7 +10,7 @@ In this assignment, you will embark on a journey to build MentorMe, an innovativ
 
 To get started with MentorMe, follow these steps:
 
-1. Clone this repository to your local machine.
+1. Clone this repository to your local machine using `git clone https://github.com/FarazRashid/MentorMe.git`
 2. Set up Firebase backend according to the provided instructions.
 3. Build and run the application on your development environment.
 4. Explore the various features and functionalities of MentorMe.
@@ -75,9 +75,6 @@ MentorMe leverages the following technologies:
 
 Contributions to MentorMe are welcome! If you have suggestions for new features, bug fixes, or improvements, please feel free to submit a pull request.
 
-## License
-
-This project is licensed under the [MIT License](LICENSE), granting you the freedom to modify and distribute the software as you see fit. 
 
 ## Acknowledgements
 
