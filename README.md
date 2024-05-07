@@ -4,7 +4,7 @@ Welcome to MentorMe - the ultimate mentorship app for Android developers! This c
 
 ## Introduction
 
-In this assignment, you will embark on a journey to build MentorMe, an innovative Android application that empowers users to engage in mentorship relationships effortlessly. By implementing a wide range of features, from user authentication to comprehensive chat systems, you'll gain invaluable experience in Android development while contributing to a powerful tool for mentorship and collaboration.
+In this project I've embarked on a journey to build MentorMe, an innovative Android application that empowers users to engage in mentorship relationships effortlessly. By implementing a wide range of features, from user authentication to comprehensive chat systems, which has allowed me to gain invaluable experience in Android development while contributing to a powerful tool for mentorship and collaboration.
 
 ## Getting Started
 
@@ -20,46 +20,46 @@ To get started with MentorMe, follow these steps:
 MentorMe offers a plethora of features designed to enhance the mentorship experience for both mentees and mentors. Here's a brief overview:
 
 ### Pixel Perfect Implementation
-Ensure screens match the provided wireframes_mentorme.pdf precisely.
+Screens match the provided wireframes and mockups on figma
 
 ### Component Inclusion
-Include all necessary components such as recycler view, scroll view, and bottom navigation.
+Includes all necessary components such as recycler view, scroll view, and bottom navigation.
 
 ### Proper Navigation and Clickability
-Ensure smooth navigation throughout the app with intuitive clickability.
+Sooth navigation throughout the app with intuitive clickability.
 
 ### Accessibility and Responsiveness
-Prioritize accessibility considerations, including text size and contrast, to ensure a seamless user experience.
+Acessibility considerations, including text size and contrast, to ensure a seamless user experience.
 
 ### Test Cases
-Create Espresso test cases to validate different functionalities, ensuring the app's robustness and reliability.
+Espresso test cases to validate different functionalities, ensuring the app's robustness and reliability.
 
 ### User Authentication
-Implement user authentication with signup, login, and logout functionalities, providing a secure environment for users.
+Implements user authentication with signup, login, and logout functionalities, providing a secure environment for users.
 
 ### Mentor Discovery
-Display all mentors on the homepage for easy access, allowing users to explore a diverse range of expertise.
+Displays all mentors on the homepage for easy access, allowing users to explore a diverse range of expertise.
 
 ### Mentor Management
-Allow users to add mentors to their favorites and review mentors based on their experiences, fostering meaningful connections.
+Allows users to add mentors to their favorites and review mentors based on their experiences, fostering meaningful connections.
 
 ### Search and Filter Functionality
-Implement search with filter functionality to facilitate users in finding mentors tailored to their specific needs.
+Implements search with filter functionality to facilitate users in finding mentors tailored to their specific needs.
 
 ### Session Booking
-Enable users to book sessions with mentors, facilitating structured learning and professional development.
+Enables users to book sessions with mentors, facilitating structured learning and professional development.
 
 ### Comprehensive Chat System
-Develop a comprehensive chat system, including text messages, voice notes, image, video, and file uploads, to facilitate seamless communication between users.
+Develops a comprehensive chat system, including text messages, voice notes, image, video, and file uploads, to facilitate seamless communication between users.
 
 ### Calls
-Facilitate audio and video calls using the Agora API, enhancing real-time interaction between mentors and mentees.
+Facilitates audio and video calls using the Agora API, enhancing real-time interaction between mentors and mentees.
 
 ### Push Notifications
-Implement push notifications for new messages, bookings, mentor updates, favorites, and screenshot detection, keeping users informed and engaged.
+Implements push notifications for new messages, bookings, mentor updates, favorites, and screenshot detection, keeping users informed and engaged.
 
 ### Offline Access to Data
-Ensure the app functions properly in offline mode, displaying old messages and relevant content, and automatically sending messages when an internet connection is restored.
+Ensures the app functions properly in offline mode, displaying old messages and relevant content, and automatically sending messages when an internet connection is restored.
 
 ## Technologies Used
 
