@@ -82,7 +82,7 @@ Special thanks to our mentors and contributors who have helped make MentorMe pos
 
 ## Contact
 
-For any inquiries or support, please contact [your email here].
+For any inquiries or support, please contact [muhammadfarazrashid@gmail.com].
 
 Happy mentoring!
 Team MentorMe
